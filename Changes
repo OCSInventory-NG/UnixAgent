@@ -1,6 +1,7 @@
 Revision history for Ocsinventory::Agent
 
-       * Bug #772436 about download end message report in Download.pm        
+       * Fix Bug #586321 about wrong version comparison in Vmsystem.pm
+       * Fix Bug #772436 about download end message report in Download.pm
        * Display support log received from PROLOG
        * Various patches for Snmp/9.pm module (Cisco)
        * Add --nolocal option to desactivate local mode even if it is set in config file or command line
