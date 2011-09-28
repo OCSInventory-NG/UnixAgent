@@ -1,5 +1,7 @@
 Revision history for Ocsinventory::Agent
 
+       * Fix Bug #856161 about installer problems on MacOSX Tiger
+
 2.0.1
        * New SNMP data using If_Mib.pm: IP address, netmask, gateway and routing informations
        * Use the "public" SNMP community if no community defined in OCS server configuration
