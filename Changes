@@ -1,5 +1,6 @@
 Revision history for Ocsinventory::Agent
 
+       * Fix bug while sending ERR_DOWNLOAD_INFO message in Donwload.pm
        * Fix Bug #856161 about installer problems on MacOSX Tiger
 
 2.0.1
