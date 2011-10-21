@@ -1,5 +1,6 @@
 Revision history for Ocsinventory::Agent
 
+       * Fix Bug #879487 about a misplaced object release in ocs_agent_configPane.m.
 2.0.2
        * Fix bug on "Debug Mode" checkbox in MacoSX installer 
        * Fix bug while sending ERR_DOWNLOAD_INFO message in Donwload.pm
