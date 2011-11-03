@@ -1,5 +1,6 @@
 Revision history for Ocsinventory::Agent
 
+       * Fix Bug #881406 about security issue due to snmp_com.txt file which is no longer used
        * Fix Bug #874269 about wrong conversion if hard drive >= TB in MacOS/Storages.pm
        * Fix Bug #879487 about a misplaced object release in ocs_agent_configPane.m.
 2.0.2
