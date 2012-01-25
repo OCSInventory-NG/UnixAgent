@@ -1,5 +1,6 @@
 Revision history for Ocsinventory::Agent
 
+       * Improve memory slots detection under MacOSX 10.7 in MacOS/Mem.pm
        * Force OCSNG.app to become the topmost window in tools/macosx/ocsng_app-xcode/main.m
        * Fix Bug #901570 about wrong printer name if no printer found in MacOS/Printers.pm 
        * Solving CPU and memories inventory detection under MacOSX Snow Leopard and MacOSX Lion 
