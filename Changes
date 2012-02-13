@@ -1,5 +1,6 @@
 Revision history for Ocsinventory::Agent
 
+       * Fix bug about illegal hexadecimal digit in Snmp/Host_Resources_Mib.pm
        * Fix segfault and buffer overflow bugs in ipdiscover.c
        * Improve OCS MacOSX agent internationalization support
        * Back to previous pane after wrong OCS server address warning in MacOSX installer
