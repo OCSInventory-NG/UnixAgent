@@ -1,13 +1,13 @@
 // !$*UTF8*$!
 {
-	0606C19514DCA723008033F9 /* PBXTextBookmark */ = {
+	06128B46151BD22C004BCDF5 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 069BF79014D9FEF900CDCB91 /* French */;
 		name = "Localizable.strings: 14";
 		rLen = 0;
 		rLoc = 350;
 		rType = 0;
-		vrLen = 513;
+		vrLen = 348;
 		vrLoc = 22;
 	};
 	0632F51E14DB4EF10064D8E2 /* PBXTextBookmark */ = {
@@ -67,16 +67,6 @@
 		vrLen = 576;
 		vrLoc = 1119;
 	};
-	0680346514DCAAC500E14075 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 069BF79014D9FEF900CDCB91 /* French */;
-		name = "Localizable.strings: 14";
-		rLen = 0;
-		rLoc = 350;
-		rType = 0;
-		vrLen = 518;
-		vrLoc = 3;
-	};
 	0688BCF513EF4B1500094AA2 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = EE3F05FB0DD294BA00EA504A /* English */;
@@ -112,7 +102,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {952, 286}}";
 			sepNavSelRange = "{350, 0}";
-			sepNavVisRange = "{3, 518}";
+			sepNavVisRange = "{22, 348}";
 			sepNavWindowFrame = "{{275, 90}, {948, 706}}";
 		};
 	};
@@ -143,6 +133,16 @@
 		rType = 0;
 		vrLen = 721;
 		vrLoc = 834;
+	};
+	06D66221151BD114009F482C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 069BF79014D9FEF900CDCB91 /* French */;
+		name = "Localizable.strings: 14";
+		rLen = 0;
+		rLoc = 350;
+		rType = 0;
+		vrLen = 367;
+		vrLoc = 3;
 	};
 	06E815A413EB2FA3008B68AB /* Source Control */ = {
 		isa = PBXSourceControlManager;
@@ -183,23 +183,6 @@
 			sepNavVisRange = "{0, 1244}";
 			sepNavWindowFrame = "{{38, 146}, {948, 706}}";
 		};
-	};
-	06EBE18D14D9FC9F00B916EB /* installer.sh */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = text.script.sh;
-		name = installer.sh;
-		path = /Users/ocs/work/ocs/dev/beta5/iceberg/scripts/installer.sh;
-		sourceTree = "<absolute>";
-	};
-	06EBE19414D9FDE200B916EB /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 06EBE18D14D9FC9F00B916EB /* installer.sh */;
-		name = "installer.sh: 1";
-		rLen = 0;
-		rLoc = 0;
-		rType = 0;
-		vrLen = 561;
-		vrLoc = 1142;
 	};
 	089C1669FE841209C02AAC07 /* Project object */ = {
 		activeArchitecturePreference = i386;
@@ -279,24 +262,23 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 350005893;
-			PBXWorkspaceStateSaveDate = 350005893;
+			PBXPerProjectTemplateStateSaveDate = 354144634;
+			PBXWorkspaceStateSaveDate = 354144634;
 		};
 		perUserProjectItems = {
-			0606C19514DCA723008033F9 /* PBXTextBookmark */ = 0606C19514DCA723008033F9 /* PBXTextBookmark */;
+			06128B46151BD22C004BCDF5 /* PBXTextBookmark */ = 06128B46151BD22C004BCDF5 /* PBXTextBookmark */;
 			0632F51E14DB4EF10064D8E2 /* PBXTextBookmark */ = 0632F51E14DB4EF10064D8E2 /* PBXTextBookmark */;
 			0632F51F14DB4EF10064D8E2 /* PBXTextBookmark */ = 0632F51F14DB4EF10064D8E2 /* PBXTextBookmark */;
 			0632F5CA14DB51740064D8E2 /* PBXTextBookmark */ = 0632F5CA14DB51740064D8E2 /* PBXTextBookmark */;
 			0673FF0E14DB457D008A3FF8 /* PBXTextBookmark */ = 0673FF0E14DB457D008A3FF8 /* PBXTextBookmark */;
 			0680346414DCAAC500E14075 /* PBXTextBookmark */ = 0680346414DCAAC500E14075 /* PBXTextBookmark */;
-			0680346514DCAAC500E14075 /* PBXTextBookmark */ = 0680346514DCAAC500E14075 /* PBXTextBookmark */;
 			0688BCF513EF4B1500094AA2 /* PBXTextBookmark */ = 0688BCF513EF4B1500094AA2 /* PBXTextBookmark */;
 			0688BD3513EF4F7D00094AA2 /* PBXTextBookmark */ = 0688BD3513EF4F7D00094AA2 /* PBXTextBookmark */;
 			0688BD4A13EF51B800094AA2 /* PlistBookmark */ = 0688BD4A13EF51B800094AA2 /* PlistBookmark */;
 			069E8EFD1402FAF700897797 /* PlistBookmark */ = 069E8EFD1402FAF700897797 /* PlistBookmark */;
 			069E8F681402FDF600897797 /* PBXTextBookmark */ = 069E8F681402FDF600897797 /* PBXTextBookmark */;
+			06D66221151BD114009F482C /* PBXTextBookmark */ = 06D66221151BD114009F482C /* PBXTextBookmark */;
 			06EBE14414D9F99D00B916EB /* PBXTextBookmark */ = 06EBE14414D9F99D00B916EB /* PBXTextBookmark */;
-			06EBE19414D9FDE200B916EB /* PBXTextBookmark */ = 06EBE19414D9FDE200B916EB /* PBXTextBookmark */;
 		};
 		sourceControlManager = 06E815A413EB2FA3008B68AB /* Source Control */;
 		userBuildSettings = {
