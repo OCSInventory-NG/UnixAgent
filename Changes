@@ -1,5 +1,7 @@
 Revision history for Ocsinventory::Agent
 
+       * Improve MacOSX postinstall script to able to deploy MacOSX agent using NetInstall 
+
 2.0.5
        * Fix Bug #953968 about MacOSX OCSNG.app crash under MacOSX 10.4 64 bits
        * Fix bug about illegal hexadecimal digit in Snmp/Host_Resources_Mib.pm
