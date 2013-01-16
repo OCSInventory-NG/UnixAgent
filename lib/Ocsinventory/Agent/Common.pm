@@ -896,7 +896,7 @@ sub addSnmpPrinterCartridge {
   my $xmltags=$self->{xmltags};
   my $content={};
 
-  if ( ! defined ($xmltags->{CARDS})) {
+  if ( ! defined ($xmltags->{CARTRIDGES})) {
      $xmltags->{CARTRIDGES}=[];
   }
 
@@ -914,7 +914,7 @@ sub addSnmpPrinterTray {
   my $xmltags=$self->{xmltags};
   my $content={};
 
-  if ( ! defined ($xmltags->{CARDS})) {
+  if ( ! defined ($xmltags->{TRAYS})) {
      $xmltags->{TRAYS}=[];
   }
 

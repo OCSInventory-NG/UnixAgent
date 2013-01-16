@@ -1,5 +1,6 @@
 Revision history for Ocsinventory::Agent
 
+       * Fix bug with SNMP cartridges and trays in Common.pm
        * Add new MacOS/Controller.pm module to get controllers inventory under MacOSX
        * Add new MacOS/Slots.pm module to get slots inventory under MacOSX
        * Add missing DESCRIPTION field in addController() in Common.pm
