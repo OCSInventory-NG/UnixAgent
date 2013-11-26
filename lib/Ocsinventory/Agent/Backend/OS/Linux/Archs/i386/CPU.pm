@@ -4,7 +4,7 @@ use strict;
 
 use Config;
 
-sub check { can_read("/proc/cpuinfo") }
+sub check { can_read("/proc/cpuinfo"); can_run("/bin/arch"); }
 
 sub run {
 
@@ -13,9 +13,10 @@ sub run {
 
     my @cpu;
     my $current;
-    my $cpuarch;
+    my $cpuarch = `arch`;
     my %cpusocket;
     my $siblings;
+    my $cpucores;
     my $coreid;
 
     open CPUINFO, "</proc/cpuinfo" or warn;
@@ -32,20 +33,19 @@ sub run {
         }
 
         $siblings = $1 if /^siblings\s*:\s*(\d+)/i;
+		$cpucores = $1 if /^cpu\scores\s*:\s*(\d+)/i;
 		$current->{CURRENT_SPEED} = $1 if /^cpu\sMHz\s*:\s*(\d+)/i;
         $current->{TYPE} = $1 if /^model\sname\s*:\s*(.+)/i;
 	    $current->{L2CACHESIZE} = $1 if /^cache\ssize\s*:\s*(\d+)/i;
-	    if (/^flags\s*:\s*(.*)/i) {
-                my @liste1=split(/ /,$1);
-		        if (grep /^lm$/,@liste1) {
-                      $current->{CPUARCH}="x86_64";
-					  $current->{DATA_WIDTH}=64;
-                } else {
-                      $current->{CPUARCH}="x86";
-					  $current->{DATA_WIDTH}=32;
-               	}
-        }
-
+	    #if (/^flags\s*:\s*(.*)/i) {
+        #        my @liste1=split(/ /,$1);
+		#        if (grep /^lm$/,@liste1) {
+    }
+    $current->{CPUARCH}=$cpuarch;
+	if ($cpuarch == "x86_64"){
+		$current->{DATA_WIDTH}=64;
+    } else {
+		$current->{DATA_WIDTH}=32;
     }
     $current->{NBSOCKET}=scalar keys %cpusocket;
 
@@ -60,6 +60,8 @@ sub run {
         }
         if (/Core\sCount:\s*(\d+)/i){
             $current->{CORES} = $1;
+		} else {
+			$current->{CORES} = $cpucores;
         }
         if (/Voltage:\s*(.*)V/i){
             $current->{VOLTAGE} = $1;
@@ -83,7 +85,7 @@ sub run {
 
     # The last one
     $cpusocket{$current->{NBSOCKET}}=$current;
-    #print Dumper($current);
+    print Dumper($current);
 
     # Add the values to XML
     $common->addCPU($current);
