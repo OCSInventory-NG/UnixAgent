@@ -1,7 +1,7 @@
 package Ocsinventory::Agent::Backend::Virtualization::VmWareWorkstation;
 #
 # initial version: Walid Nouh
-#
+# 
 
 use strict;
 
@@ -12,6 +12,8 @@ sub run {
     my $common = $params->{common};
     my $logger = $params->{logger};
 
+	my $cpu;
+	my $cores;
     my $uuid;
     my $mem;
     my $status;
@@ -32,6 +34,12 @@ sub run {
             if ($line =~ m/^displayName =\s\"+(.*)\"/) {
                 $name = $1;
             }
+			elsif ($line =~ m/^numvcpus =\s\"+(.*)\"/){
+				$cpu = $1;
+			} 
+			elsif ($line =~ m/^cpuid.coresPerSocket =\s\"+(.*)\" /){
+				$cores = $1;
+			} 
             elsif ($line =~ m/^memsize =\s\"+(.*)\"/) {
                 $mem = $1;
             }
@@ -42,7 +50,8 @@ sub run {
 
         $common->addVirtualMachine ({
                 NAME      => $name,
-                VCPU      => 1,
+                VCPU      => $cpu,
+				CORES	  => $cores,
                 UUID      => $uuid,
                 MEMORY    => $mem,
                 STATUS    => "running",
