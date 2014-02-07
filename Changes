@@ -1,10 +1,11 @@
 Revision history for Ocsinventory::Agent
 
+       * Fix problem path of arch command 
        * Fix debug trace in CPU.pm
        * Fix a translation mistake in MacOSX agent French installer
 
 2.1
-       * Fix bug #1272425 about status of libvirt virtual machines not reported
+       * Fix #bug 1272425 about status of libvirt virtual machines not reported
        * Fix blueprint about installation date in the report of the installed software
        * Fix blueprint about UUID value in the hardware Table
        * Fix Bug #1247190 about default gateway as gateway for all interfaces under Linux
