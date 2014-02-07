@@ -85,7 +85,6 @@ sub run {
 
     # The last one
     $cpusocket{$current->{NBSOCKET}}=$current;
-    print Dumper($current);
 
     # Add the values to XML
     $common->addCPU($current);
