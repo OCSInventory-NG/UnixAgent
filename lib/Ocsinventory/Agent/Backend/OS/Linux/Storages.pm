@@ -196,9 +196,8 @@ sub run {
     			if (/^Serial\sNumber:\s*(.*)/i){
         			$serial = $1;	
 				}
-				if (/^User\sCapacity:\s*(.*)\sbytes/i){
+				if (/^User\sCapacity:\s*([0-9,]+)\sbytes/i){
 					$cap = $1;
-					$unit = $3;
 					$cap =~ s/,//g;
 					$cap = int($cap / 1000000)
 				}
@@ -216,6 +215,13 @@ sub run {
 				SERIAL => $serial,
 				TYPE => 'Disk',
 			});
+			undef $desc;
+			undef $cap;
+			undef $firmware;
+			undef $manufacturer;
+			undef $model;
+			undef $name;
+			undef $serial;
 		}
 	}
 }
