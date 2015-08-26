@@ -85,7 +85,7 @@ sub run {
 			}
 
 			$current->{TYPE} = $1 if /^model\sname\s*:\s*(.+)/i;
-			$current->{CORES} = $1 if /^cpu\scores\s*:\s*(\d+)/i;
+			$current->{CORES} = $1 if /^siblings\s*:\s*(\d+)/i;
 			$current->{CURRENT_SPEED} = $1 if /^cpu\sMHz\s*:\s*(\d+)/i;
 			$index = $1 if /^physical\sid\s*:\s*(\d+)/i;
 
