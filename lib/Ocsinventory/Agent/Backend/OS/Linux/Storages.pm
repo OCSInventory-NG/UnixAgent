@@ -215,13 +215,7 @@ sub run {
 				SERIAL => $serial,
 				TYPE => 'Disk',
 			});
-			undef $desc;
-			undef $cap;
-			undef $firmware;
-			undef $manufacturer;
-			undef $model;
-			undef $name;
-			undef $serial;
+			$desc = $cap = $firmware = $manufacturer = $model = $name = $serial = undef;
 		}
 	}
 }
