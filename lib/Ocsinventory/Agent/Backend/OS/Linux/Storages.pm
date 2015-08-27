@@ -244,7 +244,7 @@ sub run {
 				MANUFACTURER => $manufacturer,
 				MODEL => $model,
 				NAME => $name,
-				SERIAL => $serial,
+				SERIALNUMBER => $serial,
 				TYPE => 'Disk',
 			});
 		}
