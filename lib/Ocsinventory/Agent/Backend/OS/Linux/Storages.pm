@@ -82,15 +82,19 @@ sub getDescription {
 
 sub getManufacturer {
   	my ($model) = @_;
-  	if($model =~ /(maxtor|western|sony|compaq|hewlett packard|ibm|seagate|toshiba|fujitsu|lg|samsung|nec|transcend)/i) {
-    	return ucfirst(lc($1));
+	if ($model =~ /^(IBM|LG|NEC)/) {
+		return $1;
+	} elsif($model =~ /^(maxtor|western digital|sony|compaq|hewlett[ -]packard|seagate|toshiba|fujitsu|samsung|transcend)/i) {
+		$model = lc($1);
+		$model =~ s/\b(\w)/\u$1/g;
+    	return $model;
   	} elsif ($model =~ /^HP/) {
-    	return "Hewlett Packard";
-  	} elsif ($model =~ /^WDC/) {
+    	return "Hewlett-Packard";
+  	} elsif ($model =~ /^WD/) {
     	return "Western Digital";
   	} elsif ($model =~ /^ST/) {
     	return "Seagate";
-  	} elsif ($model =~ /^HD/ or $model =~ /^IC/ or $model =~ /^HU/) {
+  	} elsif ($model =~ /^(HD|IC|HU)/) {
     	return "Hitachi";
   	}
 }
@@ -174,12 +178,15 @@ sub run {
 			for (@sm){
 				if (/^Model\sFamily:\s*(.*)/i){
         			$desc = $1;
-        			if ($desc =~ /(maxtor|western digital|sony|compaq|hewlett packard|ibm|seagate|toshiba|fujitsu|lg|samsung|nec|transcend)/i) {
+					if ($model =~ /^(IBM|LG|NEC)/) {
+						return $manufacturer = $1;
+					}
+        			elsif ($desc =~ /^(HP|Hewlett[ -]Packard)/) {
+            			$manufacturer = "Hewlett-Packard";
+        			}
+        			elsif ($desc =~ /^(maxtor|western digital|sony|compaq|seagate|toshiba|fujitsu|samsung|transcend)/i) {
             			$manufacturer = lc($1);
 						$manufacturer =~ s/\b(\w)/\u$1/g;
-        			}
-        			elsif ($desc =~ /^HP/) {
-            			$manufacturer = "Hewlett Packard";
         			}
         			elsif ($desc =~ /^WD/) {
             			$manufacturer = "Western Digital";
