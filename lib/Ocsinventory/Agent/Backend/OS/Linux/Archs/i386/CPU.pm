@@ -43,28 +43,34 @@ sub run {
 
 		# Add and reset CPU when encountering a blank line
 		if (/^\s*$/ && defined $current){
-			$current->{CPUARCH} = $cpuarch;
-			$current->{DATA_WIDTH} = $datawidth;
+			if (defined $current->{CORES} &&
+				defined $current->{SPEED} &&
+				defined $current->{MANUFACTURER} &&
+				defined $current->{TYPE}
+			) {
+				$current->{CPUARCH} = $cpuarch;
+				$current->{DATA_WIDTH} = $datawidth;
 
-			# replace repeated whitespace, because some processors like to do that
-			$current->{TYPE} =~ s/\s{2,}/ /g;
+				# replace repeated whitespace, because some processors like to do that
+				$current->{TYPE} =~ s/\s{2,}/ /g;
 
-			if (defined $l2cacheid){
-				@cache = `dmidecode -t cache`;
-				$l2cachesection = 0;
-				for my $l2cacheline (@cache){
-					if ($l2cacheline =~ /Handle (0x[0-9a-f]+)/i){
-						$l2cachesection = $1 eq $l2cacheid;
-					}
+				if (defined $l2cacheid){
+					@cache = `dmidecode -t cache`;
+					$l2cachesection = 0;
+					for my $l2cacheline (@cache){
+						if ($l2cacheline =~ /Handle (0x[0-9a-f]+)/i){
+							$l2cachesection = $1 eq $l2cacheid;
+						}
 
-					if ($l2cachesection && $l2cacheline =~ /Installed\sSize:\s*([0-9]+)/i){
-						$current->{L2CACHESIZE} = $1;
+						if ($l2cachesection && $l2cacheline =~ /Installed\sSize:\s*([0-9]+)/i){
+							$current->{L2CACHESIZE} = $1;
+						}
 					}
 				}
-			}
 
-			$common->addCPU($current);
-			$cpucount++;
+				$common->addCPU($current);
+				$cpucount++;
+			}
 
 			undef $current;
 			undef $l2cacheid;
