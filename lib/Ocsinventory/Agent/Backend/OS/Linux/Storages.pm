@@ -59,7 +59,7 @@ sub getCapacity {
 	my ($dev) = @_;
   	my $cap;
   	chomp ($cap = `fdisk -s /dev/$dev 2>/dev/null`); #requires permissions on /dev/$dev
-  	$cap = int ($cap/1000) if $cap;
+  	$cap = int ($cap*1024/1000000) if $cap;
   	return $cap;
 }
 
@@ -196,19 +196,10 @@ sub run {
     			if (/^Serial\sNumber:\s*(.*)/i){
         			$serial = $1;	
 				}
-				if (/^User\sCapacity:\s*(.*)\sbytes\s\[(.*)\s(.*)\]/i){
+				if (/^User\sCapacity:\s*([0-9,]+)\sbytes/i){
 					$cap = $1;
-					$unit = $3;
 					$cap =~ s/,//g;
-					if ($unit eq "MB") {
-						$cap = int($cap/1024);
-					} elsif ($unit eq "GB") {
-						$cap = int($cap/1048576);
-					} elsif ($unit eq "TB") {
-						$cap = int($cap/1073741824);
-					} else { 
-						$cap = undef; 
-					}
+					$cap = int($cap / 1000000)
 				}
 				if (/^Firmware\sVersion:\s*(.*)/i){
 					$firmware = $1;
@@ -224,6 +215,7 @@ sub run {
 				SERIAL => $serial,
 				TYPE => 'Disk',
 			});
+			$desc = $cap = $firmware = $manufacturer = $model = $name = $serial = undef;
 		}
 	}
 }
