@@ -90,9 +90,10 @@ sub run {
 				$current->{MANUFACTURER} =~ s/CentaurHauls/VIA/;
 			}
 
-			$current->{TYPE} = $1 if /^model\sname\s*:\s*(.+)/i;
 			$current->{CORES} = $1 if /^siblings\s*:\s*(\d+)/i;
-			$current->{CURRENT_SPEED} = $1 if /^cpu\sMHz\s*:\s*(\d+)/i;
+			$current->{SPEED} = $current->{CURRENT_SPEED} = $1 if /^cpu\sMHz\s*:\s*(\d+)/i;
+			$current->{TYPE} = $1 if /^model\sname\s*:\s*(.+)/i;
+			$current->{HPT} = 'yes' if /^flags\s*:.*\bht\b/i;
 			$index = $1 if /^physical\sid\s*:\s*(\d+)/i;
 
 			if (/^\s*$/ && defined $index) {
