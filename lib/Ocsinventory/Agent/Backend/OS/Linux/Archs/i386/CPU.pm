@@ -3,6 +3,7 @@ package Ocsinventory::Agent::Backend::OS::Linux::Archs::i386::CPU;
 use strict;
 
 use Config;
+use Data::Dumper;
 
 sub check { can_read("/proc/cpuinfo"); can_run("arch"); }
 
@@ -30,6 +31,7 @@ sub run {
 
 	# Prefer dmidecode to give us the information we're looking for
    	@cpu = `dmidecode -t processor`;
+
    	for (@cpu){
 		$current->{CORES} = $1 if /Core\sCount:\s*(\d+)/i;
 		$current->{CURRENT_SPEED} = $1 if /Current\sSpeed:\s*(\d+)/i;
@@ -72,8 +74,7 @@ sub run {
 				$cpucount++;
 			}
 
-			undef $current;
-			undef $l2cacheid;
+			$current = $l2cacheid = undef;
 		}
 	}
 
@@ -94,15 +95,16 @@ sub run {
 			$current->{SPEED} = $current->{CURRENT_SPEED} = $1 if /^cpu\sMHz\s*:\s*(\d+)/i;
 			$current->{TYPE} = $1 if /^model\sname\s*:\s*(.+)/i;
 			$current->{HPT} = 'yes' if /^flags\s*:.*\bht\b/i;
+			$index = $1 if ! defined $index && /^processor\s*:\s*(\d+)/i;
 			$index = $1 if /^physical\sid\s*:\s*(\d+)/i;
 
-			if (/^\s*$/ && defined $index) {
+			if (/^\s*$/) {
 				$current->{HPT} = 'no' if $current->{HPT} ne 'yes';
 				$current->{CPUARCH} = $cpuarch;
 				$current->{DATA_WIDTH} = $datawidth;
 				$current->{TYPE} =~ s/\s{2,}/ /g;
 				$cpu[$index] = $current;
-				undef $current;
+				$current = $index = undef;
 			}
 		}
 
