@@ -3,7 +3,6 @@ package Ocsinventory::Agent::Backend::OS::Linux::Archs::i386::CPU;
 use strict;
 
 use Config;
-use Data::Dumper;
 
 sub check { can_read("/proc/cpuinfo"); can_run("arch"); }
 
