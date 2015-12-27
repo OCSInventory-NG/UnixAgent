@@ -399,7 +399,7 @@ sub addNetworks {
 
 Save global information regarding the machine.
 
-The use of setHardware() to update USERID and PROCESSOR* informations is
+The use of setHardware() to update USERID and PROCESSOR* information is
 deprecated, please, use addUser() and addCPU() instead.
 
 =cut
