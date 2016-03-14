@@ -42,6 +42,13 @@ sub run {
 		$current->{SPEED} = $current->{CURRENT_SPEED} = $1 if /^cpu\sMHz\s*:\s*(\d+)/i;
 		$current->{TYPE} = $1 if /^model\sname\s*:\s*(.+)/i;
 		$current->{HPT} = 'yes' if /^flags\s*:.*\bht\b/i;
+		# if "cpu cores" or "siblings" are missing in /proc/cpuinfo (seen on several 1 vCPU configurations)
+		if ($current->{CORES} == 0) {
+			$current->{CORES} = 1;
+		}
+		if ($current->{LOGICAL_CPUS} == 0) {
+			$current->{LOGICAL_CPUS} = 1;
+		}
 		$index = $1 if ! defined $index && /^processor\s*:\s*(\d+)/i;
 		$index = $1 if /^physical\sid\s*:\s*(\d+)/i;
 		if (/^\s*$/) {
@@ -54,6 +61,7 @@ sub run {
 		}
 	}
 	for my $current (@cpu) {
+		# sometimes "hardware id" are not contiguous (first hardware id = 0, second hardware id = 2)
 		if (defined $current) {
 			$common->addCPU($current);
 		}
