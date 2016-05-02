@@ -8,101 +8,109 @@ sub check { can_read("/proc/cpuinfo"); can_run("arch"); }
 
 sub run {
 
-    my $params = shift;
-    my $common = $params->{common};
+	my $params = shift;
+	my $common = $params->{common};
 
-    my @cpu;
-    my $current;
-    my $cpuarch = `arch`;
-    chomp($cpuarch);
-    my $cpusocket;
-    my $siblings;
-    my $cpucores;
-    my $cpuspeed;
-    my $coreid;
+	my @cpu;
+	my @cache;
+	my $current;
+	my $cpuarch = `arch`;
+	chomp($cpuarch);
+	my $datawidth;
+	my $index;
+	my $cpucount = 0;
+	my $l2cacheid;
+	my $l2cachesection;
 
-	$cpucores=0;
-	$siblings=0;
-    open CPUINFO, "</proc/cpuinfo" or warn;
-    foreach(<CPUINFO>) {
+	if ($cpuarch eq "x86_64"){
+		$datawidth = 64;
+	} else {
+		$datawidth = 32;
+	}
 
-        if (/^vendor_id\s*:\s*(Authentic|Genuine|)(.+)/i) {
-			$cpucores++;
-            $current->{MANUFACTURER} = $2;
-            $current->{MANUFACTURER} =~ s/(TMx86|TransmetaCPU)/Transmeta/;
-            $current->{MANUFACTURER} =~ s/CyrixInstead/Cyrix/;
-            $current->{MANUFACTURER} =~ s/CentaurHauls/VIA/;
-        }
-
-        if (/^siblings\s*:\s*(\d+)/i){
-			$siblings++;
-		}
-		$current->{CURRENT_SPEED} = $1 if /^cpu\sMHz\s*:\s*(\d+)/i;
-        $current->{TYPE} = $1 if /^model\sname\s*:\s*(.+)/i;
-	    $current->{L2CACHESIZE} = $1 if /^cache\ssize\s*:\s*(\d+)/i;
-    }
-
-	# /proc/cpuinfo provides real time speed processor.
-	# Get optimal speed with dmidecode command
-  	# Get also cpu cores with dmidecode command
-  	# Get also voltage information with dmidecode command
+	# Prefer dmidecode to give us the information we're looking for
    	@cpu = `dmidecode -t processor`;
-	$cpuspeed=0;
-	$cpusocket=0;
+
    	for (@cpu){
-		if (/Processor\sInformation/i){
-			$cpusocket++;
-			if ($cpuspeed != 0){
-				if ($cpusocket > $cpucores) {
-					last;
+		$current->{CORES} = $1 if /Core\sCount:\s*(\d+)/i;
+		$current->{CURRENT_SPEED} = $1 if /Current\sSpeed:\s*(\d+)/i;
+		$current->{HPT} = 'yes' if /^\s*HTT\s/i;
+		$current->{MANUFACTURER} = $1 if /Manufacturer:\s*(.*)/i;
+		$current->{SOCKET} = $1 if /Upgrade:\s*Socket\s(.*)/i;
+		$current->{SPEED} = $1 if /Max\sSpeed:\s*(\d+)/i;
+		$current->{TYPE} = $1 if /Version:\s*(.*)/i;
+		$current->{VOLTAGE} = $1 if /Voltage:\s*(.*)V/i;
+		$l2cacheid = $1 if /L2\sCache\sHandle:\s*(0x[0-9a-f]+)/i;
+
+		# Add and reset CPU when encountering a blank line
+		if (/^\s*$/ && defined $current){
+			if (defined $current->{CORES} &&
+				defined $current->{SPEED} &&
+				defined $current->{MANUFACTURER} &&
+				defined $current->{TYPE}
+			) {
+				$current->{CPUARCH} = $cpuarch;
+				$current->{DATA_WIDTH} = $datawidth;
+
+				# replace repeated whitespace, because some processors like to do that
+				$current->{TYPE} =~ s/\s{2,}/ /g;
+
+				if (defined $l2cacheid){
+					@cache = `dmidecode -t cache`;
+					$l2cachesection = 0;
+					for my $l2cacheline (@cache){
+						if ($l2cacheline =~ /Handle (0x[0-9a-f]+)/i){
+							$l2cachesection = $1 eq $l2cacheid;
+						}
+
+						if ($l2cachesection && $l2cacheline =~ /Installed\sSize:\s*([0-9]+)/i){
+							$current->{L2CACHESIZE} = $1;
+						}
+					}
 				}
+
+				$common->addCPU($current);
+				$cpucount++;
 			}
-			$cpuspeed=0;
-		}	
 
-    	if (/Current\sSpeed:\s*(.*) (|MHz|GHz)/i){
-			$cpuspeed = $1;
-            $current->{SPEED} = $cpuspeed;
+			$current = $l2cacheid = undef;
+		}
+	}
+
+  	# If dmidecode fails, fall back on /proc/cpuinfo
+	if ($cpucount eq 0) {
+		undef @cpu;
+
+		open CPUINFO, "</proc/cpuinfo" or warn;
+		for (<CPUINFO>) {
+			if (/^vendor_id\s*:\s*(Authentic|Genuine|)(.+)/i) {
+				$current->{MANUFACTURER} = $2;
+				$current->{MANUFACTURER} =~ s/(TMx86|TransmetaCPU)/Transmeta/;
+				$current->{MANUFACTURER} =~ s/CyrixInstead/Cyrix/;
+				$current->{MANUFACTURER} =~ s/CentaurHauls/VIA/;
+			}
+
+			$current->{CORES} = $1 if /^siblings\s*:\s*(\d+)/i;
+			$current->{SPEED} = $current->{CURRENT_SPEED} = $1 if /^cpu\sMHz\s*:\s*(\d+)/i;
+			$current->{TYPE} = $1 if /^model\sname\s*:\s*(.+)/i;
+			$current->{HPT} = 'yes' if /^flags\s*:.*\bht\b/i;
+			$index = $1 if ! defined $index && /^processor\s*:\s*(\d+)/i;
+			$index = $1 if /^physical\sid\s*:\s*(\d+)/i;
+
+			if (/^\s*$/) {
+				$current->{HPT} = 'no' if $current->{HPT} ne 'yes';
+				$current->{CPUARCH} = $cpuarch;
+				$current->{DATA_WIDTH} = $datawidth;
+				$current->{TYPE} =~ s/\s{2,}/ /g;
+				$cpu[$index] = $current;
+				$current = $index = undef;
+			}
 		}
 
-        if (/Core\sCount:\s*(\d+)/i){
-            $current->{CORES} = $1;
-        } else {
-			$current->{CORES} = $cpucores;
-		}
-    	
-    	# Is(Are) CPU(s) hyperthreaded?
-    	if ($siblings == $current->{CORES}) {
-       		# Hyperthreading is off
-       		$current->{HPT}='on';
-    	} else {
-       		# Hyperthreading is on
-       		$current->{HPT}='off';
-    	}
-
-        if (/Voltage:\s*(.*)V/i){
-            $current->{VOLTAGE} = $1;
-        }
-
-        if (/Upgrade:\s*(.*)/i){
-            $current->{SOCKET} = $1;
-        }
-
-    	$current->{CPUARCH}=$cpuarch;
-		if ($cpuarch eq "x86_64"){
-			$current->{DATA_WIDTH}=64;
-    	} else {
-			$current->{DATA_WIDTH}=32;
-    	}
-		
-		$current->{NBSOCKET} = $cpusocket;
-
-		# Add CPU when Populated
-		if (/Status:\s*(.*),\s(.*)/i){
-            $current->{CPUSTATUS} = $2;
+		for my $current (@cpu) {
 			$common->addCPU($current);
-        }
-    }
+		}
+	}
 }
 
 1
