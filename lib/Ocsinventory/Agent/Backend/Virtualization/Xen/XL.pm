@@ -1,14 +1,14 @@
-package Ocsinventory::Agent::Backend::Virtualization::Xen::XM;
+package Ocsinventory::Agent::Backend::Virtualization::Xen::XL;
 
 use strict;
 
-sub check { can_successfully_run('xm list') }
+sub check { can_successfully_run('xl list') }
 
 sub run {
     my $params = shift;
     my $common = $params->{common};
 
-# output: xm list
+# output: xl list
 #
 #    Name                         ID Mem(MiB) VCPUs State  Time(s)
 #    Domain-0                      0       98     1 r-----  5068.6
@@ -18,7 +18,7 @@ sub run {
 #    Mandrake10.2                167      128     1 ------     2.5
 #    Suse9.2                     168      100     1 ------     1.8
 
-    # xm status
+    # xl status
     my %status_list = (
 	    'r' => 'running',
 	    'b' => 'blocked',
@@ -29,27 +29,28 @@ sub run {
     );
 
     my $vmtype    = 'xen';
-    my $subsystem = 'xm';
+    my $subsystem = 'xl';
 
-    my @xm_list = `xm list`;
+    my @xl_list = `xl list`;
 
     # remove first line
-    shift @xm_list;
+    shift @xl_list;
 
-    foreach my $vm (@xm_list) {
+    foreach my $vm (@xl_list) {
 	    chomp $vm;
             my ($name, $vmid, $memory, $vcpu, $status, $time) = split(' ',$vm);
 
 	    $status =~ s/-//g;
 	    $status = ( $status ? $status_list{$status} : 'off');
 
-	    my @vm_info =  `xm list -l $name`;
+	    my @vm_info =  `xl list -l $name`;
 	    my $uuid;
             foreach my $value (@vm_info) {
 		    chomp $value;
                     if ($value =~ /uuid/) {
-                          $value =~ s/\(|\)//g;
-                          $value =~ s/\s+.*uuid\s+(.*)/\1/;
+                          $value =~ s/"//g;
+                          $value =~ s/,//g;
+                          $value =~ s/\s+.*uuid:\s+(.*)/\1/;
                           $uuid = $value;
                           last;
                     }

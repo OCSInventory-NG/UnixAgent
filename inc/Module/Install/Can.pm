@@ -45,6 +45,20 @@ sub can_run {
 	return;
 }
 
+# Check if we can successfully run some command
+sub can_successfully_run {
+	my ($self, $cmd) = @_;
+
+	my $can_run = can_run($cmd);
+
+	if ($can_run) {
+		system($cmd);
+		return $? >> 8 eq 0;
+	}
+
+	return $can_run;
+}
+
 # Can our C compiler environment build XS files
 sub can_xs {
 	my $self = shift;
