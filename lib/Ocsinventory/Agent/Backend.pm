@@ -6,6 +6,7 @@ use warnings;
 
 #use ExtUtils::Installed;
 
+
 sub new {
     my (undef, $params) = @_;
 
@@ -77,6 +78,7 @@ sub initModList {
     # I can't find the backend modules to load dynamically. So
     # I prepare a list and include it.
     eval "use Ocsinventory::Agent::Backend::ModuleToLoad;";
+    $logger->debug("Initializing backend modules");
     if (!$@) {
         $logger->debug("use Ocsinventory::Agent::Backend::ModuleToLoad to get the modules ".
         "to load. This should not append unless you use the standalone agent built with ".
@@ -85,8 +87,11 @@ sub initModList {
     }
 
     if ($config->{devlib}) {
-        # devlib enable, I only search for backend module in ./lib
-        push (@dirToScan, './lib');
+        eval "use Cwd qw(abs_path);";
+        eval "use File::Basename;";
+        my $path = dirname( abs_path($0) );
+        $logger->debug("devlib mode: Only looking in $path for backend modules.");
+        push (@dirToScan, $path . "/lib");
     } else {
         #  my ($inst) = ExtUtils::Installed->new();
         #  eval {@installed_files =
@@ -103,7 +108,7 @@ sub initModList {
     if (@dirToScan) {
         eval {require File::Find};
         if ($@) {
-            $logger->debug("Failed to load File::Find");
+            $logger->fault("Failed to load File::Find");
         } else {
             # here I need to use $d to avoid a bug with AIX 5.2's perl 5.8.0. It
             # changes the @INC content if i use $_ directly
@@ -121,6 +126,7 @@ sub initModList {
     }
 
     foreach my $file (@installed_files) {
+        $logger->debug("Found backend file $file");
         my $t = $file;
         next unless $t =~ s!.*?(Ocsinventory/Agent/Backend/)(.*?)\.pm$!$1$2!;
         my $m = join ('::', split /\//, $t);
@@ -287,7 +293,6 @@ sub feedInventory {
     my ($self, $params) = @_;
 
     my $common = $self->{common};
-
 
     my $inventory;
     if ($params->{inventory}) {
