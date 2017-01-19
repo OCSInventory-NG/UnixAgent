@@ -66,7 +66,7 @@ use CPAN;
 use LWP::Simple qw/getstore/;
 
 my $libwww_tarball = "G/GA/GAAS/libwww-perl-5.837.tar.gz";
-my $xmlentities_tarball = "S/SI/SIXTEASE/XML-Entities-1.0000.tar.gz";
+my $xmlentities_tarball = "S/SI/SIXTEASE/XML-Entities-1.0002.tar.gz";
 my $cryptssleay_tarball = "N/NA/NANIS/Crypt-SSLeay-0.58.tar.gz";
 my $netssleay_tarball = "F/FL/FLORA/Net-SSLeay-1.36.tar.gz";
 
