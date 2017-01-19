@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 44;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,11 +16,83 @@
 		06C39BCE1394B5600047198A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C39BCD1394B5600047198A /* Security.framework */; };
 		06C39BCF1394B5600047198A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C39BCD1394B5600047198A /* Security.framework */; };
 		06D657B4134FDBFF00981FE3 /* ocscontact.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D657B3134FDBFF00981FE3 /* ocscontact.m */; };
+		2DB5AC4B1E30B5DB002E8F8C /* ocscontact in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06D657A7134FD97A00981FE3 /* ocscontact */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		2DB5AC4D1E30B5EE002E8F8C /* ocsinventory-agent in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AC4C1E30B5EE002E8F8C /* ocsinventory-agent */; };
+		2DB5AC521E30BFB0002E8F8C /* uninstaller.sh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AC511E30BFB0002E8F8C /* uninstaller.sh */; };
+		2DB5AD061E30C9A6002E8F8C /* Ocsinventory in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD051E30C9A6002E8F8C /* Ocsinventory */; };
+		2DB5AD181E30CA96002E8F8C /* lwpcook.pod in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD071E30CA96002E8F8C /* lwpcook.pod */; };
+		2DB5AD191E30CA96002E8F8C /* lwptut.pod in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD081E30CA96002E8F8C /* lwptut.pod */; };
+		2DB5AD1A1E30CA96002E8F8C /* LWP.pm in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD091E30CA96002E8F8C /* LWP.pm */; };
+		2DB5AD1B1E30CA96002E8F8C /* URI.pm in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD0A1E30CA96002E8F8C /* URI.pm */; };
+		2DB5AD1C1E30CA96002E8F8C /* darwin-thread-multi-2level in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD0B1E30CA96002E8F8C /* darwin-thread-multi-2level */; };
+		2DB5AD1D1E30CA96002E8F8C /* Mac in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD0C1E30CA96002E8F8C /* Mac */; };
+		2DB5AD1E1E30CA96002E8F8C /* URI in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD0D1E30CA96002E8F8C /* URI */; };
+		2DB5AD1F1E30CA96002E8F8C /* Compress in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD0E1E30CA96002E8F8C /* Compress */; };
+		2DB5AD201E30CA96002E8F8C /* IO in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD0F1E30CA96002E8F8C /* IO */; };
+		2DB5AD211E30CA96002E8F8C /* Bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD101E30CA96002E8F8C /* Bundle */; };
+		2DB5AD221E30CA96002E8F8C /* File in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD111E30CA96002E8F8C /* File */; };
+		2DB5AD231E30CA96002E8F8C /* HTML in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD121E30CA96002E8F8C /* HTML */; };
+		2DB5AD241E30CA96002E8F8C /* HTTP in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD131E30CA96002E8F8C /* HTTP */; };
+		2DB5AD251E30CA96002E8F8C /* LWP in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD141E30CA96002E8F8C /* LWP */; };
+		2DB5AD261E30CA96002E8F8C /* Net in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD151E30CA96002E8F8C /* Net */; };
+		2DB5AD271E30CA96002E8F8C /* WWW in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD161E30CA96002E8F8C /* WWW */; };
+		2DB5AD281E30CA96002E8F8C /* XML in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AD171E30CA96002E8F8C /* XML */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		EE2C4E5B0DF1CA5800171780 /* GetPID.c in Sources */ = {isa = PBXBuildFile; fileRef = EE2C4E590DF1CA5800171780 /* GetPID.c */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2DB5AC461E30B457002E8F8C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2DB5AC4A1E30B5D6002E8F8C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				2DB5AC521E30BFB0002E8F8C /* uninstaller.sh in CopyFiles */,
+				2DB5AC4D1E30B5EE002E8F8C /* ocsinventory-agent in CopyFiles */,
+				2DB5AC4B1E30B5DB002E8F8C /* ocscontact in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2DB5AC981E30C7F6002E8F8C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = lib;
+			dstSubfolderSpec = 7;
+			files = (
+				2DB5AD181E30CA96002E8F8C /* lwpcook.pod in CopyFiles */,
+				2DB5AD191E30CA96002E8F8C /* lwptut.pod in CopyFiles */,
+				2DB5AD1A1E30CA96002E8F8C /* LWP.pm in CopyFiles */,
+				2DB5AD1B1E30CA96002E8F8C /* URI.pm in CopyFiles */,
+				2DB5AD1C1E30CA96002E8F8C /* darwin-thread-multi-2level in CopyFiles */,
+				2DB5AD1D1E30CA96002E8F8C /* Mac in CopyFiles */,
+				2DB5AD1E1E30CA96002E8F8C /* URI in CopyFiles */,
+				2DB5AD1F1E30CA96002E8F8C /* Compress in CopyFiles */,
+				2DB5AD201E30CA96002E8F8C /* IO in CopyFiles */,
+				2DB5AD211E30CA96002E8F8C /* Bundle in CopyFiles */,
+				2DB5AD221E30CA96002E8F8C /* File in CopyFiles */,
+				2DB5AD231E30CA96002E8F8C /* HTML in CopyFiles */,
+				2DB5AD241E30CA96002E8F8C /* HTTP in CopyFiles */,
+				2DB5AD251E30CA96002E8F8C /* LWP in CopyFiles */,
+				2DB5AD261E30CA96002E8F8C /* Net in CopyFiles */,
+				2DB5AD271E30CA96002E8F8C /* WWW in CopyFiles */,
+				2DB5AD281E30CA96002E8F8C /* XML in CopyFiles */,
+				2DB5AD061E30C9A6002E8F8C /* Ocsinventory in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0625C76E13CAC89000D6EB7C /* ocs_logo.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = ocs_logo.icns; path = icons/ocs_logo.icns; sourceTree = "<group>"; };
@@ -37,6 +109,26 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		2DB5AC4C1E30B5EE002E8F8C /* ocsinventory-agent */ = {isa = PBXFileReference; lastKnownFileType = text.script.perl; name = "ocsinventory-agent"; path = "../../../ocsinventory-agent"; sourceTree = "<group>"; };
+		2DB5AC511E30BFB0002E8F8C /* uninstaller.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = uninstaller.sh; path = ../scripts/uninstaller.sh; sourceTree = "<group>"; };
+		2DB5AD051E30C9A6002E8F8C /* Ocsinventory */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Ocsinventory; path = ../../../lib/Ocsinventory; sourceTree = "<group>"; };
+		2DB5AD071E30CA96002E8F8C /* lwpcook.pod */ = {isa = PBXFileReference; lastKnownFileType = text; name = lwpcook.pod; path = "../../../../darwin-perl-lib/lwpcook.pod"; sourceTree = "<group>"; };
+		2DB5AD081E30CA96002E8F8C /* lwptut.pod */ = {isa = PBXFileReference; lastKnownFileType = text; name = lwptut.pod; path = "../../../../darwin-perl-lib/lwptut.pod"; sourceTree = "<group>"; };
+		2DB5AD091E30CA96002E8F8C /* LWP.pm */ = {isa = PBXFileReference; lastKnownFileType = text.script.perl; name = LWP.pm; path = "../../../../darwin-perl-lib/LWP.pm"; sourceTree = "<group>"; };
+		2DB5AD0A1E30CA96002E8F8C /* URI.pm */ = {isa = PBXFileReference; lastKnownFileType = text.script.perl; name = URI.pm; path = "../../../../darwin-perl-lib/URI.pm"; sourceTree = "<group>"; };
+		2DB5AD0B1E30CA96002E8F8C /* darwin-thread-multi-2level */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "darwin-thread-multi-2level"; path = "../../../../darwin-perl-lib/darwin-thread-multi-2level"; sourceTree = "<group>"; };
+		2DB5AD0C1E30CA96002E8F8C /* Mac */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Mac; path = "../../../../darwin-perl-lib/Mac"; sourceTree = "<group>"; };
+		2DB5AD0D1E30CA96002E8F8C /* URI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = URI; path = "../../../../darwin-perl-lib/URI"; sourceTree = "<group>"; };
+		2DB5AD0E1E30CA96002E8F8C /* Compress */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Compress; path = "../../../../darwin-perl-lib/Compress"; sourceTree = "<group>"; };
+		2DB5AD0F1E30CA96002E8F8C /* IO */ = {isa = PBXFileReference; lastKnownFileType = folder; name = IO; path = "../../../../darwin-perl-lib/IO"; sourceTree = "<group>"; };
+		2DB5AD101E30CA96002E8F8C /* Bundle */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Bundle; path = "../../../../darwin-perl-lib/Bundle"; sourceTree = "<group>"; };
+		2DB5AD111E30CA96002E8F8C /* File */ = {isa = PBXFileReference; lastKnownFileType = folder; name = File; path = "../../../../darwin-perl-lib/File"; sourceTree = "<group>"; };
+		2DB5AD121E30CA96002E8F8C /* HTML */ = {isa = PBXFileReference; lastKnownFileType = folder; name = HTML; path = "../../../../darwin-perl-lib/HTML"; sourceTree = "<group>"; };
+		2DB5AD131E30CA96002E8F8C /* HTTP */ = {isa = PBXFileReference; lastKnownFileType = folder; name = HTTP; path = "../../../../darwin-perl-lib/HTTP"; sourceTree = "<group>"; };
+		2DB5AD141E30CA96002E8F8C /* LWP */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LWP; path = "../../../../darwin-perl-lib/LWP"; sourceTree = "<group>"; };
+		2DB5AD151E30CA96002E8F8C /* Net */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Net; path = "../../../../darwin-perl-lib/Net"; sourceTree = "<group>"; };
+		2DB5AD161E30CA96002E8F8C /* WWW */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WWW; path = "../../../../darwin-perl-lib/WWW"; sourceTree = "<group>"; };
+		2DB5AD171E30CA96002E8F8C /* XML */ = {isa = PBXFileReference; lastKnownFileType = folder; name = XML; path = "../../../../darwin-perl-lib/XML"; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* OCSNG_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCSNG_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* OCSNG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCSNG.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -108,6 +200,26 @@
 		29B97314FDCFA39411CA2CEA /* OCSNG */ = {
 			isa = PBXGroup;
 			children = (
+				2DB5AD071E30CA96002E8F8C /* lwpcook.pod */,
+				2DB5AD081E30CA96002E8F8C /* lwptut.pod */,
+				2DB5AD091E30CA96002E8F8C /* LWP.pm */,
+				2DB5AD0A1E30CA96002E8F8C /* URI.pm */,
+				2DB5AD0B1E30CA96002E8F8C /* darwin-thread-multi-2level */,
+				2DB5AD0C1E30CA96002E8F8C /* Mac */,
+				2DB5AD0D1E30CA96002E8F8C /* URI */,
+				2DB5AD0E1E30CA96002E8F8C /* Compress */,
+				2DB5AD0F1E30CA96002E8F8C /* IO */,
+				2DB5AD101E30CA96002E8F8C /* Bundle */,
+				2DB5AD111E30CA96002E8F8C /* File */,
+				2DB5AD121E30CA96002E8F8C /* HTML */,
+				2DB5AD131E30CA96002E8F8C /* HTTP */,
+				2DB5AD141E30CA96002E8F8C /* LWP */,
+				2DB5AD151E30CA96002E8F8C /* Net */,
+				2DB5AD161E30CA96002E8F8C /* WWW */,
+				2DB5AD171E30CA96002E8F8C /* XML */,
+				2DB5AD051E30C9A6002E8F8C /* Ocsinventory */,
+				2DB5AC511E30BFB0002E8F8C /* uninstaller.sh */,
+				2DB5AC4C1E30B5EE002E8F8C /* ocsinventory-agent */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -159,6 +271,7 @@
 			buildPhases = (
 				06D657A4134FD97A00981FE3 /* Sources */,
 				06D657A5134FD97A00981FE3 /* Frameworks */,
+				2DB5AC461E30B457002E8F8C /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -176,6 +289,8 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				2DB5AC4A1E30B5D6002E8F8C /* CopyFiles */,
+				2DB5AC981E30C7F6002E8F8C /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -192,8 +307,11 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0640;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "OCSNG" */;
-			compatibilityVersion = "Xcode 3.0";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -269,10 +387,7 @@
 		06D657AA134FD99800981FE3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -281,8 +396,9 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				INSTALL_PATH = "$(HOME)/bin";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OBJROOT = build;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -292,6 +408,8 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = ocscontact;
+				SDKROOT = macosx10.9;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
@@ -300,19 +418,16 @@
 		06D657AB134FD99800981FE3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				INSTALL_PATH = /Applications;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OBJROOT = build;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -322,7 +437,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = ocscontact;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				SDKROOT = macosx10.9;
 				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
@@ -333,10 +448,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ADDITIONAL_SDKS = "";
-				ARCHS = (
-					i386,
-					ppc,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_LINK_OBJC_RUNTIME = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -344,11 +458,13 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = OCSNG_Prefix.pch;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OBJROOT = build;
 				PRODUCT_NAME = OCSNG;
+				SDKROOT = macosx10.9;
 				SYMROOT = build;
 				VALID_ARCHS = "ppc64 ppc7400 ppc970 i386 x86_64 ppc";
 				WRAPPER_EXTENSION = app;
@@ -359,20 +475,19 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = OCSNG_Prefix.pch;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OBJROOT = build;
 				PRODUCT_NAME = OCSNG;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				SDKROOT = macosx10.9;
 				SYMROOT = build;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = "";
