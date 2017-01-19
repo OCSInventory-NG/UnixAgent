@@ -29,6 +29,11 @@ int main( int argc, char *argv[], char *envp[]) {
 	NSString *ocsinventoryAgentPath = [[NSBundle mainBundle] pathForResource:@"ocsinventory-agent"ofType:nil];
 
 	[Task setLaunchPath:ocsinventoryAgentPath];
+    NSArray *arguments;
+    arguments = [NSArray arrayWithObjects: @"--devlib", nil];
+    [Task setArguments: arguments];
+
+    NSLog(@"Calling ocsinventory-agent");
 	[Task launch];
 		
 	[autoreleasepool release];

@@ -24,11 +24,18 @@ eval 'exec /usr/bin/perl  -S $0 ${1+"$@"}'
 use strict;
 use warnings;
 
+use File::Basename;
+use Cwd qw(abs_path);
+
 my $devlib;
 foreach (@ARGV) {
     if (/^--devlib$/) {
         print "[info] --devlib are found, Developer mode enabled\n";
-        eval "use lib 'lib';";
+        my $scriptname = basename(__FILE__);
+        my $path = abs_path($0);
+        $path =~ s/$scriptname/lib/;
+        print "[info] Adding $path to \@INC\n";
+        unshift(@INC,$path);
     }
 }
 
