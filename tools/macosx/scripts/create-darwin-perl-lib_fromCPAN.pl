@@ -108,6 +108,7 @@ Compress::Zlib
 Compress::Raw::Zlib
 IO::Zlib
 Mac::SysProfile
+Mac::PropertyList
 .
 
 # push all the dep's into a @missing array
