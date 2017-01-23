@@ -24,7 +24,7 @@ sub run {
 	my $uuid;
 		
 	# if we can load the system profiler, gather the information from that
-	if(can_load("Mac::SysProfile")){
+	if($common->can_load("Mac::SysProfile")){
 		my $profile = Mac::SysProfile->new();
 		my $data = $profile->gettype('SPSoftwareDataType');
 		return(undef) unless(ref($data) eq 'ARRAY');
@@ -52,7 +52,7 @@ sub run {
 	chomp($OSComment=`uname -v`);
 
 	# We get UUID
-	if(can_run("ioreg")) {
+	if($common->can_run("ioreg")) {
 		my @ioreg = split ("=", `ioreg -rd1 -c IOPlatformExpertDevice | grep -E '(UUID)'`); 
 		chomp($uuid = $ioreg[1]);
 		$uuid =~ s/\"|\s//g;
