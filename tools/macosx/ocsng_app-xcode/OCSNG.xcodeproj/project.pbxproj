@@ -16,6 +16,7 @@
 		06C39BCE1394B5600047198A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C39BCD1394B5600047198A /* Security.framework */; };
 		06C39BCF1394B5600047198A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C39BCD1394B5600047198A /* Security.framework */; };
 		06D657B4134FDBFF00981FE3 /* ocscontact.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D657B3134FDBFF00981FE3 /* ocscontact.m */; };
+		2D99EB171E3645A600E26989 /* Parse in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2D99EB161E3645A600E26989 /* Parse */; };
 		2DB5AC4B1E30B5DB002E8F8C /* ocscontact in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06D657A7134FD97A00981FE3 /* ocscontact */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		2DB5AC4D1E30B5EE002E8F8C /* ocsinventory-agent in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AC4C1E30B5EE002E8F8C /* ocsinventory-agent */; };
 		2DB5AC521E30BFB0002E8F8C /* uninstaller.sh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2DB5AC511E30BFB0002E8F8C /* uninstaller.sh */; };
@@ -72,6 +73,7 @@
 			dstPath = lib;
 			dstSubfolderSpec = 7;
 			files = (
+				2D99EB171E3645A600E26989 /* Parse in CopyFiles */,
 				2DB5AD181E30CA96002E8F8C /* lwpcook.pod in CopyFiles */,
 				2DB5AD191E30CA96002E8F8C /* lwptut.pod in CopyFiles */,
 				2DB5AD1A1E30CA96002E8F8C /* LWP.pm in CopyFiles */,
@@ -110,6 +112,7 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		2D99EB161E3645A600E26989 /* Parse */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Parse; path = "../../../../darwin-perl-lib/Parse"; sourceTree = "<group>"; };
 		2DB5AC4C1E30B5EE002E8F8C /* ocsinventory-agent */ = {isa = PBXFileReference; lastKnownFileType = text.script.perl; name = "ocsinventory-agent"; path = "../../../ocsinventory-agent"; sourceTree = "<group>"; };
 		2DB5AC511E30BFB0002E8F8C /* uninstaller.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = uninstaller.sh; path = ../scripts/uninstaller.sh; sourceTree = "<group>"; };
 		2DB5AD051E30C9A6002E8F8C /* Ocsinventory */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Ocsinventory; path = ../../../lib/Ocsinventory; sourceTree = "<group>"; };
@@ -201,6 +204,7 @@
 		29B97314FDCFA39411CA2CEA /* OCSNG */ = {
 			isa = PBXGroup;
 			children = (
+				2D99EB161E3645A600E26989 /* Parse */,
 				2DB5AD071E30CA96002E8F8C /* lwpcook.pod */,
 				2DB5AD081E30CA96002E8F8C /* lwptut.pod */,
 				2DB5AD091E30CA96002E8F8C /* LWP.pm */,
