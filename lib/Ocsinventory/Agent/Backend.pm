@@ -88,7 +88,7 @@ sub initModList {
 
     if ($config->{devlib}) {
         eval "use Cwd qw(abs_path);";
-        eval "use File::Basename;";
+        eval "use File::Basename qw(dirname);";
         my $path = dirname( abs_path($0) );
         $logger->debug("devlib mode: Only looking in $path for backend modules.");
         push (@dirToScan, $path . "/lib");
