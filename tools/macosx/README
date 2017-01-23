@@ -12,11 +12,12 @@ PREREQUISITES
 
 BUILDING/INSTALLING
 
-- run the tools/macosx/scripts/create-darwin-perl-lib_fromCPAN.pl script which will create the ~/darwin-perl-lib directory. This directory will stash a built version of all the perl libraries needed to run this client (ie: no running CPAN on the hosts you're deploying this on)
+- Run the tools/macosx/scripts/create-darwin-perl-lib_fromCPAN.pl script which will create the ~/darwin-perl-lib directory. This directory will stash a built version of all the perl libraries needed to run this client (ie: no running CPAN on the hosts you're deploying this on)
 	- READ THE SCRIPT BEFORE RUNNING, some CPAN configurations are needed prior to running
 	- You'll need CPAN, Perl (the development libraries for perl), so Xcode Tools (just about a full install).
-- open the tools/macosx/ocsng_app-xcode/OCSNG.xcodeproj project using Xcode 6.4 and build it
-- open tools/macosx/installer_gui/iceberg/icebergi_project.packproj file using Iceberg and build it to create the final graphic installer 
+- Open the tools/macosx/ocsng_app-xcode/OCSNG.xcodeproj project using Xcode 6.4 and build it (Choose menu "Product\Archive")
+- Export the created archive to folder tools/macos/installer_gui/iceberg/
+- OPen tools/macosx/installer_gui/iceberg/iceberg_project.packproj file using Iceberg and build it to create the final graphic installer 
 
 COPYRIGHT
 
