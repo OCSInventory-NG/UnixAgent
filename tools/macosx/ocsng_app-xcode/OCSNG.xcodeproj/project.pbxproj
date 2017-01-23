@@ -43,16 +43,17 @@
 		EE2C4E5B0DF1CA5800171780 /* GetPID.c in Sources */ = {isa = PBXBuildFile; fileRef = EE2C4E590DF1CA5800171780 /* GetPID.c */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		2DB5AC461E30B457002E8F8C /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 7;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
+/* Begin PBXContainerItemProxy section */
+		2DB5AD291E30F38C002E8F8C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 06D657A6134FD97A00981FE3;
+			remoteInfo = ocscontact;
 		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
 		2DB5AC4A1E30B5D6002E8F8C /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -271,7 +272,6 @@
 			buildPhases = (
 				06D657A4134FD97A00981FE3 /* Sources */,
 				06D657A5134FD97A00981FE3 /* Frameworks */,
-				2DB5AC461E30B457002E8F8C /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -295,6 +295,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				2DB5AD2A1E30F38C002E8F8C /* PBXTargetDependency */,
 			);
 			name = OCSNG;
 			productInstallPath = "$(HOME)/Applications";
@@ -363,6 +364,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		2DB5AD2A1E30F38C002E8F8C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 06D657A6134FD97A00981FE3 /* ocscontact */;
+			targetProxy = 2DB5AD291E30F38C002E8F8C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		0649FB3314D9E198001EC640 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
@@ -397,6 +406,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_VERSION = "";
+				INSTALL_GROUP = staff;
+				INSTALL_OWNER = support;
 				INSTALL_PATH = "$(HOME)/bin";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OBJROOT = build;
@@ -426,6 +437,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_VERSION = "";
+				INSTALL_GROUP = staff;
+				INSTALL_OWNER = support;
 				INSTALL_PATH = /Applications;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OBJROOT = build;
@@ -460,6 +473,8 @@
 				GCC_PREFIX_HEADER = OCSNG_Prefix.pch;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
+				INSTALL_GROUP = staff;
+				INSTALL_OWNER = support;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OBJROOT = build;
@@ -484,6 +499,8 @@
 				GCC_PREFIX_HEADER = OCSNG_Prefix.pch;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
+				INSTALL_GROUP = staff;
+				INSTALL_OWNER = support;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OBJROOT = build;
 				PRODUCT_NAME = OCSNG;
