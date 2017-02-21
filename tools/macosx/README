@@ -16,7 +16,7 @@ BUILDING/INSTALLING
 	- READ THE SCRIPT BEFORE RUNNING, some CPAN configurations are needed prior to running
 	- You'll need CPAN, Perl (the development libraries for perl), so Xcode Tools (just about a full install).
 - Open the tools/macosx/ocsng_app-xcode/OCSNG.xcodeproj project using Xcode 6.4 and build it (Choose menu "Product\Archive")
-- Export the created archive to folder tools/macos/installer_gui/iceberg/
+- Export the created archive to folder tools/macosx/installer_gui/iceberg/
 - OPen tools/macosx/installer_gui/iceberg/iceberg_project.packproj file using Iceberg and build it to create the final graphic installer 
 
 COPYRIGHT
