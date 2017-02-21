@@ -27,7 +27,7 @@ sub new {
                 $self->{dontuse} = 0;
                 last;
             } else {
-                $logger->debug("Failed to load `$modulefile': $?");
+                $logger->debug("Failed to load `$modulefile': $@");
             }
         }
     }
@@ -52,6 +52,8 @@ sub new {
         my $module = new $package($context);
         my $name = $module->{structure}->{name};
      
+        $logger->debug("Creating object for module $name");
+
         # Store the reference in a key to access modules easily  
         $self->{modules}->{$name}=$module;
 
