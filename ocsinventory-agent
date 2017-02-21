@@ -36,6 +36,9 @@ foreach (@ARGV) {
         $path =~ s/$scriptname/lib/;
         print "[info] Adding $path to \@INC\n";
         unshift(@INC,$path);
+        $path = $path . "/darwin-thread-multi-2level";
+        print "[info] Adding $path to \@INC\n";
+        unshift(@INC,$path);
     }
 }
 
