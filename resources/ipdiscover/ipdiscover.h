@@ -40,7 +40,7 @@
 #endif
 
 #define VERSION 5
-#define NAME_RES_LATENCY 1000000
+#define NAME_RES_LATENCY 10000
 #define REQUEST_LATENCY_DEFAULT 100000
 
 /* Trame ARP */
