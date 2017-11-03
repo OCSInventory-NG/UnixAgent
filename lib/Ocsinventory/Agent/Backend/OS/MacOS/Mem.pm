@@ -2,9 +2,9 @@ package Ocsinventory::Agent::Backend::OS::MacOS::Mem;
 use strict;
 
 sub check {
-    return(undef) unless -r '/usr/sbin/system_profiler'; # check perms
-    return (undef) unless can_load("Mac::SysProfile");
-    return 1;
+    my $params = shift;
+    my $common = $params->{common};
+    return $common->can_load("Mac::SysProfile"); 
 }
 
 sub run {
