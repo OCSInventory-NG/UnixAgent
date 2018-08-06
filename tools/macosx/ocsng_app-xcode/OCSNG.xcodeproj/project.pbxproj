@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 44;
+	objectVersion = 45;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -323,6 +323,8 @@
 		06D657AB134FD99800981FE3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALTERNATE_GROUP = ocsinventory;
+				ALTERNATE_OWNER = staff;
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -351,6 +353,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ADDITIONAL_SDKS = "";
+				ALTERNATE_GROUP = staff;
+				ALTERNATE_OWNER = ocsinventory;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -360,6 +364,8 @@
 				GCC_PREFIX_HEADER = OCSNG_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
+				INSTALL_GROUP = staff;
+				INSTALL_OWNER = ocsinventory;
 				INSTALL_PATH = "$(HOME)/Applications";
 				OBJROOT = build;
 				PRODUCT_BUNDLE_IDENTIFIER = org.ocsng.agent;
@@ -375,12 +381,16 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALTERNATE_GROUP = staff;
+				ALTERNATE_OWNER = ocsinventory;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = OCSNG_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = Info.plist;
+				INSTALL_GROUP = staff;
+				INSTALL_OWNER = ocsinventory;
 				OBJROOT = build;
 				PRODUCT_BUNDLE_IDENTIFIER = org.ocsng.agent;
 				PRODUCT_NAME = OCSNG;
@@ -400,9 +410,9 @@
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INSTALL_GROUP = $USER;
+				INSTALL_GROUP = staff;
 				INSTALL_MODE_FLAG = "a-rwx,u+rwx,g+rwx";
-				INSTALL_OWNER = $GROUP;
+				INSTALL_OWNER = ocsinventory;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
@@ -414,6 +424,9 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALTERNATE_GROUP = staff;
+				ALTERNATE_OWNER = ocsinventory;
+				"ALTERNATE_OWNER[sdk=*]" = staff;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = "/tmp/$(PROJECT_NAME).dst";
@@ -423,9 +436,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				INSTALL_GROUP = _ocsng;
+				INSTALL_GROUP = staff;
 				INSTALL_MODE_FLAG = "a-w,ug+rx,o-rwx";
-				INSTALL_OWNER = _ocsng;
+				INSTALL_OWNER = ocsinventory;
 				INSTALL_PATH = /Applications;
 				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
