@@ -18,6 +18,21 @@ sub run {
         my $user = $1 if /^(\S+)./;
         $common->addUser ({ LOGIN => $user });
     }
+    my $last = getLastUsers();
+    $common->setHardware($last);
+
+}
+
+sub getLastUsers{
+    my $last = `last 2>/dev/null`;
+
+    return unless $last;
+    return unless $last =~ /^(\S+)\s+\S+\s+\S+\s+(\S+\s+\S+\s+\S+\s+\S+)/x;
+
+    return {
+       LASTLOGGEDUSER => $1,
+       DATELASTLOGGEDUSER => $2
+    }
 }
 
 1;
