@@ -5,7 +5,6 @@ sub check {
   my $params = shift;
   my $common = $params->{common};
   $common->can_run ("uname") 
-  $common->can_run ("domainname") 
 }
 
 sub run { 
@@ -16,10 +15,6 @@ sub run {
 
     chomp($domain = `host \$(uname -n)|awk '{print \$1}'|cut -f2- -d.`);
     
-    if (!$domain) {
-        chomp($domain = `domainname`);
-    }
-
     if (!$domain) {
         my %domain;
 
