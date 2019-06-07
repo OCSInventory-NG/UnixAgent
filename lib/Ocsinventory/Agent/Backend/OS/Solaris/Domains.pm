@@ -12,8 +12,8 @@ sub run {
     my $common = $params->{common};
 
     my $domain;
-    chomp($domain = `host \$(uname -n)|awk '{print \$1}'|cut -f2- -d.`);
     
+    chomp($domain = `host \$(uname -n)|awk '{print \$1}'|cut -f2- -d.`);    
     if (!$domain) {
         my %domain;
 
