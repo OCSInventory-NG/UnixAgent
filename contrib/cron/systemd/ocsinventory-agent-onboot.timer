@@ -1,0 +1,11 @@
+[Unit]
+Description=Run OCS Inventory shortly after boot
+
+[Timer]
+OnBootSec=900
+Unit=ocsinventory-agent.service
+RandomizedDelaySec=10
+Persistent=true
+
+[Install]
+WantedBy=timers.target

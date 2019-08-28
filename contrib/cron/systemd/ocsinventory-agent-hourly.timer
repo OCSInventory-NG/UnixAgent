@@ -1,0 +1,11 @@
+[Unit]
+Description=Run OCS Inventory Hourly (if server permits)
+
+[Timer]
+OnCalendar=hourly
+Unit=ocsinventory-agent.service
+RandomizedDelaySec=10
+Persistent=true
+
+[Install]
+WantedBy=timers.target
