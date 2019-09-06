@@ -158,7 +158,33 @@ sub run {
 
     # Setting SSL CA file path if not set in configuration
     unless ($config->{config}{ca}) {
-        $config->{config}{ca} = $config->{config}{vardir}."/cacert.pem";
+        # use server specific cacert.pem if it exists
+        $config->{config}{ca} = $config->{config}{vardir}.'/cacert.pem';
+
+        unless (-e $config->{config}{vardir}.'/cacert.pem') {
+            # if no server specific cacert.pem, look for a bundle in our config dir
+            foreach (@{$self->{config}{etcdir}}) {
+                if (-e $_.'/ocsinventory-agent-cacert.pem') {
+                    $config->{config}{ca} = $_.'/ocsinventory-agent-cacert.pem';
+                    last;
+                }
+            }
+
+            # Still no CA cert?  Drop back to system default store.
+            if ($config->{config}{ca} == $config->{config}{vardir}.'/cacert.pem') {
+                if (-e '/etc/pki/tls/certs/ca-bundle.crt') {
+                    # RPM systems
+                    $logger->info("Trying system CA /etc/pki/tls/certs/ca-bundle.crt");
+                    $config->{config}{ca} = '/etc/pki/tls/certs/ca-bundle.crt';
+                } elsif (-e '/etc/ssl/certs/ca-certificates.crt') {
+                    # DEB/Arch/Gentoo systems
+                    #  some RPM systems may have this too, but should use
+                    #  /etc/pki/tls/certs/ca-bundle.crt instead.
+                    $logger->info("Trying system CA /etc/ssl/certs/ca-certificates.crt");
+                    $config->{config}{ca} = '/etc/ssl/certs/ca-certificates.crt';
+                }
+            }
+        }
     }
 
 ################################################################################################################
