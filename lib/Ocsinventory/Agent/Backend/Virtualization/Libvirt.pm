@@ -37,7 +37,7 @@ sub run {
                 $vcpu = $data->{vcpu};
             }
 
-            my $machine = {
+            my %machine = (
                 MEMORY => $memory,
                 NAME => $name,
                 UUID => $uuid,
@@ -45,9 +45,9 @@ sub run {
                 SUBSYSTEM => "Libvirt",
                 VMTYPE => $vmtype,
                 VCPU   => $vcpu,
-            };
+            );
 
-            $common->addVirtualMachine($machine);
+            $common->addVirtualMachine(\%machine);
 
         }
     }
