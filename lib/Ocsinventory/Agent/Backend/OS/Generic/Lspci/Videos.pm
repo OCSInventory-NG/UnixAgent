@@ -74,6 +74,47 @@ sub run {
                     UUID => $uuid,
                     RESOLUTION => $reso,
                 });
+            } else {
+
+                my $smi_memory_header = `nvidia-smi --query-gpu=memory.total --format=csv | grep memory.total`;
+                if ($smi_memory_header ne '') {
+                    my $smi_memory_unit;
+                    if ($smi_memory_header =~ m/^memory\.total \[(.*)\]$/) {
+                        $smi_memory_unit = $1;
+                    }
+
+                    foreach my $smicard (`nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader,nounits`){
+                        my @smicard_arr=split(/,/, $smicard);
+                        $name = $smicard_arr[0];
+                        if ($smi_memory_unit eq 'MiB') {
+                            $memory=$smicard_arr[1];
+                            $memory =~ s/^\s+//;
+                        }
+                        $driver_version=$smicard_arr[2];
+                        $driver_version =~ s/^\s+//;
+                        chomp  $driver_version;
+                        $common->addVideo({
+                            NAME => $name,
+                            MEMORY => $memory,
+                            DRVVERSION => $driver_version,
+                        });
+                    }
+                 } else {
+                    foreach(`lspci`){
+                        if(/graphics|vga|video/i && /^([0-9a-f][0-9a-f]:[0-9a-f][0-9a-f].[0-9a-f])\s([^:]+):\s*(.+?)(?:\(([^()]+)\))?$/i){
+                            my $slot = $1;
+                            $chipset = $2;
+                            $name = $3;
+                            $common->addVideo({
+                                'CHIPSET'    => $chipset,
+                                'NAME'       => $name,
+                            });
+                        }
+                    }
+
+               }
+
+
             }
         } else {
             foreach(`lspci`){
