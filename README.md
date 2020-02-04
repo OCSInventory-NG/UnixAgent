@@ -6,12 +6,12 @@
 <p align="center">
   <b>Some Links:</b><br>
   <a href="http://ask.ocsinventory-ng.org">Ask question</a> |
-  <a href="#COMING_SOON_STAY_CONNECTED">Installation</a> |
+  <a href="https://wiki.ocsinventory-ng.org/03.Basic-documentation/Setting-up-the-UNIX-agent-on-client-computers/">Installation</a> |
   <a href="https://www.ocsinventory-ng.org/?utm_source=github-ocs">Website</a> |
   <a href="https://www.ocsinventory-ng.org/en/#ocs-pro-en">OCS Professional</a>
 </p>
 
-<p align='justify'>
+<p align="justify">
   Ocsinventory-Agent is an agent for ocsinventory NG. It supports Linux,
   Solaris and AIX. *BSD support is in progress.
 </p>
@@ -52,7 +52,6 @@
   #### The following PERL modules are optional:
     - Proc::Daemon Daemon mode
     - Proc::PID::File brings the pid file support if Proc::Daemon is installed
-    - nvidia::ml brings you some informations on Nvidia Graphic Cards such as memory size, cpu speed, bios version and driver version.
     - Compress::Zlib
 
   #### The following module is needed if you plan to prepare a tarball or install directly from the Bazaar devel branch. (See SOURCES below.):

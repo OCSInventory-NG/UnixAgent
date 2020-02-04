@@ -54,7 +54,6 @@ recommends 'LWP::Protocol::https' => undef;
 # inventory
 recommends 'Net::CUPS' => undef;
 recommends 'Parse::EDID' => undef;
-recommends 'Nvidia::ml' => undef;
 
 # network 
 recommends 'Net::SNMP' => undef;
