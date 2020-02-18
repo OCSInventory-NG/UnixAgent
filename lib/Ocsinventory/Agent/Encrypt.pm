@@ -2,7 +2,7 @@ package Ocsinventory::Agent::Encrypt;
 
 use MIME::Base64;
 
-sub getClearTextPassword {
+sub getClearText {
     my ($encodedpass) = @_;
 
     return decode_base64($encodedpass);

@@ -49,13 +49,14 @@ sub new {
     }
     my $version = 'OCS-NG_unified_unix_agent_v';
     $version .= exists ($self->{config}->{VERSION})?$self->{config}->{VERSION}:'';
-    my $encrypt = Ocsinventory::Agent::Encrypt::getClearTextPassword($self->{config}->{password});
+    my $userencrypt = Ocsinventory::Agent::Encrypt::getClearText($self->{config}->{user});
+    my $pwdencrypt = Ocsinventory::Agent::Encrypt::getClearText($self->{config}->{password});
     $self->{ua}->agent($version);
     $self->{ua}->credentials(
         $uaserver, # server:port, port is needed 
         $self->{config}->{realm},
-        $self->{config}->{user},
-        $encrypt
+        $userencrypt,
+        $pwdencrypt
     );
 
     #Setting SSL configuration depending on LWP version
