@@ -367,7 +367,7 @@ sub download_end_handler{        # Get global structure
         #TODO Uncomment this line #undef $packages;
 
         # Reading configuration
-        open FH, "$dir/config" or die("Cannot read config file: $!");
+        open FH, "$dir/config" or die("Cannot read config file $dir/config: $!");
         if (flock(FH, LOCK_SH)){
             $download_config = XMLin("$dir/config");
             close(FH);
