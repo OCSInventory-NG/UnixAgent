@@ -26,8 +26,8 @@ sub run {
         if (! /^--/) {
             chomp;
             $buff .= $_;
-        } elsif ($buff =~ s/^(.*)\s+--(.*)--\s(\S+)\s+(\S+)\s+--(.*)--\s+--(.*)--\s+--(.*)--\s+(.*)//) {
-            my ($name,$arch,$arch,$version,$installdate,$filesize,$vendor,$comments) = ( $1,$2,$3,$4,$5,$6,$7 );
+        } elsif ($buff =~ s/^(.*)\s+--(.*)--\s+(\S+)\s+--(.*)--\s+--(.*)--\s+--(.*)--\s+(.*)//) {
+            my ($name,$arch,$version,$installdate,$filesize,$vendor,$comments) = ( $1,$2,$3,$4,$5,$6,$7 );
             @date = localtime($installdate);
             $installdate = sprintf( "%04d-%02d-%02d %02d:%02d:%02d", $date[5] + 1900, $date[4] + 1, $date[3], $date[2], $date[1], $date[0]);
 

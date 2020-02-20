@@ -14,6 +14,7 @@ sub check {
 sub run {
     my $params = shift;
     my $common = $params->{common};
+    my $logger = $params->{logger};
     my $size;
     my $key;
     my $value;
