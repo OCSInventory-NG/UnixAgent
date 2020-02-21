@@ -5,6 +5,7 @@ use strict;
 use lib 'lib';
 
 use Cwd;
+use MIME::Base64;
 use Ocsinventory::Agent::Config;
 
 
@@ -161,8 +162,10 @@ unless ($nowizard) {
 
     #Getting credentials if needed
     if (ask_yn ("Do you need credential for the server? (You probably don't)", 'n')) {
-        $config->{user} = promptUser("user", $config->{user});
+        $config->{user} = (promptUser("user", $config->{user});
+        $config->{user} = MIME::Base64::encode_base64($config->{user});
         $config->{password} = promptUser("password");
+        $config->{password} = MIME::Base64::encode_base64($config->{password});
         print "[info] The realm can be found in the login popup of your Internet browser.\n[info] In general, it's something like 'Restricted Area'.\n";
         $config->{realm} = promptUser("realm");
     }
