@@ -1,4 +1,7 @@
 Revision history for Ocsinventory::Agent
+2.6.1
+       * Allow encode http password in base64 #???
+
 2.6.0
        * Fix issue Service-Pack wrong info on Linux Clients (reports on https://github.com/OCSInventory-NG/OCSInventory-ocsreports/issues/741)
        * Fix issues #181, #187, #194, #197
