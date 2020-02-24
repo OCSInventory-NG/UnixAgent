@@ -1,6 +1,14 @@
 Revision history for Ocsinventory::Agent
 2.6.1
-       * Allow encode http password in base64 #???
+       * Allow encode http password in base64
+       * Fix repository inventory #254
+       * MacOS installer / packaging rework 
+       * Suppress error message for LSPCI
+       * Fix oracle package setup
+       * Remove uninitialized value message
+       * Now use os-release file
+       * Improve drives management (Linux / MacOS)
+       * Imprive IPv6 inventory
 
 2.6.0
        * Fix issue Service-Pack wrong info on Linux Clients (reports on https://github.com/OCSInventory-NG/OCSInventory-ocsreports/issues/741)
