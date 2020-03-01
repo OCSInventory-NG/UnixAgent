@@ -14,7 +14,7 @@ sub run {
     my $params = shift;
     my $common = $params->{common};
 
-    foreach (`virsh list --all`) {
+    foreach (`virsh --readonly list --all`) {
         if (/^\s*(\d+|\s+\-)\s+(\S+)\s+(\S.+)/){
             my $memory;
             my $vcpu;
@@ -22,7 +22,7 @@ sub run {
             my $status = $3;
 
             $status =~ s/^shut off/off/;
-            my $xml = `virsh dumpxml $name`;
+            my $xml = `virsh --readonly dumpxml $name`;
             my $data = XMLin($xml);
 
             my $vcpu = $data->{vcpu};
@@ -37,7 +37,7 @@ sub run {
                 $vcpu = $data->{vcpu};
             }
 
-            my $machine = {
+            my %machine = (
                 MEMORY => $memory,
                 NAME => $name,
                 UUID => $uuid,
@@ -45,9 +45,9 @@ sub run {
                 SUBSYSTEM => "Libvirt",
                 VMTYPE => $vmtype,
                 VCPU   => $vcpu,
-            };
+            );
 
-            $common->addVirtualMachine($machine);
+            $common->addVirtualMachine(\%machine);
 
         }
     }
