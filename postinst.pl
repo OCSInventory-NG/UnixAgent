@@ -162,7 +162,7 @@ unless ($nowizard) {
 
     #Getting credentials if needed
     if (ask_yn ("Do you need credential for the server? (You probably don't)", 'n')) {
-        $config->{user} = promptUser("user", $config->{user};
+        $config->{user} = promptUser("user", $config->{user});
         $config->{user} = MIME::Base64::encode_base64($config->{user});
         $config->{password} = promptUser("password");
         $config->{password} = MIME::Base64::encode_base64($config->{password});
