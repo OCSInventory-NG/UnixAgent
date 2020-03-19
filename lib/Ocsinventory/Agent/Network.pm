@@ -43,7 +43,7 @@ sub new {
     # Connect to server
     $self->{ua} = LWP::UserAgent->new(keep_alive => 1);
     if ($self->{config}->{proxy}) {
-        $self->{ua}->proxy(['http', 'https'], $self->{config}->{proxy});
+        $self->{ua}->proxy(['http', 'https'], 'connect://'.$self->{config}->{proxy}.'');
     } else {
         $self->{ua}->env_proxy;
     }
