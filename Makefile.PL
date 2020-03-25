@@ -38,14 +38,18 @@ authors 'OCS Inventory Team';
 # mandatory dependencies
 requires 'Digest::MD5' => undef;
 requires 'XML::Simple' => undef;
-requires 'LWP' => undef;
+requires 'LWP' => '5.8';
 requires 'File::Temp' => undef;
-requires 'Data::UUID' => undef;
 requires 'Net::IP' => undef;
 recommends 'IO::Socket::SSL' => undef;
 recommends 'Compress::Zlib' => undef;
 recommends 'Proc::Daemon' => undef;
 recommends 'Proc::PID::File' => undef;
+
+# test dependencies
+test_requires 'IO::Socket::SSL' => '0';
+test_requires 'Net::SNMP' => '0';
+test_requires 'LWP::Protocol::https' => '0';
 
 # deployement  or https communication
 recommends 'Crypt::SSLeay' => undef;
@@ -54,7 +58,6 @@ recommends 'LWP::Protocol::https' => undef;
 # inventory
 recommends 'Net::CUPS' => undef;
 recommends 'Parse::EDID' => undef;
-recommends 'Nvidia::ml' => undef;
 
 # network 
 recommends 'Net::SNMP' => undef;
@@ -102,14 +105,9 @@ if (!can_use('Compress::Zlib')) {
     print "Please install Compress::Zlib if you use an OCS server prior 1.02.\n";
 }
 
-if (!can_use('Crypt::SSLeay')) {
-    print "Please install Crypt::SSLeay if you want to use SSL.\n";
-}
-
 if (!can_use('Net::SSLeay')) {
     print "Please install Net::SSLeay if you want to use the software deployment.\n";
 }
-
 
 if (!can_run('ipdiscover') && !can_run('nmap')) {
     print "Please install nmap ";
@@ -131,11 +129,6 @@ if (!can_use('Net::Netmask')) {
 if (!can_use('Proc::Daemon') || !can_use('Proc::PID::File')) {
     print "Please install Proc::Daemon and Proc::PID::File if you ".
     "want to use the daemon mode.\n";
-}
-
-if (!can_use('Nvidia::ml')){
-    print "Nvidia::ml is recommended if you want to retrieve "
-        ."memory, speed, bios information for Nvidia cards.\n";
 }
 
 my $archname;
