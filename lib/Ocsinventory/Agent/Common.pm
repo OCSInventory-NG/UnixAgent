@@ -14,6 +14,8 @@ use strict;
 no strict 'refs';
 use warnings;
 
+use Encode qw(encode);
+
 =head1 NAME
 
 Ocsinventory::Agent::Common - give common methods to other modules
@@ -992,30 +994,11 @@ sub cleanXml {
 
     my $logger = $self->{logger};
 
-    my $clean_content;
+    my $clean_content = encode('UTF-8', $content, Encode::FB_DEFAULT | Encode::LEAVE_SRC | Encode::FB_XMLCREF);
 
-    # To avoid strange breakage I remove the unprintable characters in the XML
-    foreach (split "\n", $content) {
-        if (! m/\A(
-            [\x09\x0A\x0D\x20-\x7E]            # ASCII
-            | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-            |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
-            | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-            |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
-            |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
-            | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-            |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
-        )*\z/x) {
-            s/[[:cntrl:]]//g;
-            $self->{logger}->debug("non utf-8 '".$_."'");
-        }
+    $logger->debug("cleanXml changed content") if ($content ne $clean_content);
 
-        # Is that a good idea. Intent to drop some nasty char
-        # s/[A-z0-9_\-<>\/:\.,#\ \?="'\(\)]//g;
-        $clean_content .= $_."\n";
-  }
-
-  return $clean_content;
+    return $clean_content."\n";
 }
 
 #Subroutine to read XML structure (returned by XML::Simple::XMLin) and encode content in utf8.
@@ -1031,7 +1014,7 @@ sub readXml {
         } else {  #Not a forced array in XML parsing
            if (ref ($content->{$key}) =~ /^HASH$/ && !keys %{$content->{$key}}) {  # If empty hash from XMLin()
                $content->{$key} = '';
-           } else { utf8::encode($content->{$key}) };
+           } else { encode('UTF-8', $content->{$key}, Encode::FB_DEFAULT) };
         }
     }
     return $content;
@@ -1048,7 +1031,7 @@ sub parseXmlArray {
             } else {  #Not a forced array in XML parsing
                 if (ref ($hash->{$key}) =~ /^HASH$/ && !keys %{$hash->{$key}}) {  # If empty hash from XMLin()
                     $hash->{$key} = '';
-                } else { utf8::encode($hash->{$key}) };
+                } else { encode('UTF-8', $hash->{$key}, Encode::FB_DEFAULT) };
             }
         }
     }
