@@ -474,7 +474,7 @@ sub addRepo {
 
     my $content = {};
 
-    foreach my $key (qw/BASEURL ENABLED FINGERPRINTS FILENAME MIRROR NAME PACKAGES PRIORITY REVISION SIGNATURE SIZE TAG UPDATED/) {
+    foreach my $key (qw/BASEURL ENABLED EXCLUDE EXPIRE EXPIRED FILENAME LASTUPDATED MIRRORS NAME PKGS REVISION SIZE UPDATED/) {
         if (exists $args->{$key}) {
             $content->{$key}[0] = $args->{$key} if $args->{$key};
         }
