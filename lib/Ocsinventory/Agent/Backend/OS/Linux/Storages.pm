@@ -213,7 +213,8 @@ sub getFromLshw {
     }
     my $xml = new XML::Simple;
     my $data = $xml->XMLin($input);
-    my $nodes = $data->{list}->{node};
+#    my $nodes = $data->{list}->{node};
+    my $nodes = $data->{list};
 
     foreach my $device (sort keys %$nodes) {
         my $description = "";
