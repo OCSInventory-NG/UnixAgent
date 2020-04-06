@@ -29,6 +29,16 @@ sub run {
     close V;
     chomp($name);
 
+    # Debian version number is set in/etc/debian_version file
+    if (-r "/etc/debian_version") {
+        open V, "/etc/debian_version" or warn;
+        foreach (<V>) {
+            $version = $1 if ($_ =~ /^(\d+.*)/);
+        }
+        close V;
+        chomp($version);
+    }
+
     $common->setHardware({
         OSNAME => $name,
         OSVERSION => $version,
