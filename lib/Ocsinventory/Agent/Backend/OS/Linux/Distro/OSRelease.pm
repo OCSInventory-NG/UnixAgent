@@ -33,7 +33,7 @@ sub run {
     if (-r "/etc/debian_version") {
         open V, "/etc/debian_version" or warn;
         foreach (<V>) {
-            $version = $_;
+            $version = $1 if ($_ =~ /^(\d+.*)/);
         }
         close V;
         chomp($version);
