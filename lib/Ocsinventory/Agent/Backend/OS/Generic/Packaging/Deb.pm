@@ -39,9 +39,9 @@ sub run {
     my $vers=$common->convertVersion($ver,4);
 
     if ($vers > 1162 ){
-        @infos=`dpkg-query --show --showformat='\${binary:Package}---\${Architecture}---\${Version}---\${In    stalled-Size}---\${Status}---\${Homepage}---\${Description}\n'`;
+        @infos=`dpkg-query --show --showformat='\${binary:Package}---\${Architecture}---\${Version}---\${Installed-Size}---\${Status}---\${Homepage}---\${Description}\n'`;
     } else {
-        @infos=`dpkg-query --show --showformat='\${Package}---\${Architecture}---\${Version}---\${Installed    -Size}---\${Status}---\${Homepage}---\${Description}\n'`;
+        @infos=`dpkg-query --show --showformat='\${Package}---\${Architecture}---\${Version}---\${Installed-Size}---\${Status}---\${Homepage}---\${Description}\n'`;
     }
     foreach my $line (@infos) {
         next if $line =~ /^ /;
