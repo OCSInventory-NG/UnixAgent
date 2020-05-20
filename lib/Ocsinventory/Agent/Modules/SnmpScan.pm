@@ -17,6 +17,8 @@ use warnings;
 use XML::Simple;
 use Digest::MD5;
 
+use Data::Dumper;
+
 sub new {
     my $name="snmpscan";   #Set the name of your module here
 
@@ -127,7 +129,8 @@ sub snmpscan_prolog_reader {
                 }
 
                 if ($_->{'TYPE'} eq 'SNMP_TYPE'){
-                    push @{$self->{snmp_type_condition}{$_->{TABLE_TYPE_NAME}}},{
+                    push @{$self->{snmp_type_condition}},{
+                        TABLE_TYPE_NAME => $_->{TABLE_TYPE_NAME},
                         CONDITION_OID => $_->{CONDITION_OID},
                         CONDITION_VALUE => $_->{CONDITION_VALUE}
                     };
@@ -154,6 +157,7 @@ sub snmpscan_end_handler {
     my $self = shift;
     my $logger = $self->{logger};
     my $common = $self->{context}->{common};
+    my $xmltags = $common->{xmltags};
     my $network = $self->{context}->{network};
 
     $logger->debug("Calling snmp_end_handler");
@@ -194,9 +198,11 @@ sub snmpscan_end_handler {
 
     foreach my $device ( @$ip ) {
         my $session = undef;
-        my $full_oid = undef;
+        my $oid_condition = undef;
         my $devicedata = $common->{xmltags};     #To fill the xml informations for this device
         my $snmp_table = undef;
+        my $snmp_condition_oid = undef;
+        my $snmp_condition_value = undef;
 
         $logger->debug("Scanning $device->{IPADDR} device");    
         # Search for the good snmp community in the table community
@@ -245,46 +251,60 @@ sub snmpscan_end_handler {
                 $self->{snmp_version}=$comm->{VERSION};
 
                 my $snmp_key = $self->{snmp_type_condition};
-                LIST_TYPE: foreach my $snmp_oid (keys(%$snmp_key)) {
-                    $logger->error("SNMP DEBUG");
-                    $logger->error($snmp_oid);
-                    $full_oid = $session->get_request( -varbindlist => [$self->{snmp_type_condition}->{$snmp_oid}->{CONDITION_OID}]);
-                    $snmp_table = $snmp_oid;
-                    $logger->error("Snmp TABLE: $snmp_table");
-                    last LIST_TYPE if ( defined $full_oid && $full_oid->{$self->{snmp_type_condition}->{$snmp_oid}->{CONDITION_OID}} eq $self->{snmp_type_condition}->{$snmp_oid}->{CONDITION_VALUE});
+
+                LIST_TYPE: foreach my $snmp_value (@$snmp_key) {
+                    $oid_condition = $session->get_request(-varbindlist => [$snmp_value->{CONDITION_OID}]);
+                    $snmp_table = $snmp_value->{TABLE_TYPE_NAME};
+                    $snmp_condition_oid = $snmp_value->{CONDITION_OID};
+                    $snmp_condition_value = $snmp_value->{CONDITION_VALUE};
+                    last LIST_TYPE if (defined $oid_condition && $oid_condition->{$snmp_value->{CONDITION_OID}} eq $snmp_value->{CONDITION_VALUE});
                 }
                 
-                last LIST_SNMP if ( defined $full_oid);
+                last LIST_SNMP if (defined $oid_condition && $oid_condition->{$snmp_condition_oid} eq $snmp_condition_value);
                 $session->close;
                 $self->{snmp_session}=undef;
             }
         }
 
-        if (defined $full_oid && defined $snmp_table) {
-            $full_oid = $full_oid->{$self->{snmp_type_condition}->{$snmp_table}->{CONDITION_OID}};
-
+        if (defined $oid_condition && $oid_condition->{$snmp_condition_oid} eq $snmp_condition_value) {
+            $oid_condition = $oid_condition->{$snmp_condition_oid};
+            
             $session->max_msg_size(8192);
             # We have found the good Community, we can scan this equipment
-            my %snmpContent = ();
-
             # We indicate that we scan a new equipment
             $self->{number_scan}++;
 
+            my $data;
+            my @snmpContent = ();
+
+            my $snmp_infos = $self->{snmp_type_infos};
+            foreach my $datas (@$snmp_infos) {
+                $data = $session->get_request(-varbindlist => [$datas->{OID}]);
+                $xmltags->{$datas->{LABEL_NAME}}[0] = $data->{$datas->{OID}};
+            }
+            push @{$snmp_inventory->{xmlroot}->{CONTENT}->{$snmp_table}},$xmltags;
+
+            # We have finished with this equipment
+            if (defined $session) {
+                $session->close;
+            }
+            $self->{snmp_session}=undef;
+            # We clear the xml data for this device 
+            $common->flushXMLTags(); 
         }
     }
+
+    $logger->info("No more SNMP device to scan"); 
+
+    # Formatting the XML and sendig it to the server
+    my $content = XMLout( $snmp_inventory->{xmlroot},  RootName => 'REQUEST' , XMLDecl => '<?xml version="1.0" encoding="UTF-8"?>', SuppressEmpty => undef );
+
+    #Cleaning XML to delete unprintable characters
+    my $clean_content = $common->cleanXml($content);
+
+    $network->sendXML({message => $clean_content});
+    $logger->debug("End snmp_end_handler :)");
 }
-
-#sub setSnmpInfos {
-#    my (%args) = @_;
-#    my $common = $self->{context}->{common};
-#    my $xmltags = $common->{xmltags};
-
-#    foreach my $key (qw/NAME SERIALNUMBER COUNTER STATUS ERRORSTATE/ ) {
-#        if (exists $args->{$key}) {
-#            $xmltags->{PRINTERS}[0]{$key}[0] = $args->{$key};
-#        }
-#    }
-#}
 
 sub snmp_ip_scan {
     my ($self,$net_to_scan) = @_;
@@ -324,6 +344,16 @@ sub snmp_ip_scan {
         }
     } else {
         $logger->debug("Net::Netmask not present: no scan possible");
+    }
+}
+
+sub search_netdevice {
+    my ($self,$ip)= @_ ;
+
+    for (@{$self->{netdevices}}) {
+        if ($ip =~ /^$_->{IPADDR}$/) {
+            return 1;
+        }
     }
 }
 
