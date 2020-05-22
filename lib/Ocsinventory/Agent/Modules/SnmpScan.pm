@@ -157,7 +157,6 @@ sub snmpscan_end_handler {
     my $self = shift;
     my $logger = $self->{logger};
     my $common = $self->{context}->{common};
-    my $xmltags = $common->{xmltags};
     my $network = $self->{context}->{network};
 
     $logger->debug("Calling snmp_end_handler");
@@ -268,19 +267,22 @@ sub snmpscan_end_handler {
 
         if (defined $oid_condition && $oid_condition->{$snmp_condition_oid} eq $snmp_condition_value) {
             $oid_condition = $oid_condition->{$snmp_condition_oid};
+            my $xmltags = $common->{xmltags};
             
             $session->max_msg_size(8192);
             # We have found the good Community, we can scan this equipment
             # We indicate that we scan a new equipment
             $self->{number_scan}++;
-
+            
             my $data;
-            my @snmpContent = ();
 
             my $snmp_infos = $self->{snmp_type_infos};
+
             foreach my $datas (@$snmp_infos) {
-                $data = $session->get_request(-varbindlist => [$datas->{OID}]);
-                $xmltags->{$datas->{LABEL_NAME}}[0] = $data->{$datas->{OID}};
+                if($datas->{TABLE_TYPE_NAME} eq $snmp_table) {
+                    $data = $session->get_request(-varbindlist => [$datas->{OID}]);
+                    $xmltags->{$datas->{LABEL_NAME}}[0] = $data->{$datas->{OID}};
+                } 
             }
             push @{$snmp_inventory->{xmlroot}->{CONTENT}->{$snmp_table}},$xmltags;
 
