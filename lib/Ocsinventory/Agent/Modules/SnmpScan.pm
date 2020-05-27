@@ -283,6 +283,11 @@ sub snmpscan_end_handler {
                 if($datas->{TABLE_TYPE_NAME} eq $snmp_table) {
                     $data = $session->get_request(-varbindlist => [$datas->{OID}]);
                     $data_value = $data->{$datas->{OID}};
+                    if(defined $data_value && $data_value =~ /^0x[0-9A-F]+$/i) {
+                        $data_value = substr $data_value, 2;
+                        my @split = unpack '(A2)*', $data_value;
+                        $data_value = uc(join ':', @split);
+                    }
                     if(!defined $data_value) {
                         my @table;
                         $data = $session->get_table(-baseoid => $datas->{OID});
@@ -294,7 +299,7 @@ sub snmpscan_end_handler {
                     $xmltags->{$datas->{LABEL_NAME}}[0] = $data_value;
                 } 
             }
-            
+
             push @{$snmp_inventory->{xmlroot}->{CONTENT}->{$snmp_table}},$xmltags;
 
             # We have finished with this equipment
