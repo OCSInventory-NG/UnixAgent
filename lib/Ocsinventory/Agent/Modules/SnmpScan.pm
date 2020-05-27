@@ -279,11 +279,22 @@ sub snmpscan_end_handler {
             my $snmp_infos = $self->{snmp_type_infos};
 
             foreach my $datas (@$snmp_infos) {
+                my $data_value = undef;
                 if($datas->{TABLE_TYPE_NAME} eq $snmp_table) {
                     $data = $session->get_request(-varbindlist => [$datas->{OID}]);
-                    $xmltags->{$datas->{LABEL_NAME}}[0] = $data->{$datas->{OID}};
+                    $data_value = $data->{$datas->{OID}};
+                    if(!defined $data_value) {
+                        my @table;
+                        $data = $session->get_table(-baseoid => $datas->{OID});
+                        foreach my $key (keys %{$data}) {
+                            push @table, $data->{$key};
+                        }
+                        $data_value = join ' - ', @table;
+                    }
+                    $xmltags->{$datas->{LABEL_NAME}}[0] = $data_value;
                 } 
             }
+            
             push @{$snmp_inventory->{xmlroot}->{CONTENT}->{$snmp_table}},$xmltags;
 
             # We have finished with this equipment
