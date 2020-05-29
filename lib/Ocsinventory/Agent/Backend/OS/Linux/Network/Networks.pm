@@ -37,6 +37,7 @@ sub getLeaseFile {
                  glob("$directory/$pattern");
         }
     }
+
     return unless @files;
     @files =
         map {$_->[0]}
@@ -55,7 +56,20 @@ sub _ipdhcp {
     my $ipdhcp;
     my $leasepath;
 
-    if( $leasepath = getLeaseFile($if) ) {
+    $leasepath = getLeaseFile($if);
+
+    if ( $leasepath =~ /internal/ ) {
+        if (open DHCP, $leasepath) {
+            while(<DHCP>) {
+                if (/SERVER_ADDRESS=(\d{1,3}(?:\.\d{1,3}){3})/) {
+                    $ipdhcp=$1;
+                }
+            }
+            close DHCP or warn;
+        } else {
+            warn ("Can't open $leasepath\n");
+        }
+    } else {
         if (open DHCP, $leasepath) {
             my $lease;
             while(<DHCP>){
@@ -192,6 +206,7 @@ sub run {
                               BSSID => $bssid,
                               IEEE => $version,
                               MODE => $mode,
+                              MTU => $mtu,
                         });
                     } else {
                         $common->addNetwork({
@@ -219,7 +234,7 @@ sub run {
                               DESCRIPTION => $description,
                               DRIVER => $driver,
                               IPADDRESS => $ipaddress6,
-                              IPDHCP => _ipdhcp($description),
+                              IPDHCP => undef,
                               IPGATEWAY => $ipgateway6,
                               IPMASK => $ipmask6,
                               IPSUBNET => $ipsubnet6,
@@ -232,14 +247,15 @@ sub run {
                               BSSID => $bssid,
                               IEEE => $version,
                               MODE => $mode,
+                              MTU => $mtu,
                         });
                     } else {
                         $common->addNetwork({
                             DESCRIPTION => $description,
                             DRIVER => $driver,
                             IPADDRESS => $ipaddress6,
-                            IPDHCP => _ipdhcp($description),
                             IPGATEWAY => $ipgateway6,
+                            IPDHCP => undef,
                             IPMASK => $ipmask6,
                             IPSUBNET => $ipsubnet6,
                             MACADDR => $macaddr,
@@ -268,6 +284,7 @@ sub run {
                               BSSID => $bssid,
                               IEEE => $version,
                               MODE => $mode,
+                              MTU => $mtu,
                         });
                     } else {
                         $common->addNetwork({
@@ -764,34 +781,63 @@ sub getRouteIfconfig {
 }
 
 1;
-__END__
 
 =head1 NAME
+
 OCSInventory::Agent::Backend::OS::Linux::Network::Networks - Network-related functions
+
 =head1 DESCRIPTION
+
 This module retrieves network informations.
+
 =head1 FUNCTIONS
+
 =head2 getSpeed
+
 Returns the speed of the card.
+
 =head2 getDuplex
+
 Returns duplex state of the card.
+
 =head2 getMTU
+
 Returns the mtu of the card.
+
 =head2 getStatus
+
 Returns the status of the card.
+
 =head2 getMAC
+
 Returns the mac address.
+
 =head2 getSubnetAddress($address, $mask)
+
 Returns the subnet address for IPv4.
+
 =head2 getSubnetAddressIPv6($address, $mask)
+
 Returns the subnet address for IPv6.
+
 =head2 getIPNetmask($prefix)
+
 Returns the network mask for IPv4.
+
 =head2 getIPNetmaskV6($prefix)
+
 Returns the network mask for IPv6.
+
 =head2 getslaves
+
 Returns if card has a bonding.
+
 =head2 getIPRoute
+
 Returns the gateway defined int he ip config.
+
 =head2 getRouteIfconfig
+
 Returns the gateway defined in the ip config.
+
+=back
