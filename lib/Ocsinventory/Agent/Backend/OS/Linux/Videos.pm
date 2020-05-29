@@ -2,7 +2,6 @@ package Ocsinventory::Agent::Backend::OS::Linux::Videos;
 
 use strict;
 use warnings;
-use Data::Dumper;
 
 sub check {
     my $params = shift;
