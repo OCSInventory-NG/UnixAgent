@@ -17,8 +17,6 @@ use warnings;
 use XML::Simple;
 use Digest::MD5;
 
-use Data::Dumper;
-
 sub new {
     my $name="snmpscan";   #Set the name of your module here
 
