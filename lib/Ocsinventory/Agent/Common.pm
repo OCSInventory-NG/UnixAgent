@@ -682,7 +682,7 @@ sub addPSU {
         }
     }
 
-    push @{$xmltags->{PSU}}, $content;
+    push @{$xmltags->{POWERSUPPLIES}}, $content;
 
 }
 
