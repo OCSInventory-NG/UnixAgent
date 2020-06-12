@@ -3,10 +3,6 @@ package Ocsinventory::Agent::Backend::OS::Generic::Dmidecode::Psu;
 use strict;
 use warnings;
 
-sub check {
-
-}
-
 sub run {
     my $params = shift;
     my $common = $params->{common};
