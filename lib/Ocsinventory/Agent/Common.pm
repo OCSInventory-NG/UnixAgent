@@ -670,6 +670,22 @@ sub addCamera {
     push @{$xmltags->{RUNNING_PROCESSES}}, $content;
 }
 
+sub addPSU {
+    my ($self, $args) = @_;
+    my $xmltags = $self->{xmltags};
+
+    my $content = {};
+
+    foreach my $key (qw/HOTREPLACEABLE LOCATION MANUFACTURER NAME PARTNUMBER PLUGGED POWERMAX SERIALNUMBER STATUS/){
+        if (exists $args->{$key}) {
+            $content->{$key}[0] = $args->{$key} if $args->{$key};
+        }
+    }
+
+    push @{$xmltags->{PSU}}, $content;
+
+}
+
 sub addIpDiscoverEntry {
     my ($self, $args) = @_;
     my $xmltags = $self->{xmltags};
