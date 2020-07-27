@@ -37,6 +37,14 @@ sub run {
     # If no domain name, we send "WORKGROUP"
     $domain = 'WORKGROUP' unless $domain;
 
+    # User domain
+    my $userdomain = `defaults read /Library/Preferences/SystemConfiguration/com.apple.smb.server Workgroup 2>/dev/null`;
+    chomp($userdomain);
+    if ($userdomain eq "" ) {
+        $userdomain = `hostname -s`;
+        chomp($userdomain);
+    }
+
     $common->setHardware({
         WORKGROUP => $domain
     });
