@@ -77,6 +77,7 @@ sub run {
     my $macaddr;
     my $status;
     my $type;
+    my $speed;
 
 
     # Looking for the gateway
@@ -110,7 +111,25 @@ sub run {
             $macaddr = $2 if /(address:|ether|lladdr)\s+(\S+)/i;
             $status = 1 if /status:\s+active/i;
             $type = $1 if /media:\s+(\S+)/i;
+            $speed = $1 if /media:\s+(\S+)\s+(\S+)/i && ! /supported media:/;
+            if ($speed =~ /autoselect/i) {
+              $speed = $2 if /media:\s+(\S+)\s+(\S+)/i && ! /supported media:/;
+              $speed .= " $3" if /media:\s+(\S+)\s+(\S+)\s+(\S+)/i && ! /supported media:/;
+            } else {
+              $speed .= " $2" if /media:\s+(\S+)\s+(\S+)/i && ! /supported media:/;
+            }
         }
+        if ($status != 1) {
+            $speed = "";
+        } else {
+            $speed =~ s/\(|\)|\<|\>|baseTX|baseT|,flow-control//g;
+            $speed =~ s/1000 /1 Gb\/s /g;
+            $speed =~ s/100 /100 Mb\/s /g;
+            $speed =~ s/10 /10 Mb\/s /g;
+            $speed =~ s/full-duplex/FDX/g;
+            $speed =~ s/half-duplex/HDX/g;
+        }
+
         my $binip = &ip_iptobin ($ipaddress ,4);
         # In BSD, netmask is given in hex form
         my $binmask = sprintf("%b", oct($ipmask));
@@ -118,7 +137,6 @@ sub run {
         $ipsubnet = ip_bintoip($binsubnet,4);
         my $mask = ip_bintoip($binmask,4);
         $common->addNetwork({
-
             DESCRIPTION => $description,
             IPADDRESS => ($status?$ipaddress:undef),
             IPDHCP => _ipdhcp($description),
@@ -127,8 +145,8 @@ sub run {
             IPSUBNET => ($status?$ipsubnet:undef),
             MACADDR => $macaddr,
             STATUS => ($status?"Up":"Down"),
-            TYPE => ($status?$type:undef)
-
+            TYPE => ($status?$type:undef),
+            SPEED => $speed,
         });
     }
 }
