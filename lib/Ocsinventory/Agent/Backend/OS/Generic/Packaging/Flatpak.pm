@@ -20,10 +20,10 @@ sub run {
             my $comments = $6;
             
             $common->addSoftware({
-            	'COMMENTS' => $comments,
-            	'NAME' => $name,
+                'COMMENTS' => $comments,
+                'NAME' => $name,
                 'PUBLISHER' => $publisher,
-            	'VERSION' => $version
+                'VERSION' => $version
             });
         }
     } 
