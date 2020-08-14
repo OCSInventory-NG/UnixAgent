@@ -9,7 +9,7 @@ before_install:
   - sudo apt -y install dmidecode make gcc
   - cpanm --quiet --installdeps --notest .
 
-script: env PERL_AUTOINSTALL=1 perl Makefile.PL && make && make install && ocsinventory-agent --help
+script: env PERL_AUTOINSTALL=1 perl Makefile.PL && make && make install && sudo ocsinventory-agent --local=/tmp
 
 addons:
     apt:
