@@ -18,4 +18,3 @@ addons:
 branches:
   only:
     - master
-    - travis-basic-agent
