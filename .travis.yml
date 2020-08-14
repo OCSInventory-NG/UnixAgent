@@ -6,10 +6,14 @@ perl:
   - "5.20"
 
 before_install:
-  - apt -y install dmidecode make gcc
+  - sudo apt -y install dmidecode make gcc
   - cpanm --quiet --installdeps --notest .
 
 script: env PERL_AUTOINSTALL=1 perl Makefile.PL && make && make install && ocsinventory-agent --help
+
+addons:
+    apt:
+      update: true
 
 branches:
   only:
