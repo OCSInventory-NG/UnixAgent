@@ -14,3 +14,4 @@ script: env PERL_AUTOINSTALL=1 perl Makefile.PL && make && make install && ocsin
 branches:
   only:
     - master
+    - travis-basic-agent
