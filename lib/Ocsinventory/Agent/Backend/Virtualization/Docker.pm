@@ -3,8 +3,7 @@ package Ocsinventory::Agent::Backend::Virtualization::Docker;
 use strict;
 
 sub check { 
-    return(undef) unless -r '/usr/bin/docker';
-    return 1;
+    return unless $common->can_run("docker");
 }
 
 my @image;
