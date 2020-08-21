@@ -3,6 +3,9 @@ package Ocsinventory::Agent::Backend::Virtualization::Docker;
 use strict;
 
 sub check { 
+    my $params = shift;
+    my $common = $params->{common};
+
     return unless $common->can_run("docker");
 }
 
