@@ -40,7 +40,7 @@ sub run {
     }
 
     $common->setHardware({
-        OSNAME => $name,
+        OSNAME => "$name $version",
         OSVERSION => $version,
         OSCOMMENTS => $description,
     });
