@@ -99,6 +99,14 @@ Add a CPU in the inventory.
 
 Add an user in the list of logged user.
 
+=item addLocalUser()
+
+Add local users in the inventory.
+
+=item addLocalGroup()
+
+Add local groups in the inventory.
+
 =item addPrinter()
 
 Add a printer in the inventory.
@@ -582,6 +590,37 @@ sub addUser {
 
 }
 
+sub addLocalUser {
+    my ($self, $args) = @_;
+    my $xmltags = $self->{xmltags};
+
+    my $content = {};
+
+    foreach my $key (qw/GID HOME ID LOGIN NAME SHELL/) {
+        if (exists $args->{$key}) {
+            $content->{$key}[0] = $args->{$key} if $args->{$key};
+        }
+    }
+
+    push @{$xmltags->{LOCAL_USERS}}, $content;
+
+}
+
+sub addLocalGroup {
+    my ($self, $args) = @_;
+    my $xmltags = $self->{xmltags};
+
+    my $content = {};
+
+    foreach my $key (qw/ID MEMBER NAME/) {
+        if (exists $args->{$key}) {
+            $content->{$key}[0] = $args->{$key} if $args->{$key};
+        }
+    }
+
+    push @{$xmltags->{LOCAL_GROUPS}}, $content;
+
+}
 sub addPrinter {
     my ($self, $args) = @_;
     my $xmltags = $self->{xmltags};
