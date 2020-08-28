@@ -367,7 +367,7 @@ sub download_end_handler{        # Get global structure
         #TODO Uncomment this line #undef $packages;
 
         # Reading configuration
-        open FH, "$dir/config" or die("Cannot read config file: $!");
+        open FH, "$dir/config";
         if (flock(FH, LOCK_SH)){
             $download_config = XMLin("$dir/config");
             close(FH);
@@ -377,8 +377,12 @@ sub download_end_handler{        # Get global structure
                 finish($logger, $context);
             }
         } else {
-            $logger->error("Cannot read config file :-( . Exiting.");
             close(FH);
+            if (-e "$dir/config") {
+                $logger->error("Cannot read config file :-( . Exiting.");
+            } else {
+                $logger->debug("Download not configured");
+            }
             finish($logger, $context);
         }
 
