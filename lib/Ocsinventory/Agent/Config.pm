@@ -37,6 +37,7 @@ my $default = {
     'scanhomedirs' => 0,
     'ssl' => 1,
     'ca' => '',
+    'snmp' => 0,
 
     # Other values that can't be changed with the
     # CLI parameters
@@ -137,6 +138,7 @@ sub loadUserParams {
 		"nolocal"        =>   \$self->{config}{nolocal},
 		"ssl=s"            =>   \$self->{config}{ssl},
 		"ca=s"            =>   \$self->{config}{ca},
+        "snmp=s"            =>   \$self->{config}{snmp},
 	);
 
 	$self->help() if (!GetOptions(%options) || $self->{config}{help});

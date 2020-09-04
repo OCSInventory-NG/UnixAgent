@@ -62,7 +62,7 @@ for $option (@ARGV){
     } elsif($option=~/--download$/){
         $download = 1;
     } elsif($option=~/--snmp$/){
-        $snmp = 1;
+        $config->{snmp} = 1;
     } elsif($option=~/--now$/){
         $now = 1;
     } elsif($option=~/--help/ || $option=~/-h/) {
@@ -226,7 +226,7 @@ unless ($nowizard) {
     $download = ask_yn("Do you want to use OCS-Inventory software deployment feature?", 'y') unless $download;
 
     #Enable SNMP feature ?
-    $snmp = ask_yn("Do you want to use OCS-Inventory SNMP scans feature?", 'y') unless $snmp;
+    $config->{snmp} = ask_yn("Do you want to use OCS-Inventory SNMP scans feature?", 'y') unless $config->{snmp};
 
     #Run agent after configuration ?
     $now = ask_yn("Do you want to send an inventory of this machine?", 'y') unless $now;
@@ -428,8 +428,8 @@ print MODULE "# This mechanism goal is to launch agent extension modules\n";
 print MODULE "\n";
 print MODULE ($download?'':'#');
 print MODULE "use Ocsinventory::Agent::Modules::Download;\n";
-print MODULE ($snmp?'':'#');
-print MODULE "use Ocsinventory::Agent::Modules::Snmp;\n";
+print MODULE ($config->{snmp}?'':'#');
+print MODULE "use Ocsinventory::Agent::Modules::SnmpScan;\n";
 print MODULE "\n";
 print MODULE "# DO NOT REMOVE THE 1;\n";
 print MODULE "1;\n";
