@@ -154,8 +154,6 @@ sub run {
     }
 }
 
-1;
-
 sub getSpeed{
     my ($speed)=@_;
 
@@ -223,13 +221,16 @@ sub getRoute {
     return $route;
 }
 
+1;
+__END__
+
 =head1 NAME
 
-OCSInventory::Agent::Backend::OS::BSD::Networks - Network-related informations
+OCSInventory::Agent::Backend::OS::BSD::Networks - Network-related information
 
 =head1 DESCRIPTION
 
-This module retrieves network informations.
+This module retrieves network information.
 
 =head1 FUNCTIONS
 
@@ -241,28 +242,18 @@ Returns the speed of the card.
 
 Returns the gateway
 
-=back
-
 =head2 getIPNetmaskV4
 
 Returns the IP v4 network mask 
-
-=back
 
 =head2 getIPNetmaskV6
 
 Returns the IP v6 network mask 
 
-=back
-
 =head2 getSubnetAddressIPv4 
 
 Returns the subnet of ip v4 network
 
-=back
-
-=head getSubnetAddressIPv6 
+=head2 getSubnetAddressIPv6 
 
 Returns the subnet of ip v6 network
-
-=back

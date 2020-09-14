@@ -781,6 +781,7 @@ sub getRouteIfconfig {
 }
 
 1;
+__END__
 
 =head1 NAME
 
@@ -788,7 +789,7 @@ OCSInventory::Agent::Backend::OS::Linux::Network::Networks - Network-related fun
 
 =head1 DESCRIPTION
 
-This module retrieves network informations.
+This module retrieves network information.
 
 =head1 FUNCTIONS
 
@@ -839,5 +840,3 @@ Returns the gateway defined int he ip config.
 =head2 getRouteIfconfig
 
 Returns the gateway defined in the ip config.
-
-=back
