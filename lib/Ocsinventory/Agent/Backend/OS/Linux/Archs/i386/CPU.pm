@@ -22,10 +22,10 @@ sub run {
     foreach my $info (@cpuinfos){
         chomp $info;
         $cpu->{CPUARCH}=$1 if ($info =~ /Architecture:\s*(.*)/i);
-        $cpu->{NBCPUS}=$1 if ($info =~ /^CPU\(s\):\s*(\d)/i);
-        $cpu->{THREADS}=$1 if ($info =~ /Thread\(s\)\sper\score:\s*(\d)/i);
-        $cpu->{CORES}=$1 if ($info =~ /Core\(s\)\sper\ssocket:\s*(\d)/i);
-        $cpu->{NBSOCKET}=$1 if ($info =~ /Socket\(s\):\s*(\d)/i);
+        $cpu->{NBCPUS}=$1 if ($info =~ /^CPU\(s\):\s*(\d+)/i);
+        $cpu->{THREADS}=$1 if ($info =~ /Thread\(s\)\sper\score:\s*(\d+)/i);
+        $cpu->{CORES}=$1 if ($info =~ /Core\(s\)\sper\ssocket:\s*(\d+)/i);
+        $cpu->{NBSOCKET}=$1 if ($info =~ /Socket\(s\):\s*(\d+)/i);
         $cpu->{TYPE}=$1 if ($info =~ /Model\sname:\s*(.*)/i);
         if ($info =~ /Vendor ID:\s*(Authentic|Genuine|)(.+)/i){
             $cpu->{MANUFACTURER} = $2;
