@@ -13,7 +13,7 @@ sub run {
     my $params = shift;
     my $common = $params->{common};
 
-my $OSname;
+    my $OSname;
     chomp($OSname =`lsb_release -is`);
 
     my $OSversion;
