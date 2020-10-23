@@ -14,6 +14,7 @@
 #import <Cocoa/Cocoa.h>
 #include <Security/Authorization.h>
 #include <Security/AuthorizationTags.h>
+#include "GetPID.h"
 
 int main(int argc, char *argv[]) {
 	NSAutoreleasePool *autoreleasepool = [[NSAutoreleasePool alloc] init];
@@ -39,7 +40,7 @@ int main(int argc, char *argv[]) {
 		[askOcsAgentLaunch setInformativeText:NSLocalizedString(@"Ask_agent_run_comment", @"First window comment")];
 		[askOcsAgentLaunch addButtonWithTitle:NSLocalizedString(@"Yes", @"Yes Button")];
 		[askOcsAgentLaunch addButtonWithTitle:NSLocalizedString(@"No", @"No Button")];
-		[askOcsAgentLaunch setAlertStyle:NSInformationalAlertStyle];
+        [askOcsAgentLaunch setAlertStyle:NSAlertStyleInformational];
 
 		//Our application become the topmost window
 		[NSApp activateIgnoringOtherApps:YES];
