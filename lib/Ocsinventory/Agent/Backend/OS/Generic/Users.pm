@@ -109,7 +109,7 @@ sub _getLocalGroups {
          push @groups, {
              ID     => $gid,
              NAME   => $name,
-             MEMBER => @members,
+             MEMBER => \@members,
          };
      }
 
