@@ -56,6 +56,8 @@ sub run {
             # dimm_part_number is an hex string, convert it to ascii
             $desc = pack "H*", $desc;
             $desc =~ s/\s+$//;
+            # New macs might have some specific characters, perform a regex to fix it
+            $desc =~ s/(?!-)[[:punct:]]//g;
         }
 
         # if system_profiler lables the size in gigs, we need to trim it down to megs so it's displayed properly
