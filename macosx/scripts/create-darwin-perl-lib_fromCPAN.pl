@@ -88,10 +88,15 @@ $args{$_} = $default{$_} foreach grep !exists $args{$_}, keys %default;
 #
 
 $deps{'CORE'} = [ text_to_hash( << ".") ];
+Test::Needs
 XML::SAX
 XML::Parser
 XML::Simple
 URI
+Proc::Daemon
+Proc::PID::File
+Data::UUID
+Switch
 XML::NamespaceSupport
 File::Listing
 Net::IP
@@ -101,11 +106,15 @@ IO::Zlib
 Mac::SysProfile
 Mac::PropertyList
 Parse::EDID
+XSLoader
 LWP
 LWP::UserAgent
 LWP::Protocol::https
 XML::Entities
 Mac::SysProfile
+ExtUtils::ParseXS
+Scalar::Util
+Proc::ProcessTable
 .
 
 # push all the dep's into a @missing array
@@ -150,7 +159,7 @@ sub resolve_dep {
                 unshift @INC, "$ENV{'HOME'}/.cpan";
 	}
 
-	unshift @INC, "/Users/$user/~darwin-perl-lib";
+	unshift @INC, "/Users/$user/perl5";
 
     print "\nInstall module $module\n";
     my $cfg = (eval { require CPAN::MyConfig });
