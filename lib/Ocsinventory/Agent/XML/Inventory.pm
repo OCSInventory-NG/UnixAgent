@@ -188,7 +188,7 @@ sub processChecksum {
         'PORTS'         => 128,
         'STORAGES'      => 256,
         'DRIVES'        => 512,
-        'INPUT'         => 1024,
+        'INPUTS'        => 1024,
         'MODEMS'        => 2048,
         'NETWORKS'      => 4096,
         'PRINTERS'      => 8192,
