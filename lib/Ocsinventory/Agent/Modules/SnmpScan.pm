@@ -140,6 +140,9 @@ sub snmpscan_end_handler {
 
     # We get the config
     my $config = $self->{context}->{config};
+    # Load setting from the config file
+    my $configagent = new Ocsinventory::Agent::Config;
+    $configagent->loadUserParams();
     
     my $communities=$self->{communities};
     if ( ! defined ($communities ) ) {
@@ -203,8 +206,8 @@ sub snmpscan_end_handler {
             } else {
                 # We have an older version v2c ou v1
                 ($session, $error) = Net::SNMP->session(
-                    -retries     => 1 ,
-                    -timeout     => 3,
+                    -retries     => $configagent->{config}{snmpretry}, # SNMP retyr in config file
+                    -timeout     => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
                     -version     => 'snmpv'.$comm->{VERSION},
                     -hostname    => $device->{IPADDR},
                     -community   => $comm->{NAME},
