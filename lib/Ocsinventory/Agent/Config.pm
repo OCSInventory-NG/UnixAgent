@@ -38,8 +38,8 @@ my $default = {
     'ssl' => 1,
     'ca' => '',
     'snmp' => 0,
-    'snmptimeout' => 1,
-    'snmpretry' => 0,
+    'snmptimeout' => 3,
+    'snmpretry' => 2,
 
     # Other values that can't be changed with the
     # CLI parameters
