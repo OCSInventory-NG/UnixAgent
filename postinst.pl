@@ -105,8 +105,18 @@ unless ($config->{basevardir}) {
     } elsif ($^O =~ /bsd/) {
         $config->{basevardir} = '/var/db/ocsinventory-agent';
     } else { 
-        $config->{basevardir} = '/var/lib/ocsinventory-agent'
+        $config->{basevardir} = '/var/lib/ocsinventory-agent';
     }
+}
+
+# Default value of SNMP timeout
+unless ($config->{snmptimeout}) {
+    $config->{snmptimeout} = 3;
+}
+
+# Default value of SNMP retry
+unless ($config->{snmpretry}) {
+    $config->{snmpretry} = 2;
 }
 
 

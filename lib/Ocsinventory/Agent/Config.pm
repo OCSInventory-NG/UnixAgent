@@ -38,6 +38,8 @@ my $default = {
     'ssl' => 1,
     'ca' => '',
     'snmp' => 0,
+    'snmptimeout' => 3,
+    'snmpretry' => 2,
 
     # Other values that can't be changed with the
     # CLI parameters
@@ -139,6 +141,8 @@ sub loadUserParams {
 		"ssl=s"            =>   \$self->{config}{ssl},
 		"ca=s"            =>   \$self->{config}{ca},
         "snmp=s"            =>   \$self->{config}{snmp},
+        "snmptimeout=s"   =>   \$self->{config}{snmptimeout},
+        "snmpretry=s"     =>   \$self->{config}{snmpretry},
 	);
 
 	$self->help() if (!GetOptions(%options) || $self->{config}{help});
