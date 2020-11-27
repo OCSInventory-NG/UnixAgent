@@ -188,7 +188,7 @@ sub snmpscan_end_handler {
                     -timeout     => 3,
                     -version     => 'snmpv'.$comm->{VERSION},
                     -hostname    => $device->{IPADDR},
-                    -translate   => [-nosuchinstance => 0, -nosuchobject => 0],
+                    -translate   => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
                     -username      => $comm->{USERNAME},
                     -authpassword  => $comm->{AUTHPASSWD},
                     -authprotocol  => $comm->{AUTHPROTO},
@@ -211,7 +211,7 @@ sub snmpscan_end_handler {
                     -version     => 'snmpv'.$comm->{VERSION},
                     -hostname    => $device->{IPADDR},
                     -community   => $comm->{NAME},
-                    -translate   => [-nosuchinstance => 0, -nosuchobject => 0],
+                    -translate   => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
                 );
             };
             unless (defined($session)) {
