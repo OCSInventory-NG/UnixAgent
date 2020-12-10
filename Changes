@@ -1,4 +1,13 @@
 Revision history for Ocsinventory::Agent
+
+2.8.1
+       * Add octectstring management on SNMP Scan
+       * Add retry and timeout config for SNMP
+       * Fix perl warnings on HASH
+       * Fix warning on SNMP Scanner
+       * Fix digit retrival using bigger digit and avoid truncate
+       * Remove old SNMP scanning feature
+
 2.8
        * Rework SNMP Interface and configuration
        * Rework IPDiscover manager
