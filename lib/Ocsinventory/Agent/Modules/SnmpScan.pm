@@ -12,6 +12,7 @@ package Ocsinventory::Agent::Modules::SnmpScan;
 
 use strict;
 no strict 'refs';
+no strict 'subs';
 use warnings;
 
 use XML::Simple;
