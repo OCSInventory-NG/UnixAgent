@@ -598,7 +598,7 @@ sub addLocalUser {
 
     my $content = {};
 
-    foreach my $key (qw/GID HOME ID LOGIN NAME SHELL/) {
+    foreach my $key (qw/GID HOME ID_USER LOGIN NAME SHELL/) {
         if (exists $args->{$key}) {
             $content->{$key}[0] = $args->{$key} if $args->{$key};
         }
@@ -614,7 +614,7 @@ sub addLocalGroup {
 
     my $content = {};
 
-    foreach my $key (qw/ID MEMBER NAME/) {
+    foreach my $key (qw/ID_GROUP MEMBER NAME/) {
         if (exists $args->{$key}) {
             $content->{$key}[0] = $args->{$key} if $args->{$key};
         }
