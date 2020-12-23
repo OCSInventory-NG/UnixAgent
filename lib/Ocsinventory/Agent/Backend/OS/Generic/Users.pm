@@ -2,7 +2,6 @@ package Ocsinventory::Agent::Backend::OS::Generic::Users;
 
 use strict;
 use warnings;
-use Data::Dumper;
 
 sub check {
     my $params = shift;
@@ -38,23 +37,24 @@ sub run {
 	    #delete $user->{GID};
 
         $common->addLocalUser({
-            LOGIN => $user->{LOGIN},
-            ID    => $user->{ID},
-            GID   => $user->{GID},
-            NAME  => $user->{NAME},
-            HOME  => $user->{HOME},
-            SHELL => $user->{SHELL}
+            LOGIN   => $user->{LOGIN},
+            ID_USER => $user->{ID_USER},
+            GID     => $user->{GID},
+            NAME    => $user->{NAME},
+            HOME    => $user->{HOME},
+            SHELL   => $user->{SHELL}
         });
     }
 
     # Local groups with members
     foreach my $group (_getLocalGroups()) {
-        push @{$group->{MEMBER}}, @{$users{$group->{ID}}} if $users{$group->{ID}};
+        push @{$group->{MEMBER}}, @{$users{$group->{ID_GROUP}}} if $users{$group->{ID_GROUP}};
+        my $group_member = join ',', @{$group->{MEMBER}};
 
         $common->addLocalGroup({
-            ID     => $group->{ID},
-            NAME   => $group->{NAME},
-            MEMBER => $group->{MEMBER}
+            ID_GROUP    => $group->{ID_GROUP},
+            NAME        => $group->{NAME},
+            MEMBER      => $group_member
         });
     }
 
@@ -69,20 +69,21 @@ sub _getLocalUsers{
      close($fh);
 
      my @users;
-
+    
      foreach my $line (@userinfo){
+         
          next if $line =~ /^#/;
          next if $line =~ /^[+-]/; # old format for external inclusion
          chomp $line;
          my ($login, undef, $uid, $gid, $gecos, $home, $shell) = split(/:/, $line);
 
          push @users, {
-             LOGIN => $login,
-             ID    => $uid,
-             GID   => $gid,
-             NAME  => $gecos,
-             HOME  => $home,
-             SHELL => $shell,
+             LOGIN      => $login,
+             ID_USER    => $uid,
+             GID        => $gid,
+             NAME       => $gecos,
+             HOME       => $home,
+             SHELL      => $shell,
          };
      }
 
@@ -105,11 +106,11 @@ sub _getLocalGroups {
 
          next unless $members;
          my @members = split(/,/, $members);
-
+            
          push @groups, {
-             ID     => $gid,
-             NAME   => $name,
-             MEMBER => \@members,
+             ID_GROUP   => $gid,
+             NAME       => $name,
+             MEMBER     => \@members,
          };
      }
 
