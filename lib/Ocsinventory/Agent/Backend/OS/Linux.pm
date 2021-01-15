@@ -14,7 +14,7 @@ sub run {
 
     my $lastloggeduser;
     my $datelastlog;
-    my @query = $common->runcmd("last -R");
+    my @query = $common->runcmd("last -R -n 1");
 
     foreach ($query[0]) {
         if ( s/^(\S+)\s+\S+\s+(\S+\s+\S+\s+\S+\s+\S+)\s+.*// ) {
