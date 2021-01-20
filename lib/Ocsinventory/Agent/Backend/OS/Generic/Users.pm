@@ -9,7 +9,7 @@ sub check {
 
     # Useless check for a posix system i guess
     my @who = `who 2>/dev/null`;
-    my @last = `last 2>/dev/null`;
+    my @last = `last -n 1 2>/dev/null`;
 
     if (($common->can_read("/etc/passwd") && $common->can_read("/etc/group")) || @who || @last ) {
         return 1;
@@ -122,7 +122,7 @@ sub _getLast {
     
     my ($lastuser,$lastlogged);
 
-    my @info=`last`;
+    my @info=`last -n 50`;
 
     foreach my $last (@info) {
         chomp $last;
