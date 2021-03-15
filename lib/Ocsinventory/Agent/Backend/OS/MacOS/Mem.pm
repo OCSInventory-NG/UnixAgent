@@ -54,7 +54,7 @@ sub run {
         my $desc = $memory->{'dimm_part_number'};
         if ($desc !~ /empty/) {
             # dimm_part_number is an hex string, convert it to ascii
-            $desc = $desc =~ s/^0x//;
+            $desc =~ s/^0x//;
             $desc = pack "H*", $desc;
             $desc =~ s/\s+$//;
             # New macs might have some specific characters, perform a regex to fix it
