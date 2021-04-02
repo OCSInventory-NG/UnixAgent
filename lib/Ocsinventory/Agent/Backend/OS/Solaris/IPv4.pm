@@ -18,7 +18,7 @@ sub run {
     # Solaris need -a option
     for (`ifconfig -a`){#ifconfig in the path
         #Solarisligne inet
-       if (/^\s*inet\s+(\S+).*/){($1=~/127.+/)?next:($ip{$1}=1)};
+       if (/^\s*inet\s+(\S+).*/){($1=~/^127.+/)?next:($ip{$1}=1)};
     }
 
     # Ok. Now, we have the list of IP addresses configured
