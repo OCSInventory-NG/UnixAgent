@@ -26,6 +26,7 @@ my $nossl;
 my $download;
 my $snmp;
 my $now;
+my $nosoftware;
 
 
 for $option (@ARGV){
@@ -61,6 +62,8 @@ for $option (@ARGV){
         $config->{ca} = $1;
     } elsif($option=~/--download$/){
         $download = 1;
+    } elsif($option=~/--nosoftware$/){
+        $nosoftware = 1;
     } elsif($option=~/--snmp$/){
         $config->{snmp} = 1;
     } elsif($option=~/--now$/){
@@ -82,6 +85,7 @@ Usage :
 \t--logfile=path                set OCS Inventory NG Unix Unified agent log file path (if needed) 
 \t--nossl                       disable SSL CA verification configuration option while installing OCS Inventory NG Unix Unified agent (not recommended)
 \t--ca=path                     set OCS Inventory NG Unix Unified agent CA certificates file path
+\t--nosoftware                  disable software inventory
 \t--download                    activate package deployment feature while installing OCS Inventory NG Unix Unified agent
 \t--snmp                        activate SNMP scans feature while installing OCS Inventory NG Unix Unified agent
 \t--now                         launch OCS Inventory NG Unix Unified agent after installation
@@ -232,6 +236,10 @@ unless ($nowizard) {
         }
     }
 
+    #Disable software inventory ?
+    unless ($nosoftware) {
+        $nossl = ask_yn("Do you want disable software inventory?", 'n');
+    }
     #Enable download feature ?
     $download = ask_yn("Do you want to use OCS-Inventory software deployment feature?", 'y') unless $download;
 
@@ -355,6 +363,13 @@ if (!-d $config->{basevardir}) {
 
 #Disabling SSL verification if asked
 $config->{ssl} = 0 if $nossl;
+
+#Disabling software inventory 
+if ($nosoftware) {
+    $config->{nosoftware} = 1;
+} else {
+    $config->{nosoftware} = 0;
+}
 
 #Creating configuration directory 
 $configdir = "/etc/ocsinventory-agent" unless $configdir;  #If not set in command line
