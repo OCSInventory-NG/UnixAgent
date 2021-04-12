@@ -122,7 +122,7 @@ unless ($config->{snmpretry}) {
 
 ############ Asking for questions ##############
 unless ($nowizard) {
-    if (!ask_yn("Do you want to configure the agent", 'y')) {
+    if (!ask_yn("Do you want to configure the agent?", 'y')) {
          exit 0;
     }
   
@@ -141,7 +141,7 @@ unless ($nowizard) {
     }
 
     #Old unix agent
-    if (ask_yn("Should the old unix_agent settings be imported ?", 'y')) {
+    if (ask_yn("Should the old unix_agent settings be imported?", 'y')) {
         $old_unix_config=1;
     }
 
@@ -182,18 +182,18 @@ unless ($nowizard) {
 
     #Getting tag
     unless ($config->{tag}){
-        if (ask_yn('Do you want to apply an administrative tag on this machine', 'y')) {
+        if (ask_yn('Do you want to apply an administrative tag on this machine?', 'y')) {
             $config->{tag} = promptUser("tag", $config->{tag});
         }
     }
 
     #Getting crontab
     if ($^O =~ /solaris/ || $^O =~ /bsd/) {
-        if (ask_yn("Do yo want to install the cron task in current user crontab ?", 'y')) {
+        if (ask_yn("Do yo want to install the cron task in current user crontab?", 'y')) {
             $crontab = 1;
         }
     } elsif (-d "/etc/cron.d") {
-        if (ask_yn("Do yo want to install the cron task in /etc/cron.d", 'y')) {
+        if (ask_yn("Do yo want to install the cron task in /etc/cron.d?", 'y')) {
             $crontab = 1;
         }
     }
@@ -208,26 +208,26 @@ unless ($nowizard) {
     }
 
     #Remove old unix agent ?
-    $remove_old_unix = ask_yn ("Should I remove the old unix_agent", 'n') unless $remove_old_unix;
+    $remove_old_unix = ask_yn ("Should I remove the old unix_agent?", 'n') unless $remove_old_unix;
 
     #Enable debug option ?
-    $config->{debug} = ask_yn("Do you want to activate debug configuration option ?", 'y') unless $config->{debug};
+    $config->{debug} = ask_yn("Do you want to activate debug configuration option?", 'y') unless $config->{debug};
 
     #Enable log file ?
     unless ($config->{logfile}) {
-        if (ask_yn("Do you want to use OCS Inventory NG UNix Unified agent log file ?", 'y')){ 
+        if (ask_yn("Do you want to use OCS Inventory NG UNix Unified agent log file?", 'y')){ 
             $config->{logfile} = promptUser('Specify log file path you want to use', $config->{logfile}, '^\/\w+', 'The location must begin with /');
         }
     }
 
     #Disable SSL option ?
     unless ($nossl) {
-        $nossl = ask_yn("Do you want disable SSL CA verification configuration option (not recommended) ?", 'n');
+        $nossl = ask_yn("Do you want disable SSL CA verification configuration option (not recommended)?", 'n');
     }
 
     #Set CA certificates file path ?
     unless ($config->{ca}) {
-        if (ask_yn("Do you want to set CA certificates file path ?", 'y')){
+        if (ask_yn("Do you want to set CA certificates file path?", 'y')){
             $config->{ca} = promptUser('Specify CA certificates file path', $config->{ca}, '^\/\w+', 'The location must begin with /');
         }
     }
@@ -495,7 +495,7 @@ sub ask_yn {
         return 1 if $line =~ /^y$/;
         return if $line =~ /^n$/;
         if ($cpt-- < 0) {
-            print STDERR "to much user input, exit...\n";
+            print STDERR "too much user input, exit...\n";
             exit(0);
         }
     }
@@ -518,7 +518,7 @@ sub promptUser {
             last;
         }
         if ($cpt-- < 0) {
-            print STDERR "to much user input, exit...\n";
+            print STDERR "too much user input, exit...\n";
             exit(0);
         }
     }
