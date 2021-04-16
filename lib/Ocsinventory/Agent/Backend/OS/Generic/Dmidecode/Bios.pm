@@ -7,16 +7,20 @@ sub run {
   
     # Parsing dmidecode output
     # Using "type 0" section
-    my( $SystemSerial , $SystemModel, $SystemManufacturer, $BiosManufacturer,
+    my( $SystemSerial , $SystemModel, $SystemManufacturer, $SystemVersion, $BiosManufacturer,
       $BiosVersion, $BiosDate, $AssetTag, $MotherboardManufacturer, $MotherboardModel, $MotherboardSerial, $Type );
   
     #System DMI
     $SystemManufacturer = `dmidecode -s system-manufacturer`;
     $SystemModel = `dmidecode -s system-product-name`;
     $SystemSerial = `dmidecode -s system-serial-number`;
+    $SystemVersion = `dmidecode -s system-version`;
     $AssetTag = `dmidecode -s chassis-asset-tag`;
     $Type = `dmidecode -s chassis-type`;
     
+    chomp($SystemVersion);
+    $SystemVersion =~ s/^(#.*\n)+//g;
+    $SystemVersion =~ s/Invalid.*$//g;
     chomp($SystemModel);
     $SystemModel =~ s/^(#.*\n)+//g;
     $SystemModel =~ s/Invalid.*$//g;
@@ -34,6 +38,12 @@ sub run {
     chomp($Type);
     $Type =~ s/^(#.*\n)+//g;
     $Type =~ s/Invalid.*$//g;
+
+    if ($SystemModel && $SystemManufacturer && $SystemManufacturer =~ /^LENOVO$/i && $SystemVersion =~ /^(Think|Idea|Yoga|Netfinity|Netvista|Intelli)/i) {
+        my $product_name = $SystemVersion;
+        $SystemVersion = $SystemModel;
+        $SystemModel = $product_name;
+    }
     
     #Motherboard DMI
     $MotherboardManufacturer = `dmidecode -s baseboard-manufacturer`;
