@@ -86,7 +86,10 @@ if ($ENV{OCS_BUNDLE_RELEASE}) {
 #Ugly hack to include ipdiscover binary compilation and install for Linux systems
 if ($^O =~ /^linux$/i && can_cc()) {
     my $cc=$Config::Config{cc};
-    system("$cc resources/ipdiscover/ipdiscover.c -o ipdiscover");
+    my $ld=$Config::Config{ldflags};
+    my $cf=$Config::Config{ccflags};
+    my $op=$Config::Config{optimize};
+    system("$cc $cf $ld $op resources/ipdiscover/ipdiscover.c -o ipdiscover");
     if (-f 'ipdiscover') {
       install_script 'ipdiscover';
     }
