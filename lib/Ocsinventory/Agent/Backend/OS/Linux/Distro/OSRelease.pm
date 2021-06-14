@@ -43,7 +43,7 @@ sub run {
     if (-r "/etc/centos-release") {
         open V, "/etc/centos-release" or warn;
         foreach (<V>) {
-            my $version = $1 if ($_ =~ /(\d+\.\d+)./g);
+            $version = $1 if ($_ =~ /(\d+\.\d+)./g);
         }
         close V;
         chomp($version);
