@@ -42,11 +42,12 @@ sub run {
     # CentOS exact version number is set in /etc/centos-release file
     if (-r "/etc/centos-release") {
         open V, "/etc/centos-release" or warn;
-        foreach (<V>) {
-            my $version = $1 if ($_ =~ /(\d+\.\d+)./g);
+        foreach ($description=<V>) {
+            $version = $1 if ($_ =~ /(\d+\.\d+)./g);
         }
         close V;
         chomp($version);
+        chomp($description);
     }
 
     $common->setHardware({
