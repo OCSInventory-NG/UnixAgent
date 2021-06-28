@@ -104,11 +104,12 @@ sub _getLocalGroups {
          chomp $line;
          my ($name, undef, $gid, $members) = split(/:/, $line);
          next unless $members;
-            
+         my @members = split(/,/, $members);
+
          push @groups, {
              ID_GROUP   => $gid,
              NAME       => $name,
-             MEMBER     => $members,
+             MEMBER     => \@members,
          };
      }
 
