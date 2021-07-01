@@ -1,0 +1,26 @@
+## 
+## OCS Inventory "Unix Unified Agent" Configuration File
+## used by the supplied cron job
+##
+
+## Add tools directory if needed (tw_cli, hpacucli, ipssend, ...)
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+## Mode, change to "cron" to activate
+OCSMODE[0]=none
+
+## can be used to override the ocsinventory-agent.cfg setup.
+# OCSSERVER[0]=your.ocsserver.name
+#
+## If you need an HTTP/HTTPS proxy, fill this out
+# OCSPROXYSERVER[0]='http://user:pass@proxy:port'
+## 
+## corresponds with --local=/var/lib/ocsinventory-agent
+OCSSERVER[0]=local
+
+## Wait before inventory 
+OCSPAUSE[0]=100
+
+## Administrative TAG (optional, must be filed before first inventory)
+OCSTAG[0]=
+

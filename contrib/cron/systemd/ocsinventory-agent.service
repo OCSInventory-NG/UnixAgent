@@ -1,0 +1,10 @@
+[Unit]
+Description=OCS Inventory Agent
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/ocsinventory-agent/ocsinventory-agent.cron
+
+[Install]
+WantedBy=multi-user.target

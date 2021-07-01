@@ -1,0 +1,14 @@
+[Unit]
+Description=Run OCS Inventory once per day
+
+[Timer]
+OnCalendar=daily
+OnUnitInactiveSec=86000
+
+Unit=ocsinventory-agent.service
+RandomizedDelaySec=900
+AccuracySec=900
+Persistent=true
+
+[Install]
+WantedBy=timers.target
