@@ -227,7 +227,7 @@ sub run {
                             MTU => $mtu,
                         });
                     }
-                } 
+                }
                 if ($description && $ipaddress6) {
                     if ($type eq "Wifi") {
                           $common->addNetwork({
@@ -301,7 +301,7 @@ sub run {
                         });
                     }
                 }
-                
+
                 # Virtual devices
                 # Reliable way to get the info
                 if (-d "/sys/devices/virtual/net/") {
@@ -360,7 +360,7 @@ sub run {
                         TYPE => $type,
                         VIRTUALDEV => $virtualdev,
                     });
-                    
+
                 }
 
                 # Check if this is a vlan
@@ -375,7 +375,7 @@ sub run {
                     });
                 }
 
-                # Check if this is a secondary ip address 
+                # Check if this is a secondary ip address
                 if (@secondary) {
                     foreach my $info (@secondary) {
                         $ipsecond=$1 if ($info =~ /inet ((?:\d{1,3}+\.){3}\d{1,3})\/(\d+)/);
@@ -404,7 +404,7 @@ sub run {
                 $ipaddress=$1;
                 $ipmask=getIPNetmask($2);
                 $ipsubnet=getSubnetAddressIPv4($ipaddress,$ipmask);
-                $ipgateway=getIPRoute($ipaddress);
+                $ipgateway=getIPRoute($ipaddress,$ipmask);
             } elsif ($line =~ /\s+link\/(\S+)/){
                 $type=$1;
                 $macaddr=getMAC($description);
@@ -412,7 +412,7 @@ sub run {
                 $ipaddress6=$1;
                 $ipmask6=getIPNetmaskV6($2);
                 $ipsubnet6=getSubnetAddressIPv6($ipaddress6,$ipmask6);
-                $ipgateway6=getIPRoute($ipaddress6);
+                $ipgateway6=getIPRoute($ipaddress6,$ipmask6);
             }
             # Retrieve secondary ip addresses if defined
             if ($line =~ /secondary/i){
@@ -583,12 +583,12 @@ sub run {
                     $ipaddress=$1;
                     $ipmask=getIPNetmask($ipaddress);
                     $ipsubnet=getSubnetAddressIPv4($ipaddress,$ipmask);
-                    $ipgateway=getRouteIfconfig($ipaddress);
+                    $ipgateway=getRouteIfconfig($ipaddress,$ipmask);
                 } elsif ($line =~ /inet6 (\S+)\s+prefixlen\s+(\d{2})/i){
                     $ipaddress6=$1;
                     $ipmask6=getIPNetmaskV6($ipaddress6);
                     $ipsubnet6=getSubnetAddressIPv6($ipaddress6,$ipmask6);
-                    $ipgateway6=getRouteIfconfig($ipaddress6);
+                    $ipgateway6=getRouteIfconfig($ipaddress6,$ipmask6);
                 }
 
                 $macaddr = $1 if ($line =~ /hwadd?r\s+(\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2})/i || $line =~ /ether\s+(\w{2}:\w{2}:\w{2}:\w{2}:\w{2}:\w{2})/i);
@@ -742,14 +742,18 @@ sub getIPNetmaskV6 {
 }
 
 sub getIPRoute {
-    my ($prefix) = @_;
+    my ($prefix,$net) = @_;
+    my $gateway;
     my $route;
 
     return undef unless $prefix;
 
     if (ip_is_ipv4($prefix)) {
         foreach my $line (`ip route`){
-            $route = $1 if $line =~ /^default via\s+(\S+)/;
+            if ($line =~ /^default via ((?:\d{1,3}+\.){3}\d{1,3}) /){
+                $gateway=$1;
+            };
+            $route = $gateway if isSameNetwork($prefix,$gateway,$net);
         }
     } elsif (ip_is_ipv6($prefix)) {
         foreach my $line (`ip -6 route`){
@@ -780,7 +784,37 @@ sub getRouteIfconfig {
     return $route;
 }
 
+sub isSameNetwork {
+    my ($address1, $address2, $mask) = @_;
+
+    ## no critic (ExplicitReturnUndef)
+    return undef unless $address1 && $address2 && $mask;
+
+    my $binaddress1 = ip_iptobin($address1, 4);
+    my $binaddress2 = ip_iptobin($address2, 4);
+    my $binmask     = ip_iptobin($mask, 4);
+
+    ## no critic (ProhibitBitwise)
+    return ($binaddress1 & $binmask) eq ($binaddress2 & $binmask);
+}
+
+sub isSameNetworkIPv6 {
+    my ($address1, $address2, $mask) = @_;
+
+    ## no critic (ExplicitReturnUndef)
+    return undef unless $address1 && $address2 && $mask;
+
+    my $binaddress1 = ip_iptobin(ip_expand_address($address1, 6), 6);
+    my $binaddress2 = ip_iptobin(ip_expand_address($address2, 6), 6);
+    my $binmask     = ip_iptobin(ip_expand_address($mask, 6), 6);
+
+    ## no critic (ProhibitBitwise)
+    return ($binaddress1 & $binmask) eq ($binaddress2 & $binmask);
+}
+
 1;
+__END__
+
 __END__
 
 =head1 NAME
@@ -840,3 +874,13 @@ Returns the gateway defined int he ip config.
 =head2 getRouteIfconfig
 
 Returns the gateway defined in the ip config.
+
+=head2 isSameNetwork
+
+Returns true if both addresses belong to the same network, for IPv4.
+
+=head2 isSameNetworkIPv6
+
+Returns true if both addresses belong to the same network, for IPv6.
+
+=back
