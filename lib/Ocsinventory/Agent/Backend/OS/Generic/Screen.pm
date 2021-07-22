@@ -178,6 +178,7 @@ sub run {
             $logger->debug("check failed: bad edid: $err");
         }
         my $caption = $edid->{monitor_name};
+	$caption =~ s/[^ -~].*$//;
         my $description = $edid->{week}."/".$edid->{year};
         my $manufacturer = _getManufacturerFromCode($edid->{manufacturer_name});
         my $serial = $edid->{serial_number};
