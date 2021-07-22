@@ -18,8 +18,9 @@ sub run {
 
     my $equery_vers = `equery --version ` =~ /.*\((.*)\).*/;
     $equery_vers = $1;
+    my ($major,$minor)=$equery_vers=~/(\d+)\.(\d+)\.\d+/;
 
-    if ($equery_vers =~ /^0.3/) {
+    if ($minor ge 3) {
         foreach (`equery list --format='\$cp \$fullversion' '*'`){
             if (/^(.*) (.*)/) {
                 $common->addSoftware({

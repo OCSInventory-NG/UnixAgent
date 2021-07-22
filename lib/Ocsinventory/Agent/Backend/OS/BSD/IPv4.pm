@@ -16,7 +16,7 @@ sub run {
     # *BSD need -a option
     foreach (`ifconfig -a`){
         if (/^\s*inet\s+(\S+)/){
-            ($1=~/127.+/)?next:push @ip, $1
+            ($1=~/^127.+/)?next:push @ip, $1
         };
     }
   

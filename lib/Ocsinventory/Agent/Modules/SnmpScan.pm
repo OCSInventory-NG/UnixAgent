@@ -12,6 +12,7 @@ package Ocsinventory::Agent::Modules::SnmpScan;
 
 use strict;
 no strict 'refs';
+no strict 'subs';
 use warnings;
 
 use XML::Simple;
@@ -39,25 +40,6 @@ sub new {
         inventory_handler => undef,
         end_handler => $name."_end_handler",
     };
-
-    $self->{number_scan}=0;
-    $self->{snmp_oid_run}=$name."_oid_run";
-    $self->{snmp_oid_xml}=$name."_oid_xml";
-    $self->{func_oid}={};
-    $self->{snmp_dir}=[];
-    $self->{snmp_vardir} = ["$self->{context}->{installpath}/snmp/mibs/local/","$self->{context}->{installpath}/snmp/mibs/remote/"];
-
-    my $spec_dir_snmp="Ocsinventory/Agent/Modules/Snmp/";
-    $self->{spec_dir_snmp}=$spec_dir_snmp;
-    $self->{spec_module_snmp}="Ocsinventory::Agent::Modules::Snmp::";
-
-    # We are going to search where is the directory Ocsinventory/Modules/snmp
-    foreach my $dir ( @INC ) {
-        my $res_dir=$dir."/".$spec_dir_snmp;
-        if ( -d $res_dir ) {
-            push(@{$self->{snmp_dir}},$res_dir);
-        }
-    }
 
     # We create a xml for the snmp inventory that we will be sent to server
     $self->{inventory}={};
@@ -91,7 +73,6 @@ sub snmpscan_prolog_reader {
     my ($self, $prolog) = @_;
     my $logger = $self->{logger};
     my $network = $self->{context}->{network};
-    my $snmp_vardir = $self->{snmp_vardir};
 
     my $option;
 
@@ -139,13 +120,6 @@ sub snmpscan_prolog_reader {
                         OID => $_->{OID}
                     };
                 }
-        
-                # Creating the directory for xml if they don't yet exist
-                mkdir($self->{context}->{installpath}."/snmp") unless -d $self->{context}->{installpath}."/snmp";
-                mkdir($self->{context}->{installpath}."/snmp/mibs") unless -d $self->{context}->{installpath}."/snmp/mibs";
-                foreach my $dir ( @{$snmp_vardir}) {
-                    mkdir($dir) unless -d $dir;
-                }
             }
         }
     }
@@ -167,6 +141,9 @@ sub snmpscan_end_handler {
 
     # We get the config
     my $config = $self->{context}->{config};
+    # Load setting from the config file
+    my $configagent = new Ocsinventory::Agent::Config;
+    $configagent->loadUserParams();
     
     my $communities=$self->{communities};
     if ( ! defined ($communities ) ) {
@@ -212,7 +189,7 @@ sub snmpscan_end_handler {
                     -timeout     => 3,
                     -version     => 'snmpv'.$comm->{VERSION},
                     -hostname    => $device->{IPADDR},
-                    -translate   => [-nosuchinstance => 0, -nosuchobject => 0],
+                    -translate   => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
                     -username      => $comm->{USERNAME},
                     -authpassword  => $comm->{AUTHPASSWD},
                     -authprotocol  => $comm->{AUTHPROTO},
@@ -230,12 +207,12 @@ sub snmpscan_end_handler {
             } else {
                 # We have an older version v2c ou v1
                 ($session, $error) = Net::SNMP->session(
-                    -retries     => 1 ,
-                    -timeout     => 3,
+                    -retries     => $configagent->{config}{snmpretry}, # SNMP retyr in config file
+                    -timeout     => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
                     -version     => 'snmpv'.$comm->{VERSION},
                     -hostname    => $device->{IPADDR},
                     -community   => $comm->{NAME},
-                    -translate   => [-nosuchinstance => 0, -nosuchobject => 0],
+                    -translate   => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
                 );
             };
             unless (defined($session)) {

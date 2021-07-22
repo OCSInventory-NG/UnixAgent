@@ -40,7 +40,7 @@
 									<key>PATH</key>
 									<string>app/OCSNG.app</string>
 									<key>PATH_TYPE</key>
-									<integer>1</integer>
+									<integer>3</integer>
 									<key>PERMISSIONS</key>
 									<integer>493</integer>
 									<key>TYPE</key>
@@ -501,7 +501,7 @@
 				<key>USE_HFS+_COMPRESSION</key>
 				<false/>
 				<key>VERSION</key>
-				<string>2.6</string>
+				<string>2.8</string>
 			</dict>
 			<key>TYPE</key>
 			<integer>0</integer>

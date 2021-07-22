@@ -1,4 +1,45 @@
 Revision history for Ocsinventory::Agent
+
+2.8.1
+       * Add octectstring management on SNMP Scan
+       * Add retry and timeout config for SNMP
+       * Fix perl warnings on HASH
+       * Fix warning on SNMP Scanner
+       * Fix digit retrival using bigger digit and avoid truncate
+       * Remove old SNMP scanning feature
+
+2.8
+       * Rework SNMP Interface and configuration
+       * Rework IPDiscover manager
+       * Rework LDAP Authenticaiton
+       * Rework Auth backend
+       * Rework software inventory data structure 
+       * Add MySQL 8 compatibility
+       * Add ASCII code management on deployment messages
+       * Add "is not empty" criteria on multi search
+       * Add computer archive feature 
+       * Add IPDiscover scan split by TAG
+       * Add CVE Matching regex
+       * Add chinese translation
+       * Add perl injector related inventory on main dashboard
+       * Update German translation
+       * Improve CVE Inventory
+       * Improve translation on deployment form
+       * Move networks submenu to inventory menu for better visibility
+       * Fix date interval search on multi criteria
+       * Fix IPDiscover subnet blacklist
+       * Fix CVE-2020-14947
+       * Fix stats to match user TAG restrictions
+       * Fix CSV export to match table show / hide configuration
+       * Fix minor bugs on CVE Inventory
+       * Fix deployment estimation time when editing a packaged
+       * Fix deployment fragment bug
+       * Fix small package deployment (< 1024 bytes)
+       * Fix a bug on MySQL SSL connection
+       * Remove SNMP_INVENTORY_DIFF
+       * Typos fix
+       * Minor bug fix
+
 2.6.1
        * Allow encode http password in base64
        * Fix repository inventory #254

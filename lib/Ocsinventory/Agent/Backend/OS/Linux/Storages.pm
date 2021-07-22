@@ -70,14 +70,18 @@ sub getDescription {
     # TODO maybe we should trust udev detection by default?
     return "USB" if (defined ($description) && $description =~ /usb/i);
 
-    if ($name =~ /^s/) { # /dev/sd* are SCSI _OR_ SATA
+    if ($name =~ /^sd/) { # /dev/sd* are SCSI _OR_ SATA
         if ($manufacturer =~ /ATA/ || $serialnumber =~ /ATA/ || $description =~ /ATA/i) {
             return  "SATA";
         } else {
             return "SCSI";
         }
+    } elsif ($name =~ /^sg/) { # "g" stands for Generic SCSI
+        return "SCSI";
+    } elsif ($name =~ /^vd/ || ($description && $description =~ /VIRTIO/)) {
+        return "Virtual";
     } else {
-        return "IDE";
+        return $description || "IDE";
     }
 }
 
@@ -119,28 +123,28 @@ sub getMultipathDisks {
     foreach my $line (@mpList) {
         if ($line =~ /^([\w\d]+)\s\((.*)\)\s(dm-\d+)\s(\w+)\s+,([\w\d\s]+)$/i) {
             $volume = $1;
-                              $serial = $2;
-                              $dm = $3;
-                              $manufacturer = $4;
-                              $model = $5;
+            $serial = $2;
+            $dm = $3;
+            $manufacturer = $4;
+            $model = $5;
         }
-                    if ($line =~ /size=(\d+)(\w+)\s/) {
-                              my $size = $1;
-                              my $unit = $2;
-                              # conversion to mebibyte
-                              my %conversion = (
-                                        "T" => 1000**4,
-                                        "G" => 1000**3,
-                                        "M" => 1000**2,
-                                        "K" => 1000,
-                              );
-                              if ($conversion{$unit}) {
-                                        $size = $size / $conversion{$unit} * 2**20;
-                              } else {
-                                        $size = $size." ".$unit;
-                              }
-                              push (@devs, {NAME=>$dm, DESCRIPTION=>$volume, TYPE=>"Multipath volume", MODEL=>$model, SERIALNUMBER=>$serial, MANUFACTURER=>$manufacturer});
-                    }
+        if ($line =~ /size=(\d+)(\w+)\s/) {
+            my $size = $1;
+            my $unit = $2;
+            # conversion to mebibyte
+            my %conversion = (
+                "T" => 1000**4,
+                "G" => 1000**3,
+                "M" => 1000**2,
+                "K" => 1000,
+            );
+            if ($conversion{$unit}) {
+                $size = $size / $conversion{$unit} * 2**20;
+            } else {
+                $size = $size." ".$unit;
+            }
+            push (@devs, {NAME=>$dm, DESCRIPTION=>$volume, TYPE=>"Multipath volume", MODEL=>$model, SERIALNUMBER=>$serial, MANUFACTURER=>$manufacturer});
+        }
         if ($line =~ /(sd[a-z]+)/i) {
             push (@devs, {NAME=>$1, DESCRIPTION=>"Child of $dm", TYPE=>"Multipath child"});
         }
@@ -186,7 +190,7 @@ sub getFromDev {
     my $dir = "/dev";
 
     opendir (my $dh, $dir) or die $!;
-    @disks = grep{/^sd[a-z][a-z]?$|^vd[a-z][a-z]?$|^sr\d+$/} readdir($dh);
+    @disks = grep{/^sd[a-z][a-z]?$|^sg[a-z][a-z]?$|^vd[a-z][a-z]?$|^sr\d+$/} readdir($dh);
     foreach (@disks) {
         push (@devs, {NAME => $_});
     }
@@ -213,8 +217,15 @@ sub getFromLshw {
     }
     my $xml = new XML::Simple;
     my $data = $xml->XMLin($input);
-#    my $nodes = $data->{list}->{node};
-    my $nodes = $data->{list};
+    my $list = $data->{list}->{node};
+    my $nodes;
+
+    # if there is only device, its hash is returned
+    if ( exists $list->{id} ) {
+        $nodes->{$list->{id}} = $list;
+    } else {
+	    $nodes = $list;
+    }
 
     foreach my $device (sort keys %$nodes) {
         my $description = "";
@@ -301,8 +312,8 @@ sub getFromLsblk {
     foreach my $line (`lsblk -ldbn`) {
         my @columns     = split /\s+/, $line;
         my $deviceName  = $columns[0];
-        my $size                = $columns[3];
-        my $type                = $columns[5];
+        my $size        = $columns[3];
+        my $type        = $columns[5];
         $size = "" if ($type =~ /rom/);
         push (@devs, {NAME => $deviceName, TYPE => $type, DISKSIZE => $size});
     }

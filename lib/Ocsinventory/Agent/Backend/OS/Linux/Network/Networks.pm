@@ -58,7 +58,7 @@ sub _ipdhcp {
 
     $leasepath = getLeaseFile($if);
 
-    if ( $leasepath =~ /internal/ ) {
+    if ( $leasepath and $leasepath =~ /internal/ ) {
         if (open DHCP, $leasepath) {
             while(<DHCP>) {
                 if (/SERVER_ADDRESS=(\d{1,3}(?:\.\d{1,3}){3})/) {
@@ -69,7 +69,7 @@ sub _ipdhcp {
         } else {
             warn ("Can't open $leasepath\n");
         }
-    } else {
+    } elsif( $leasepath ) {
         if (open DHCP, $leasepath) {
             my $lease;
             while(<DHCP>){
@@ -813,6 +813,7 @@ sub isSameNetworkIPv6 {
 }
 
 1;
+__END__
 
 __END__
 
@@ -822,7 +823,7 @@ OCSInventory::Agent::Backend::OS::Linux::Network::Networks - Network-related fun
 
 =head1 DESCRIPTION
 
-This module retrieves network informations.
+This module retrieves network information.
 
 =head1 FUNCTIONS
 

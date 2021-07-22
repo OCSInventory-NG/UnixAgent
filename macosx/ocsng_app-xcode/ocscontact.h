@@ -9,8 +9,9 @@
 //
 //
 
-#import <Cocoa/Cocoa.h>
-
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
 
 @interface ocscontact : NSObject {
 

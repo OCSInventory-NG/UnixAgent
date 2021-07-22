@@ -57,7 +57,7 @@ sub run {
                 'NAME'          => $deb[0],
                 'ARCHITECTURE'  => $deb[1],
                 'VERSION'       => $deb[2],
-                'FILESIZE'      => $deb[3]*1024,
+                'FILESIZE'      => ( $deb[3] || 0 ) * 1024,
                 'PUBLISHER'     => $deb[5],
                 'INSTALLDATE'   => $statinfo{$key},
                 'COMMENTS'      => $deb[6],
