@@ -87,6 +87,7 @@ sub _getManufacturerFromCode {
     "PDC" => "Polaroid",
     "PGS" => "Princeton Graphic Systems",
     "PHL" => "Philips Consumer Electronics Co.",
+    "POS" => "Positivo Tecnologia S.A.",
     "PRT" => "Princeton",
     "PTS" => "ProView/EMC/PTS YakumoTFT17SL",
     "REL" => "Relisys",
