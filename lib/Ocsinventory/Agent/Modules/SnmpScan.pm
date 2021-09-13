@@ -313,7 +313,7 @@ sub snmp_ip_scan {
             $logger->debug("Scannig $net_to_scan with nmap");
             my $nmaparser = Nmap::Parser->new;
 
-            $nmaparser->parsescan("nmap","-sP",$net_to_scan);
+            $nmaparser->parsescan("nmap","-sn",$net_to_scan);
             for my $host ($nmaparser->all_hosts("up")) {
                my $res=$host->addr;
                $logger->debug("Found $res");
