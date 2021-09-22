@@ -146,6 +146,7 @@ sub snmpscan_end_handler {
     $configagent->loadUserParams();
     
     my $communities=$self->{communities};
+
     if ( ! defined ($communities ) ) {
         $logger->debug("We have no Community from server, we use default public community");
         $communities=[{VERSION=>"2c",NAME=>"public"}];
@@ -183,13 +184,13 @@ sub snmpscan_end_handler {
         # Search for the good snmp community in the table community
         LIST_SNMP: foreach $comm ( @$communities ) {
             # Test if we use SNMP v3
-            if ( $comm->{VERSION} eq "3"  ) {
+            if ( $comm->{VERSION} eq "3" ) {
                 ($session, $error) = Net::SNMP->session(
-                    -retries     => 2 ,
-                    -timeout     => 3,
-                    -version     => 'snmpv'.$comm->{VERSION},
-                    -hostname    => $device->{IPADDR},
-                    -translate   => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
+                    -retries       => $configagent->{config}{snmpretry}, # SNMP retry in config file
+                    -timeout       => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
+                    -version       => 'snmpv'.$comm->{VERSION},
+                    -hostname      => $device->{IPADDR},
+                    -translate     => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
                     -username      => $comm->{USERNAME},
                     -authpassword  => $comm->{AUTHPASSWD},
                     -authprotocol  => $comm->{AUTHPROTO},
@@ -207,7 +208,7 @@ sub snmpscan_end_handler {
             } else {
                 # We have an older version v2c ou v1
                 ($session, $error) = Net::SNMP->session(
-                    -retries     => $configagent->{config}{snmpretry}, # SNMP retyr in config file
+                    -retries     => $configagent->{config}{snmpretry}, # SNMP retry in config file
                     -timeout     => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
                     -version     => 'snmpv'.$comm->{VERSION},
                     -hostname    => $device->{IPADDR},
@@ -227,22 +228,36 @@ sub snmpscan_end_handler {
                 my $snmp_key = $self->{snmp_type_condition};
 
                 LIST_TYPE: foreach my $snmp_value (@$snmp_key) {
-                    $oid_condition = $session->get_request(-varbindlist => [$snmp_value->{CONDITION_OID}]);
-                    $snmp_table = $snmp_value->{TABLE_TYPE_NAME};
-                    $snmp_condition_oid = $snmp_value->{CONDITION_OID};
-                    $snmp_condition_value = $snmp_value->{CONDITION_VALUE};
-                    $regex = $self->regex($snmp_condition_value);
+                    if($snmp_value->{TABLE_TYPE_NAME} ne 'snmp_default') {
+                        $oid_condition = $session->get_request(-varbindlist => [$snmp_value->{CONDITION_OID}]);
+                        $snmp_table = $snmp_value->{TABLE_TYPE_NAME};
+                        $snmp_condition_oid = $snmp_value->{CONDITION_OID};
+                        $snmp_condition_value = $snmp_value->{CONDITION_VALUE};
+                        $regex = $self->regex($snmp_condition_value);
 
-                    last LIST_TYPE if (defined $oid_condition && ($oid_condition->{$snmp_value->{CONDITION_OID}} eq $snmp_value->{CONDITION_VALUE} || $oid_condition->{$snmp_value->{CONDITION_OID}} =~ /$regex/));
+                        last LIST_TYPE if (defined $oid_condition && ($oid_condition->{$snmp_value->{CONDITION_OID}} eq $snmp_value->{CONDITION_VALUE} || $oid_condition->{$snmp_value->{CONDITION_OID}} =~ /$regex/));
+                    }
+                    
+                    if(!defined $oid_condition && $snmp_value->{TABLE_TYPE_NAME} eq 'snmp_default') {
+                        $oid_condition = $session->get_request(-varbindlist => [$snmp_value->{CONDITION_OID}]);
+                        $snmp_table = $snmp_value->{TABLE_TYPE_NAME};
+                        $snmp_condition_oid = $snmp_value->{CONDITION_OID};
+
+                        last LIST_TYPE if (defined $oid_condition);
+                    }
+                }
+                if($snmp_table ne 'snmp_default') {
+                    last LIST_SNMP if (defined $oid_condition && ($oid_condition->{$snmp_condition_oid} eq $snmp_condition_value || $oid_condition->{$snmp_condition_oid} =~ /$regex/));
+                } else {
+                    last LIST_SNMP if (defined $oid_condition);
                 }
                 
-                last LIST_SNMP if (defined $oid_condition && ($oid_condition->{$snmp_condition_oid} eq $snmp_condition_value || $oid_condition->{$snmp_condition_oid} =~ /$regex/));
                 $session->close;
                 $self->{snmp_session}=undef;
             }
         }
 
-        if (defined $oid_condition && ($oid_condition->{$snmp_condition_oid} eq $snmp_condition_value || $oid_condition->{$snmp_condition_oid} =~ /$regex/)) {
+        if (defined $oid_condition && (($oid_condition->{$snmp_condition_oid} eq $snmp_condition_value || $oid_condition->{$snmp_condition_oid} =~ /$regex/) || $snmp_table eq 'snmp_default')) {
             $oid_condition = $oid_condition->{$snmp_condition_oid};
             my $xmltags = $common->{xmltags};
             
@@ -260,7 +275,6 @@ sub snmpscan_end_handler {
                 if($datas->{TABLE_TYPE_NAME} eq $snmp_table) {
                     $data = $session->get_request(-varbindlist => [$datas->{OID}]);
                     $data_value = $data->{$datas->{OID}};
-
                     if(defined $data_value && $data_value =~ /^0x[0-9A-F]+$/i) {
                         $data_value = substr $data_value, 2;
                         my @split = unpack '(A2)*', $data_value;
