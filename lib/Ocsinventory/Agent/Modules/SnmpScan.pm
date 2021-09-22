@@ -177,11 +177,11 @@ sub snmpscan_end_handler {
         my $snmp_table = undef;
         my $snmp_condition_oid = undef;
         my $snmp_condition_value = undef;
+        my $regex = undef;
 
-        $logger->debug("Scanning $device->{IPADDR} device");    
+        $logger->debug("Scanning $device->{IPADDR} device");
         # Search for the good snmp community in the table community
         LIST_SNMP: foreach $comm ( @$communities ) {
-
             # Test if we use SNMP v3
             if ( $comm->{VERSION} eq "3"  ) {
                 ($session, $error) = Net::SNMP->session(
@@ -231,16 +231,18 @@ sub snmpscan_end_handler {
                     $snmp_table = $snmp_value->{TABLE_TYPE_NAME};
                     $snmp_condition_oid = $snmp_value->{CONDITION_OID};
                     $snmp_condition_value = $snmp_value->{CONDITION_VALUE};
-                    last LIST_TYPE if (defined $oid_condition && $oid_condition->{$snmp_value->{CONDITION_OID}} eq $snmp_value->{CONDITION_VALUE});
+                    $regex = $self->regex($snmp_condition_value);
+
+                    last LIST_TYPE if (defined $oid_condition && ($oid_condition->{$snmp_value->{CONDITION_OID}} eq $snmp_value->{CONDITION_VALUE} || $oid_condition->{$snmp_value->{CONDITION_OID}} =~ /$regex/));
                 }
                 
-                last LIST_SNMP if (defined $oid_condition && $oid_condition->{$snmp_condition_oid} eq $snmp_condition_value);
+                last LIST_SNMP if (defined $oid_condition && ($oid_condition->{$snmp_condition_oid} eq $snmp_condition_value || $oid_condition->{$snmp_condition_oid} =~ /$regex/));
                 $session->close;
                 $self->{snmp_session}=undef;
             }
         }
 
-        if (defined $oid_condition && $oid_condition->{$snmp_condition_oid} eq $snmp_condition_value) {
+        if (defined $oid_condition && ($oid_condition->{$snmp_condition_oid} eq $snmp_condition_value || $oid_condition->{$snmp_condition_oid} =~ /$regex/)) {
             $oid_condition = $oid_condition->{$snmp_condition_oid};
             my $xmltags = $common->{xmltags};
             
@@ -348,6 +350,27 @@ sub search_netdevice {
             return 1;
         }
     }
+}
+
+sub regex {
+    my ($self,$regex) = @_;
+
+    if(($regex !~ m/\*/)){
+      $regex = "\^".$regex."\$";
+    }
+    if((substr( $regex, -1) eq '*') && (substr( $regex, 0, 1) eq '*')){
+      $regex = $regex =~ s/\*//gr;
+    }
+    if((substr( $regex, 0, 1 ) eq '*') && (substr( $regex, -1) ne '*')){
+      $regex = $regex =~ s/\*//gr;
+      $regex = $regex."\$";
+    }
+    if((substr( $regex, -1) eq '*') && (substr( $regex, 0, 1) ne '*')){
+      $regex = $regex =~ s/\*//gr;
+      $regex = "\^".$regex;
+    }
+
+    return $regex;
 }
 
 1;
