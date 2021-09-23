@@ -108,11 +108,18 @@ sub snmpscan_prolog_reader {
                 }
 
                 if ($_->{'TYPE'} eq 'SNMP_TYPE'){
-                    push @{$self->{snmp_type_condition}},{
-                        TABLE_TYPE_NAME => $_->{TABLE_TYPE_NAME},
-                        CONDITION_OID => $_->{CONDITION_OID},
-                        CONDITION_VALUE => $_->{CONDITION_VALUE}
-                    };
+                    if($_->{TABLE_TYPE_NAME} ne 'snmp_default') {
+                        push @{$self->{snmp_type_condition}},{
+                            TABLE_TYPE_NAME => $_->{TABLE_TYPE_NAME},
+                            CONDITION_OID => $_->{CONDITION_OID},
+                            CONDITION_VALUE => $_->{CONDITION_VALUE}
+                        };
+                    } else {
+                        push @{$self->{snmp_type_condition_default}},{
+                            TABLE_TYPE_NAME => $_->{TABLE_TYPE_NAME},
+                            CONDITION_OID => $_->{CONDITION_OID}
+                        };
+                    }
 
                     push @{$self->{snmp_type_infos}},{
                         TABLE_TYPE_NAME => $_->{TABLE_TYPE_NAME},
@@ -226,39 +233,36 @@ sub snmpscan_end_handler {
                 $self->{snmp_version}=$comm->{VERSION};
 
                 my $snmp_key = $self->{snmp_type_condition};
+                my $snmp_key_default = $self->{snmp_type_condition_default};
 
                 LIST_TYPE: foreach my $snmp_value (@$snmp_key) {
-                    if($snmp_value->{TABLE_TYPE_NAME} ne 'snmp_default') {
-                        $oid_condition = $session->get_request(-varbindlist => [$snmp_value->{CONDITION_OID}]);
-                        $snmp_table = $snmp_value->{TABLE_TYPE_NAME};
-                        $snmp_condition_oid = $snmp_value->{CONDITION_OID};
-                        $snmp_condition_value = $snmp_value->{CONDITION_VALUE};
-                        $regex = $self->regex($snmp_condition_value);
+                    $oid_condition = $session->get_request(-varbindlist => [$snmp_value->{CONDITION_OID}]);
+                    $snmp_table = $snmp_value->{TABLE_TYPE_NAME};
+                    $snmp_condition_oid = $snmp_value->{CONDITION_OID};
+                    $snmp_condition_value = $snmp_value->{CONDITION_VALUE};
+                    $regex = $self->regex($snmp_condition_value);
 
-                        last LIST_TYPE if (defined $oid_condition && ($oid_condition->{$snmp_value->{CONDITION_OID}} eq $snmp_value->{CONDITION_VALUE} || $oid_condition->{$snmp_value->{CONDITION_OID}} =~ /$regex/));
-                    }
-                    
-                    if(!defined $oid_condition && $snmp_value->{TABLE_TYPE_NAME} eq 'snmp_default') {
-                        $oid_condition = $session->get_request(-varbindlist => [$snmp_value->{CONDITION_OID}]);
-                        $snmp_table = $snmp_value->{TABLE_TYPE_NAME};
-                        $snmp_condition_oid = $snmp_value->{CONDITION_OID};
+                    last LIST_TYPE if (defined $oid_condition && ($oid_condition->{$snmp_value->{CONDITION_OID}} eq $snmp_value->{CONDITION_VALUE} || $oid_condition->{$snmp_value->{CONDITION_OID}} =~ /$regex/));
+                }
 
-                        last LIST_TYPE if (defined $oid_condition);
-                    }
+                last LIST_SNMP if (defined $oid_condition && ($oid_condition->{$snmp_condition_oid} eq $snmp_condition_value || $oid_condition->{$snmp_condition_oid} =~ /$regex/));
+
+                LIST_TYPE: foreach my $snmp_value_default (@$snmp_key_default) {
+                    $oid_condition = $session->get_request(-varbindlist => [$snmp_value_default->{CONDITION_OID}]);
+                    $snmp_table = $snmp_value_default->{TABLE_TYPE_NAME};
+                    $snmp_condition_oid = $snmp_value_default->{CONDITION_OID};
+
+                    last LIST_TYPE if (defined $oid_condition);
                 }
-                if($snmp_table ne 'snmp_default') {
-                    last LIST_SNMP if (defined $oid_condition && ($oid_condition->{$snmp_condition_oid} eq $snmp_condition_value || $oid_condition->{$snmp_condition_oid} =~ /$regex/));
-                } else {
-                    last LIST_SNMP if (defined $oid_condition);
-                }
-                
+
+                last LIST_SNMP if (defined $oid_condition && $snmp_table eq 'snmp_default');
+
                 $session->close;
                 $self->{snmp_session}=undef;
             }
         }
 
-        if (defined $oid_condition && (($oid_condition->{$snmp_condition_oid} eq $snmp_condition_value || $oid_condition->{$snmp_condition_oid} =~ /$regex/) || $snmp_table eq 'snmp_default')) {
-            $oid_condition = $oid_condition->{$snmp_condition_oid};
+        if (defined $oid_condition) {
             my $xmltags = $common->{xmltags};
             
             $session->max_msg_size(8192);
