@@ -198,7 +198,7 @@ sub snmpscan_end_handler {
                         -retries       => $configagent->{config}{snmpretry}, # SNMP retry in config file
                         -timeout       => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
                         -version       => 'snmpv'.$comm->{VERSION},
-                        -hostname      => $device,
+                        -hostname      => $device->{IPADDR},
                         -translate     => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
                         -username      => $comm->{USERNAME}
                     );
@@ -212,7 +212,7 @@ sub snmpscan_end_handler {
                         -retries       => $configagent->{config}{snmpretry}, # SNMP retry in config file
                         -timeout       => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
                         -version       => 'snmpv'.$comm->{VERSION},
-                        -hostname      => $device,
+                        -hostname      => $device->{IPADDR},
                         -translate     => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
                         -username      => $comm->{USERNAME},
                         -authprotocol  => $comm->{AUTHPROTO},
@@ -231,7 +231,7 @@ sub snmpscan_end_handler {
                         -retries       => $configagent->{config}{snmpretry}, # SNMP retry in config file
                         -timeout       => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
                         -version       => 'snmpv'.$comm->{VERSION},
-                        -hostname      => $device,
+                        -hostname      => $device->{IPADDR},
                         -translate     => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
                         -username      => $comm->{USERNAME},
                         -authprotocol  => $comm->{AUTHPROTO},
