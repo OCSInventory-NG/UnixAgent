@@ -100,7 +100,8 @@ sub snmpscan_prolog_reader {
                         AUTHPROTO=>$_->{AUTHPROTO},
                         AUTHPASSWD=>$_->{AUTHPASSWD},
                         PRIVPROTO=>$_->{PRIVPROTO},
-                        PRIVPASSWD=>$_->{PRIVPASSWD}
+                        PRIVPASSWD=>$_->{PRIVPASSWD},
+                        LEVEL=>$_->{LEVEL}
                     };
                 }
                 if ($_->{'TYPE'} eq 'NETWORK'){
@@ -192,18 +193,53 @@ sub snmpscan_end_handler {
         LIST_SNMP: foreach $comm ( @$communities ) {
             # Test if we use SNMP v3
             if ( $comm->{VERSION} eq "3" ) {
-                ($session, $error) = Net::SNMP->session(
-                    -retries       => $configagent->{config}{snmpretry}, # SNMP retry in config file
-                    -timeout       => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
-                    -version       => 'snmpv'.$comm->{VERSION},
-                    -hostname      => $device->{IPADDR},
-                    -translate     => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
-                    -username      => $comm->{USERNAME},
-                    -authpassword  => $comm->{AUTHPASSWD},
-                    -authprotocol  => $comm->{AUTHPROTO},
-                    -privpassword  => $comm->{PRIVPASSWD},
-                    -privprotocol  => $comm->{PRIVPROTO},
-                );
+                if($comm->{LEVEL} eq '' || $comm->{LEVEL} eq 'noAuthNoPriv') {
+                    ($session, $error) = Net::SNMP->session(
+                        -retries       => $configagent->{config}{snmpretry}, # SNMP retry in config file
+                        -timeout       => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
+                        -version       => 'snmpv'.$comm->{VERSION},
+                        -hostname      => $device,
+                        -translate     => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
+                        -username      => $comm->{USERNAME}
+                    );
+                }
+
+                if($comm->{LEVEL} eq 'authNoPriv') {
+                    if($comm->{AUTHPROTO} eq '') {
+                        $comm->{AUTHPROTO} = "md5";
+                    }
+                    ($session, $error) = Net::SNMP->session(
+                        -retries       => $configagent->{config}{snmpretry}, # SNMP retry in config file
+                        -timeout       => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
+                        -version       => 'snmpv'.$comm->{VERSION},
+                        -hostname      => $device,
+                        -translate     => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
+                        -username      => $comm->{USERNAME},
+                        -authprotocol  => $comm->{AUTHPROTO},
+                        -authpassword  => $comm->{AUTHPASSWD}
+                    );
+                }
+
+                if($comm->{LEVEL} eq 'authPriv') {
+                    if($comm->{AUTHPROTO} eq '') {
+                        $comm->{AUTHPROTO} = "md5";
+                    }
+                    if($comm->{PRIVPROTO} eq '') {
+                        $comm->{PRIVPROTO} = "des";
+                    }
+                    ($session, $error) = Net::SNMP->session(
+                        -retries       => $configagent->{config}{snmpretry}, # SNMP retry in config file
+                        -timeout       => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
+                        -version       => 'snmpv'.$comm->{VERSION},
+                        -hostname      => $device,
+                        -translate     => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
+                        -username      => $comm->{USERNAME},
+                        -authprotocol  => $comm->{AUTHPROTO},
+                        -authpassword  => $comm->{AUTHPASSWD},
+                        -privpassword  => $comm->{PRIVPASSWD},
+                        -privprotocol  => $comm->{PRIVPROTO}
+                    );
+                }
 
                 # For a use in constructor module (Cisco)
                 $self->{username}=$comm->{USERNAME};
