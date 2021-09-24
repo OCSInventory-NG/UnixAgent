@@ -260,7 +260,7 @@ sub snmpscan_end_handler {
                 );
             };
             unless (defined($session)) {
-                $logger->error("Snmp ERROR: $error");
+                $logger->error("Snmp INFO: $error");
             } else {
                 $self->{snmp_session}=$session;
 
