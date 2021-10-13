@@ -103,7 +103,7 @@ sub loadFromCfgFile {
             $val =~ s/\s+$//;
             $val =~ s/^'(.*)'$/$1/;
             $val =~ s/^"(.*)"$/$1/;
-            $self->{config}{$key} = $val;
+            $self->{config}{lc($key)} = $val;
         }
     }
     close CONFIG;
@@ -187,8 +187,8 @@ sub help {
     print STDERR "\t--nosoftware        do not return installed software list (".$self->{config}{nosoftware}.")\n";
     print STDERR "\t--delaytime	      set a max delay time (in second) if no PROLOG_FREQ is set (".$self->{config}{delaytime}.")\n";
     print STDERR "\t--scan-homedirs     permit to scan home user directories (".$self->{config}{scanhomedirs}.")\n" ;
-    print STDERR "\t--ssl=0|1           disable or enable SSL communications check\n" ;
-    print STDERR "\t--ca=FILE           path to CA certificates file in PEM format\n" ;
+    print STDERR "\t--ssl=0|1           disable or enable SSL communications check (".$self->{config}{ssl}.")\n" ;
+    print STDERR "\t--ca=FILE           path to CA certificates file in PEM format (".$self->{config}{ca}.")\n" ;
 
     print STDERR "\n";
     print STDERR "Manpage:\n";
