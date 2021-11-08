@@ -100,7 +100,8 @@ sub snmpscan_prolog_reader {
                         AUTHPROTO=>$_->{AUTHPROTO},
                         AUTHPASSWD=>$_->{AUTHPASSWD},
                         PRIVPROTO=>$_->{PRIVPROTO},
-                        PRIVPASSWD=>$_->{PRIVPASSWD}
+                        PRIVPASSWD=>$_->{PRIVPASSWD},
+                        LEVEL=>$_->{LEVEL}
                     };
                 }
                 if ($_->{'TYPE'} eq 'NETWORK'){
@@ -108,11 +109,18 @@ sub snmpscan_prolog_reader {
                 }
 
                 if ($_->{'TYPE'} eq 'SNMP_TYPE'){
-                    push @{$self->{snmp_type_condition}},{
-                        TABLE_TYPE_NAME => $_->{TABLE_TYPE_NAME},
-                        CONDITION_OID => $_->{CONDITION_OID},
-                        CONDITION_VALUE => $_->{CONDITION_VALUE}
-                    };
+                    if($_->{TABLE_TYPE_NAME} ne 'snmp_default') {
+                        push @{$self->{snmp_type_condition}},{
+                            TABLE_TYPE_NAME => $_->{TABLE_TYPE_NAME},
+                            CONDITION_OID => $_->{CONDITION_OID},
+                            CONDITION_VALUE => $_->{CONDITION_VALUE}
+                        };
+                    } else {
+                        push @{$self->{snmp_type_condition_default}},{
+                            TABLE_TYPE_NAME => $_->{TABLE_TYPE_NAME},
+                            CONDITION_OID => $_->{CONDITION_OID}
+                        };
+                    }
 
                     push @{$self->{snmp_type_infos}},{
                         TABLE_TYPE_NAME => $_->{TABLE_TYPE_NAME},
@@ -146,6 +154,7 @@ sub snmpscan_end_handler {
     $configagent->loadUserParams();
     
     my $communities=$self->{communities};
+
     if ( ! defined ($communities ) ) {
         $logger->debug("We have no Community from server, we use default public community");
         $communities=[{VERSION=>"2c",NAME=>"public"}];
@@ -177,25 +186,60 @@ sub snmpscan_end_handler {
         my $snmp_table = undef;
         my $snmp_condition_oid = undef;
         my $snmp_condition_value = undef;
+        my $regex = undef;
 
-        $logger->debug("Scanning $device->{IPADDR} device");    
+        $logger->debug("Scanning $device->{IPADDR} device");
         # Search for the good snmp community in the table community
         LIST_SNMP: foreach $comm ( @$communities ) {
-
             # Test if we use SNMP v3
-            if ( $comm->{VERSION} eq "3"  ) {
-                ($session, $error) = Net::SNMP->session(
-                    -retries     => 2 ,
-                    -timeout     => 3,
-                    -version     => 'snmpv'.$comm->{VERSION},
-                    -hostname    => $device->{IPADDR},
-                    -translate   => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
-                    -username      => $comm->{USERNAME},
-                    -authpassword  => $comm->{AUTHPASSWD},
-                    -authprotocol  => $comm->{AUTHPROTO},
-                    -privpassword  => $comm->{PRIVPASSWD},
-                    -privprotocol  => $comm->{PRIVPROTO},
-                );
+            if ( $comm->{VERSION} eq "3" ) {
+                if($comm->{LEVEL} eq '' || $comm->{LEVEL} eq 'noAuthNoPriv') {
+                    ($session, $error) = Net::SNMP->session(
+                        -retries       => $configagent->{config}{snmpretry}, # SNMP retry in config file
+                        -timeout       => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
+                        -version       => 'snmpv'.$comm->{VERSION},
+                        -hostname      => $device->{IPADDR},
+                        -translate     => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
+                        -username      => $comm->{USERNAME}
+                    );
+                }
+
+                if($comm->{LEVEL} eq 'authNoPriv') {
+                    if($comm->{AUTHPROTO} eq '') {
+                        $comm->{AUTHPROTO} = "md5";
+                    }
+                    ($session, $error) = Net::SNMP->session(
+                        -retries       => $configagent->{config}{snmpretry}, # SNMP retry in config file
+                        -timeout       => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
+                        -version       => 'snmpv'.$comm->{VERSION},
+                        -hostname      => $device->{IPADDR},
+                        -translate     => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
+                        -username      => $comm->{USERNAME},
+                        -authprotocol  => $comm->{AUTHPROTO},
+                        -authpassword  => $comm->{AUTHPASSWD}
+                    );
+                }
+
+                if($comm->{LEVEL} eq 'authPriv') {
+                    if($comm->{AUTHPROTO} eq '') {
+                        $comm->{AUTHPROTO} = "md5";
+                    }
+                    if($comm->{PRIVPROTO} eq '') {
+                        $comm->{PRIVPROTO} = "des";
+                    }
+                    ($session, $error) = Net::SNMP->session(
+                        -retries       => $configagent->{config}{snmpretry}, # SNMP retry in config file
+                        -timeout       => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
+                        -version       => 'snmpv'.$comm->{VERSION},
+                        -hostname      => $device->{IPADDR},
+                        -translate     => [-nosuchinstance => 0, -nosuchobject => 0, -octetstring => 0],
+                        -username      => $comm->{USERNAME},
+                        -authprotocol  => $comm->{AUTHPROTO},
+                        -authpassword  => $comm->{AUTHPASSWD},
+                        -privpassword  => $comm->{PRIVPASSWD},
+                        -privprotocol  => $comm->{PRIVPROTO}
+                    );
+                }
 
                 # For a use in constructor module (Cisco)
                 $self->{username}=$comm->{USERNAME};
@@ -207,7 +251,7 @@ sub snmpscan_end_handler {
             } else {
                 # We have an older version v2c ou v1
                 ($session, $error) = Net::SNMP->session(
-                    -retries     => $configagent->{config}{snmpretry}, # SNMP retyr in config file
+                    -retries     => $configagent->{config}{snmpretry}, # SNMP retry in config file
                     -timeout     => $configagent->{config}{snmptimeout}, # SNMP Timeout in config file 
                     -version     => 'snmpv'.$comm->{VERSION},
                     -hostname    => $device->{IPADDR},
@@ -216,7 +260,7 @@ sub snmpscan_end_handler {
                 );
             };
             unless (defined($session)) {
-                $logger->error("Snmp ERROR: $error");
+                $logger->error("Snmp INFO: $error");
             } else {
                 $self->{snmp_session}=$session;
 
@@ -225,23 +269,36 @@ sub snmpscan_end_handler {
                 $self->{snmp_version}=$comm->{VERSION};
 
                 my $snmp_key = $self->{snmp_type_condition};
+                my $snmp_key_default = $self->{snmp_type_condition_default};
 
                 LIST_TYPE: foreach my $snmp_value (@$snmp_key) {
                     $oid_condition = $session->get_request(-varbindlist => [$snmp_value->{CONDITION_OID}]);
                     $snmp_table = $snmp_value->{TABLE_TYPE_NAME};
                     $snmp_condition_oid = $snmp_value->{CONDITION_OID};
                     $snmp_condition_value = $snmp_value->{CONDITION_VALUE};
-                    last LIST_TYPE if (defined $oid_condition && $oid_condition->{$snmp_value->{CONDITION_OID}} eq $snmp_value->{CONDITION_VALUE});
+                    $regex = $self->regex($snmp_condition_value);
+
+                    last LIST_TYPE if (defined $oid_condition && ($oid_condition->{$snmp_value->{CONDITION_OID}} eq $snmp_value->{CONDITION_VALUE} || $oid_condition->{$snmp_value->{CONDITION_OID}} =~ /$regex/));
                 }
-                
-                last LIST_SNMP if (defined $oid_condition && $oid_condition->{$snmp_condition_oid} eq $snmp_condition_value);
+
+                last LIST_SNMP if (defined $oid_condition && ($oid_condition->{$snmp_condition_oid} eq $snmp_condition_value || $oid_condition->{$snmp_condition_oid} =~ /$regex/));
+
+                LIST_TYPE: foreach my $snmp_value_default (@$snmp_key_default) {
+                    $oid_condition = $session->get_request(-varbindlist => [$snmp_value_default->{CONDITION_OID}]);
+                    $snmp_table = $snmp_value_default->{TABLE_TYPE_NAME};
+                    $snmp_condition_oid = $snmp_value_default->{CONDITION_OID};
+
+                    last LIST_TYPE if (defined $oid_condition);
+                }
+
+                last LIST_SNMP if (defined $oid_condition && $snmp_table eq 'snmp_default');
+
                 $session->close;
                 $self->{snmp_session}=undef;
             }
         }
 
-        if (defined $oid_condition && $oid_condition->{$snmp_condition_oid} eq $snmp_condition_value) {
-            $oid_condition = $oid_condition->{$snmp_condition_oid};
+        if (defined $oid_condition) {
             my $xmltags = $common->{xmltags};
             
             $session->max_msg_size(8192);
@@ -263,7 +320,7 @@ sub snmpscan_end_handler {
                         my @split = unpack '(A2)*', $data_value;
                         $data_value = uc(join ':', @split);
                     }
-                    if(!defined $data_value) {
+                    if(!defined $data_value || $data_value eq '') {
                         my @table;
                         $data = $session->get_table(-baseoid => $datas->{OID});
                         foreach my $key (keys %{$data}) {
@@ -313,7 +370,7 @@ sub snmp_ip_scan {
             $logger->debug("Scannig $net_to_scan with nmap");
             my $nmaparser = Nmap::Parser->new;
 
-            $nmaparser->parsescan("nmap","-sP",$net_to_scan);
+            $nmaparser->parsescan("nmap","-sn",$net_to_scan);
             for my $host ($nmaparser->all_hosts("up")) {
                my $res=$host->addr;
                $logger->debug("Found $res");
@@ -348,6 +405,27 @@ sub search_netdevice {
             return 1;
         }
     }
+}
+
+sub regex {
+    my ($self,$regex) = @_;
+
+    if(($regex !~ m/\*/)){
+      $regex = "\^".$regex."\$";
+    }
+    if((substr( $regex, -1) eq '*') && (substr( $regex, 0, 1) eq '*')){
+      $regex = $regex =~ s/\*//gr;
+    }
+    if((substr( $regex, 0, 1 ) eq '*') && (substr( $regex, -1) ne '*')){
+      $regex = $regex =~ s/\*//gr;
+      $regex = $regex."\$";
+    }
+    if((substr( $regex, -1) eq '*') && (substr( $regex, 0, 1) ne '*')){
+      $regex = $regex =~ s/\*//gr;
+      $regex = "\^".$regex;
+    }
+
+    return $regex;
 }
 
 1;
