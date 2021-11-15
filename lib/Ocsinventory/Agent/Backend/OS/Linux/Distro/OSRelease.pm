@@ -11,7 +11,6 @@ sub check {
 
 sub run {
 
-    my $v;
     my $name;
     my $version;
     my $description;
@@ -31,12 +30,14 @@ sub run {
 
     # Debian version number is set in/etc/debian_version file
     if (-r "/etc/debian_version") {
-        open V, "/etc/debian_version" or warn;
-        foreach (<V>) {
-            $version = $1 if ($_ =~ /^(\d+.*)/);
-        }
-        close V;
-        chomp($version);
+        if (`uname -v` =~ /debian/) {
+            open V, "/etc/debian_version" or warn;
+            foreach (<V>) {
+                $version = $1 if ($_ =~ /^(\d+.*)/);
+            }
+            close V;
+            chomp($version);
+	}
     }
 
     # CentOS exact version number is set in /etc/centos-release file
