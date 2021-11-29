@@ -11,6 +11,8 @@ use Socket;
 use Ocsinventory::Compress;
 use Ocsinventory::Agent::Encrypt;
 
+$XML::Simple::PREFERRED_PARSER = 'XML::Parser';
+
 sub new {
     my (undef, $params) = @_;
 
@@ -97,6 +99,18 @@ sub sendXML {
 
     $req->header('Pragma' => 'no-cache', 'Content-type',
       'application/x-compress');
+
+    # Checking if XML is valid before submitting
+    $logger->debug ("checking XML");
+
+    eval { XML::Simple::XMLin( $message ) };
+    if($@) {
+        my $xml_error = $@;
+        $xml_error =~ s/^\n//;
+        $logger->error ('Invalid XML: '.$xml_error);
+        $logger->error ('Cannot submit XML! Abort...');
+        return;
+    }
 
     $logger->debug ("sending XML");
 
