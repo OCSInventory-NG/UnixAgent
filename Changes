@@ -1,5 +1,25 @@
 Revision history for Ocsinventory::Agent
 
+2.9.0 
+      * Adding new Screen Manufacturer
+      * Update OSRelease.pm
+      * Change product name for Lenovo systems
+      * Small improvements in the parse of config file options
+      * Checking if XML is valid before submitting
+      * Fix Unix user inventory
+      * Fix raspberry has no serial
+      * Fix timeout from last command
+      * Fix memory issue on MacOS
+      * Fix empty value for ip address when contains 127
+      * Fix IpDiscover compilation
+      * Fix lshw storage discovery fails on servers with one device
+      * Fix bug group members displaying as HASH
+      * Fix the bad management of the inventor in RHEL
+      * Fix gateway misbehaviour with multiple network interfaces
+      * Fix XML has not well formed
+      * Fix issue Ubuntu 21.10 being reported as Ubuntu 11.0
+      * Remove devtmpfs partition inventory
+
 2.8.1
        * Add octectstring management on SNMP Scan
        * Add retry and timeout config for SNMP
