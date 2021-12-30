@@ -1,7 +1,5 @@
 package Ocsinventory::Agent::Backend::Virtualization::VirtualBox;
 
-# This module detects only all VMs create by the user who launch this module (root VMs).
-
 use strict;
 
 use XML::Simple;
@@ -30,8 +28,10 @@ sub run {
     my $mem;
     my $status;
     my $name;
+    my $current_user = `printenv SUDO_USER`; # fetches the current user
+    chomp ($current_user);
         
-    foreach my $line (`$cmd_list_vms`){                 # read only the information on the first paragraph of each vm
+    foreach my $line (`sudo -u $current_user $cmd_list_vms`){                 # read only the information on the first paragraph of each vm
         chomp ($line);
         if ($in == 0 and $line =~ m/^Name:\s+(.*)$/) {      # begin
             $name = $1;
