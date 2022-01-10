@@ -200,7 +200,7 @@ sub addInput {
 
     my $content = {};
 
-    foreach my $key (qw/DESCRIPTION INTERFACE MANUFACTURER SERIAL TYPE/) {
+    foreach my $key (qw/DESCRIPTION INTERFACE MANUFACTURER CAPTION POINTTYPE TYPE/) {
         if (exists $args->{$key}) {
             $content->{$key}[0] = $args->{$key} if $args->{$key};
         }
