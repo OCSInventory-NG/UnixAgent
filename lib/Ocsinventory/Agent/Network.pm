@@ -50,7 +50,7 @@ sub new {
         $self->{ua}->env_proxy;
     }
     my $version = 'OCS-NG_unified_unix_agent_v';
-    $version .= exists ($self->{config}->{VERSION})?$self->{config}->{VERSION}:'';
+    $version .= exists ($self->{config}->{version})?$self->{config}->{version}:'';
     my $userencrypt = Ocsinventory::Agent::Encrypt::getClearText($self->{config}->{user});
     my $pwdencrypt = Ocsinventory::Agent::Encrypt::getClearText($self->{config}->{password});
     $self->{ua}->agent($version);
