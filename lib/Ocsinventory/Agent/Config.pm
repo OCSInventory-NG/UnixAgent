@@ -43,7 +43,7 @@ my $default = {
 
     # Other values that can't be changed with the
     # CLI parameters
-    'VERSION'   => $VERSION,
+    'version'   => $VERSION,
     'deviceid'  => '',
     'basevardir'=>  $basedir.'/var/lib/ocsinventory-agent',
     'logdir'    =>  $basedir.'/var/log/ocsinventory-agent',
@@ -146,7 +146,7 @@ sub loadUserParams {
 	);
 
 	$self->help() if (!GetOptions(%options) || $self->{config}{help});
-	$self->version() if $self->{config}{version};
+	$self->version() if $self->{config}{version} eq 1;
 }
 
 
