@@ -1050,6 +1050,7 @@ sub cleanXml {
     my $logger = $self->{logger};
 
     my $clean_content = encode('UTF-8', $content, Encode::FB_DEFAULT | Encode::LEAVE_SRC | Encode::FB_XMLCREF);
+    $clean_content =~ tr/\x00-\x08\x0B\x0C\x0E-\x1F//d;  # remove forbidden char in XML
 
     $logger->debug("cleanXml changed content") if ($content ne $clean_content);
 
