@@ -12,7 +12,7 @@
 			<key>PACKAGE_FILES</key>
 			<dict>
 				<key>DEFAULT_INSTALL_LOCATION</key>
-				<string>/</string>
+				<string>/Applications</string>
 				<key>HIERARCHY</key>
 				<dict>
 					<key>CHILDREN</key>
@@ -501,7 +501,7 @@
 				<key>USE_HFS+_COMPRESSION</key>
 				<false/>
 				<key>VERSION</key>
-				<string>2.8</string>
+				<string>2.9</string>
 			</dict>
 			<key>TYPE</key>
 			<integer>0</integer>
