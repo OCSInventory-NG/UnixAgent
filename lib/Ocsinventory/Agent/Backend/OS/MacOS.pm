@@ -37,7 +37,7 @@ sub run {
            $OSVersion=$2;
        } else {
            # Default values
-           $OSName="Mac OS X";
+           $OSName="macOS";
            $OSVersion="Unknown";
        }
 
