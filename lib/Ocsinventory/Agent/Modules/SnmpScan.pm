@@ -315,7 +315,8 @@ sub snmpscan_end_handler {
                 if($datas->{TABLE_TYPE_NAME} eq $snmp_table) {
                     $data = $session->get_request(-varbindlist => [$datas->{OID}]);
                     $data_value = $data->{$datas->{OID}};
-                    if(defined $data_value && $data_value =~ /^0x[0-9A-F]+$/i) {
+                    if(defined $data_value && $data_value =~ m/([x0-x9]|[xB-xC]|[xE-x1F]|[x7F-xFF])/) {
+                        $data_value = unpack "H*", $data_value;
                         $data_value = substr $data_value, 2;
                         my @split = unpack '(A2)*', $data_value;
                         $data_value = uc(join ':', @split);
