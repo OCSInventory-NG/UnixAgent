@@ -315,7 +315,8 @@ sub snmpscan_end_handler {
                 if($datas->{TABLE_TYPE_NAME} eq $snmp_table) {
                     $data = $session->get_request(-varbindlist => [$datas->{OID}]);
                     $data_value = $data->{$datas->{OID}};
-                    if(defined $data_value && $data_value =~ /^0x[0-9A-F]+$/i) {
+                    if(defined $data_value && $data_value =~ m/([\x{0}-\x{9}]|[\x{B}-\x{C}]|[\x{E}-\x{1F}]|[\x{7F}-\x{FF}])/) {
+                        $data_value = unpack "H*", $data_value;
                         $data_value = substr $data_value, 2;
                         my @split = unpack '(A2)*', $data_value;
                         $data_value = uc(join ':', @split);
@@ -324,6 +325,12 @@ sub snmpscan_end_handler {
                         my @table;
                         $data = $session->get_table(-baseoid => $datas->{OID});
                         foreach my $key (keys %{$data}) {
+                            if(defined $data->{$key} && $data->{$key} =~ m/([\x{0}-\x{9}]|[\x{B}-\x{C}]|[\x{E}-\x{1F}]|[\x{7F}-\x{FF}])/) {
+                                $data->{$key} = unpack "H*", $data->{$key};
+                                $data->{$key} = substr $data->{$key}, 2;
+                                my @split = unpack '(A2)*', $data->{$key};
+                                $data->{$key} = uc(join ':', @split);
+                            }
                             push @table, $data->{$key};
                         }
                         $data_value = join ' - ', @table;
