@@ -1,5 +1,15 @@
 Revision history for Ocsinventory::Agent
 
+2.9.1
+      * Copy cronjob script from Fedora
+      * Permit storing CA list in config dir
+      * Don't check XML if in forced mode
+      * Prevent misunderstanding of version option from config file
+      * Remove forbidden char in XML
+      * Fix Agent 2.9.0 not reporting OS minor release on Debian
+      * Fix addInput missing keys
+      * Fix SNMP macadress format
+
 2.9.0 
       * Adding new Screen Manufacturer
       * Update OSRelease.pm
