@@ -52,7 +52,8 @@ sub run {
         my $size = $memory->{'dimm_size'};
 
         my $desc = $memory->{'dimm_part_number'};
-        if ($desc !~ /empty/) {
+
+        if ($desc !~ /empty/ && $desc =~ s/^0x//) {
             # dimm_part_number is an hex string, convert it to ascii
             $desc =~ s/^0x//;
             $desc = pack "H*", $desc;
