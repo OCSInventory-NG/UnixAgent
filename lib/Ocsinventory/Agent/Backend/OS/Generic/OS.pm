@@ -23,9 +23,7 @@ sub run {
     my $idate;
     if ($^O =~ /linux/) {
         $idate=`stat -c %W /`;
-    } elsif ($^O =~ /bsd/) { 
-        $idate=`stat -f %M /`;
-    } elsif ($^O =~ /Darwin/) {
+    } elsif (($^O =~ /bsd/) or ($^O =~ /Darwin/)) { 
         $idate=`stat -f %m /`;
     }
 
