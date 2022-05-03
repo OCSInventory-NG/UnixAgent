@@ -56,6 +56,8 @@ sub run {
         if ($desc !~ /empty/ && $desc =~ s/^0x//) {
             # dimm_part_number is an hex string, convert it to ascii
             $desc =~ s/^0x//;
+	    # Trim filling "00" from part number, which causes invalid XML down the line.
+	    $desc =~ s/00//g;
             $desc = pack "H*", $desc;
             $desc =~ s/\s+$//;
             # New macs might have some specific characters, perform a regex to fix it
