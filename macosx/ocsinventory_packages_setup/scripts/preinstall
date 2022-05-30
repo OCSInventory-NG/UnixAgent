@@ -1,10 +1,6 @@
 #!/bin/sh
 
 #Setting path to package resources directory
-RESOURCES=$1/Contents/Resources
-# resources path if off
-
-#Setting path to package resources directory
 BASERESOURCES=$(dirname "$1")
 RESOURCES="$BASERESOURCES/../Resources"
 
@@ -18,9 +14,6 @@ else
   TMP_DIR=/tmp/ocs_installer
 fi
 
-echo "preinstall from agent"
-echo $RESOURCES
-echo $TMP_DIR
 #Files we want to copy
 AGENT_CFG_PATH="ocsinventory-agent.cfg"
 MODULES_CFG_PATH="modules.conf"
