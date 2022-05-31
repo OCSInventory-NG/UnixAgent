@@ -20,10 +20,13 @@ sub run {
         
     my $h = $data->[0];
 
-    # set the bios informaiton from the apple system profiler
+    # set the bios information from the apple system profiler
     $common->setBios({
         SMANUFACTURER   => 'Apple Inc', # duh
         SMODEL          => $h->{'model_identifier'} || $h->{'machine_model'},
+        TYPE            => $h->{'machine_name'},
+        BMANUFACTURER   => 'Apple Inc',
+        MMANUFACTURER   => 'Apple Inc',
         #       SSN             => $h->{'Serial Number'}
         # New method to get the SSN, because of MacOS 10.5.7 update
         # system_profiler gives 'Serial Number (system): XXXXX' where 10.5.6
