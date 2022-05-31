@@ -1,0 +1,57 @@
+#!/bin/sh
+
+#Setting path to package resources directory
+BASERESOURCES=$(dirname "$1")
+RESOURCES="$BASERESOURCES/../Resources"
+
+
+
+#Setting temp directory
+if [ $3 ]  #If run from NetInstall
+then
+  TMP_DIR=$3/tmp/ocs_installer
+else
+  TMP_DIR=/tmp/ocs_installer
+fi
+
+#Files we want to copy
+AGENT_CFG_PATH="ocsinventory-agent.cfg"
+MODULES_CFG_PATH="modules.conf"
+LAUNCHD_CFG_PATH="org.ocsng.agent.plist"
+SERVERDIR_CFG_PATH="serverdir"
+NOW_PATH="now"
+CACERT_PATH="cacert.pem"
+
+
+#Create temporary dir neeeded by postinstall script
+mkdir -p $TMP_DIR 
+
+if [ -f "$RESOURCES/$AGENT_CFG_PATH" ]
+then
+  cp $RESOURCES/$AGENT_CFG_PATH $TMP_DIR 
+fi
+
+if [ -f "$RESOURCES/$MODULES_CFG_PATH" ]
+then
+  cp $RESOURCES/$MODULES_CFG_PATH $TMP_DIR
+fi
+
+if [ -f "$RESOURCES/$LAUNCHD_CFG_PATH" ]
+then
+  cp $RESOURCES/$LAUNCHD_CFG_PATH $TMP_DIR
+fi
+
+if [ -f "$RESOURCES/$SERVERDIR_CFG_PATH" ]
+then
+  cp $RESOURCES/$SERVERDIR_CFG_PATH $TMP_DIR
+fi
+
+if [ -f "$RESOURCES/$NOW_PATH" ] 
+then
+  cp $RESOURCES/$NOW_PATH $TMP_DIR
+fi
+
+if [ -f "$RESOURCES/$CACERT_PATH" ]
+then
+  cp $RESOURCES/$CACERT_PATH $TMP_DIR 
+fi
