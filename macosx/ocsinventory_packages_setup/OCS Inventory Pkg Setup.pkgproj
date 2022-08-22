@@ -613,6 +613,17 @@
 					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_INSTALLERPLUGIN_PATH</key>
 					<dict>
 						<key>PATH</key>
+						<string>auth.bundle</string>
+						<key>PATH_TYPE</key>
+						<integer>1</integer>
+					</dict>
+				</dict>
+				<dict>
+					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_CLASS</key>
+					<string>ICPresentationViewInstallerPluginController</string>
+					<key>ICPRESENTATION_CHAPTER_VIEW_CONTROLLER_INSTALLERPLUGIN_PATH</key>
+					<dict>
+						<key>PATH</key>
 						<string>daemonconfig.bundle</string>
 						<key>PATH_TYPE</key>
 						<integer>1</integer>
