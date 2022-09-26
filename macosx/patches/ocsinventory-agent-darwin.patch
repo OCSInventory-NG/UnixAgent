@@ -12,7 +12,8 @@
 +    my $path = abs_path($0);
 +    $path =~ s/$scriptname//g;
 +
-+    unshift(@INC,$path."/lib/");
++    unshift(@INC,$path."lib/");
++    unshift(@INC,$path."lib//darwin-thread-multi-2level/");
 +}
 +
 +

@@ -103,6 +103,7 @@ Net::IP
 Compress::Zlib
 Compress::Raw::Zlib
 IO::Zlib
+IO::Socket::SSL
 Mac::SysProfile
 Mac::PropertyList
 Parse::EDID
