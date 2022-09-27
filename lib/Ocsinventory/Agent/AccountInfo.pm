@@ -3,6 +3,8 @@ package Ocsinventory::Agent::AccountInfo;
 use strict;
 use warnings;
 
+use Encode qw(decode);
+
 sub new {
     my (undef,$params) = @_;
 
@@ -51,7 +53,7 @@ sub new {
                 "The -t parameter will be ignored. Don't forget that the TAG value ".
                 "will be ignored by the server unless it has OCS_OPT_ACCEPT_TAG_UPDATE_FROM_CLIENT=1.");
         } else {
-          $self->{accountinfo}->{TAG} = $self->{config}->{tag};
+          $self->{accountinfo}->{TAG} = decode('UTF-8', $self->{config}->{tag});
         }
     }
     $self; #Because we have already blessed the object 
