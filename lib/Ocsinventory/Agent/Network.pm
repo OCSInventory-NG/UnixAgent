@@ -11,7 +11,7 @@ use Socket;
 use Ocsinventory::Compress;
 use Ocsinventory::Agent::Encrypt;
 
-$XML::Simple::PREFERRED_PARSER = 'XML::Parser';
+#$XML::Simple::PREFERRED_PARSER = 'XML::Parser';
 
 sub new {
     my (undef, $params) = @_;
