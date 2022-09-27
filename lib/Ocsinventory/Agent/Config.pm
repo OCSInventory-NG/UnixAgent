@@ -89,7 +89,7 @@ sub loadFromCfgFile {
 
     $self->{configfile} = $file;
 
-    if (!open (CONFIG, '<:encoding(UTF-8)', $file)) {
+    if (!open (CONFIG, '<'.$file)) {
         print(STDERR "Config: Failed to open $file\n");
 	    return $config;
     }
