@@ -7,8 +7,10 @@ sub run {
   
     # Parsing dmidecode output
     # Using "type 0" section
-    my( $SystemSerial , $SystemModel, $SystemManufacturer, $SystemVersion, $BiosManufacturer,
-      $BiosVersion, $BiosDate, $AssetTag, $MotherboardManufacturer, $MotherboardModel, $MotherboardSerial, $Type );
+    my( $SystemSerial , $SystemModel, $SystemManufacturer,
+        $SystemVersion, $BiosManufacturer, $BiosVersion,
+        $BiosDate, $AssetTag, $MotherboardManufacturer,
+        $MotherboardModel, $MotherboardSerial, $Type );
   
     #System DMI
     $SystemManufacturer = `dmidecode -s system-manufacturer`;
@@ -17,63 +19,38 @@ sub run {
     $SystemVersion = `dmidecode -s system-version`;
     $AssetTag = `dmidecode -s chassis-asset-tag`;
     $Type = `dmidecode -s chassis-type`;
-    
-    chomp($SystemVersion);
-    $SystemVersion =~ s/^(#.*\n)+//g;
-    $SystemVersion =~ s/Invalid.*$//g;
-    chomp($SystemModel);
-    $SystemModel =~ s/^(#.*\n)+//g;
-    $SystemModel =~ s/Invalid.*$//g;
-    chomp($SystemManufacturer);
-    $SystemManufacturer =~ s/^(#.*\n)+//g;
-    $SystemManufacturer =~ s/Invalid.*$//g;
-    chomp($SystemSerial);
-    $SystemSerial =~ s/^(#.*\n)+//g;
-    $SystemSerial =~ s/Invalid.*$//g;
-    # System serial number can be filled with whitespace (e.g. Intel NUC)
-    $SystemSerial =~ s/^\s+|\s+$//g;
-    chomp($AssetTag);
-    $AssetTag =~ s/^(#.*\n)+//g;
-    $AssetTag =~ s/Invalid.*$//g;
-    chomp($Type);
-    $Type =~ s/^(#.*\n)+//g;
-    $Type =~ s/Invalid.*$//g;
 
-    if ($SystemModel && $SystemManufacturer && $SystemManufacturer =~ /^LENOVO$/i && $SystemVersion =~ /^(Think|Idea|Yoga|Netfinity|Netvista|Intelli)/i) {
-        my $product_name = $SystemVersion;
-        $SystemVersion = $SystemModel;
-        $SystemModel = $product_name;
-    }
-    
     #Motherboard DMI
     $MotherboardManufacturer = `dmidecode -s baseboard-manufacturer`;
     $MotherboardModel = `dmidecode -s baseboard-product-name`;
     $MotherboardSerial = `dmidecode -s baseboard-serial-number`;
-    
-    chomp($MotherboardModel);
-    $MotherboardModel =~ s/^(#.*\n)+//g;
-    $MotherboardModel =~ s/Invalid.*$//g;
-    chomp($MotherboardManufacturer);
-    $MotherboardManufacturer =~ s/^(#.*\n)+//g;
-    $MotherboardManufacturer =~ s/Invalid.*$//g;
-    chomp($MotherboardSerial);
-    $MotherboardSerial =~ s/^(#.*\n)+//g;
-    $MotherboardSerial =~ s/Invalid.*$//g;
-    
+
     #BIOS DMI
     $BiosManufacturer = `dmidecode -s bios-vendor`;
     $BiosVersion = `dmidecode -s bios-version`;
     $BiosDate = `dmidecode -s bios-release-date`;
     
-    chomp($BiosManufacturer);
-    $BiosManufacturer =~ s/^(#.*\n)+//g;
-    $BiosManufacturer =~ s/Invalid.*$//g;
-    chomp($BiosVersion);
-    $BiosVersion =~ s/^(#.*\n)+//g;
-    $BiosVersion =~ s/Invalid.*$//g;
-    chomp($BiosDate);
-    $BiosDate =~ s/^(#.*\n)+//g;
-    $BiosDate =~ s/Invalid.*$//g;
+    foreach my $info ( $SystemSerial , $SystemModel, $SystemManufacturer,
+        $SystemVersion, $BiosManufacturer, $BiosVersion,
+        $BiosDate, $AssetTag, $MotherboardManufacturer,
+        $MotherboardModel, $MotherboardSerial, $Type ) {
+
+        # Remove lines starting with #
+        $info =~ s/(\s*#.*\n)+//g;
+        # Remove error msg 'Invalid entry length (0). DMI table is broken! Stop.'
+        $info =~ s/Invalid.*//g;
+        # Remove break lines
+        $info =~ s/\n//g;
+        # Remove whitespaces at start/end
+        $info =~ s/^\s+|\s+$//g;
+    }
+
+    #System DMI
+    if ($SystemModel && $SystemManufacturer && $SystemManufacturer =~ /^LENOVO$/i && $SystemVersion =~ /^(Think|Idea|Yoga|Netfinity|Netvista|Intelli)/i) {
+        my $product_name = $SystemVersion;
+        $SystemVersion = $SystemModel;
+        $SystemModel = $product_name;
+    }
 
     # If serial number is empty, assign mainboard serial (e.g Intel NUC)
     if (!$SystemSerial) {
