@@ -14,7 +14,7 @@ sub run {
     #my $unit = 1024;
 
     my $PhysicalMemory;
-    my $SwapFileSize;
+    my $SwapFileSize=0;
 
     # Memory informations
     foreach(`prtconf`){
@@ -25,7 +25,7 @@ sub run {
 
     #Swap Informations 
     foreach(`swap -l`){
-      if(/\s+(\S+)$/){$SwapFileSize = $1}; 
+      if(/(\d+)(?!.*\d)/g){$SwapFileSize = $SwapFileSize + $1};
     }
 
     $common->setHardware({
