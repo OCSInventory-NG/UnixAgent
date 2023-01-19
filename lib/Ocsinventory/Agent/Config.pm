@@ -135,7 +135,7 @@ sub loadUserParams {
 		"version"         =>   \$self->{config}{version},
 		"w|wait=s"        =>   \$self->{config}{wait},
 #       "x|xml"          =>   \$self->{config}{xml},
-		"delaytime"       =>   \$self->{config}{delaytime},
+		"delaytime=s"     =>   \$self->{config}{delaytime},
 		"scan-homedirs"   =>   \$self->{config}{scanhomedirs},
 		"nolocal"        =>   \$self->{config}{nolocal},
 		"ssl=s"            =>   \$self->{config}{ssl},
@@ -185,7 +185,7 @@ sub help {
     print STDERR "\t-w --wait=seconds   wait a random period before contacting server like --daemon does (".$self->{config}{wait}.")\n";
 #   print STDERR "\t-x --xml            write output in a xml file ($self->{config}{xml})\n";
     print STDERR "\t--nosoftware        do not return installed software list (".$self->{config}{nosoftware}.")\n";
-    print STDERR "\t--delaytime	      set a max delay time (in second) if no PROLOG_FREQ is set (".$self->{config}{delaytime}.")\n";
+    print STDERR "\t--delaytime=seconds set a max delay time (in second) if no PROLOG_FREQ is set (".$self->{config}{delaytime}.")\n";
     print STDERR "\t--scan-homedirs     permit to scan home user directories (".$self->{config}{scanhomedirs}.")\n" ;
     print STDERR "\t--ssl=0|1           disable or enable SSL communications check (".$self->{config}{ssl}.")\n" ;
     print STDERR "\t--ca=FILE           path to CA certificates file in PEM format (".$self->{config}{ca}.")\n" ;
