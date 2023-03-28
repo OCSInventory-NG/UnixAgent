@@ -1,7 +1,7 @@
 #!/bin/bash
 NAME=ocsinventory-agent
 
-exec >>/var/log/$NAME/$NAME.log 2>&1 
+exec >>/var/log/$NAME/$NAME.log 2>&1
 
 [ -f   /etc/sysconfig/$NAME ] || exit 0
 source /etc/sysconfig/$NAME
@@ -17,19 +17,19 @@ do
 		fi
 
 		if [ ! -z "${OCSTAG[$i]}" ]; then
-		        OPTS="$OPTS --tag=${OCSTAG[$i]}"
+			OPTS="$OPTS --tag=${OCSTAG[$i]}"
 		fi
 
 		if [ "z${OCSSERVER[$i]}" = 'zlocal' ]; then
-	        	# Local inventory
-	        	OPTS="$OPTS --local=/var/lib/$NAME"
+			# Local inventory
+			OPTS="$OPTS --local=/var/lib/$NAME"
 
 		elif [ ! -z "${OCSSERVER[$i]}" ]; then
-	        	# Remote inventory
-		        OPTS="$OPTS --lazy --nolocal --server=${OCSSERVER[$i]}"
-		        if [ ! -z "${OCSPROXYSERVER[$i]}" ]; then
-		        	OPTS="$OPTS --proxy=${OCSPROXYSERVER[$i]}"
-		        fi
+			# Remote inventory
+			OPTS="$OPTS --lazy --nolocal --server=${OCSSERVER[$i]}"
+			if [ ! -z "${OCSPROXYSERVER[$i]}" ]; then
+				OPTS="$OPTS --proxy=${OCSPROXYSERVER[$i]}"
+			fi
 		fi
 
 		echo "[$(date '+%c')] Running $NAME $OPTS"
@@ -38,4 +38,3 @@ do
 	((i++))
 done
 echo "[$(date '+%c')] End of cron job ($PATH)"
-
