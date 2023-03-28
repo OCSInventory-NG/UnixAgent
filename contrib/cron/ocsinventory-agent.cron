@@ -32,6 +32,10 @@ do
 			fi
 		fi
 
+		if [ ! -z "${OCSSSL[$i]}" ]; then
+			OPTS="$OPTS --ssl=${OCSSSL[$i]}"
+		fi
+
 		echo "[$(date '+%c')] Running $NAME $OPTS"
 		/usr/sbin/$NAME  $OPTS
 	fi
