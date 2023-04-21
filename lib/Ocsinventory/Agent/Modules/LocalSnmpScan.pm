@@ -13,7 +13,6 @@ use warnings;
 
 use XML::Simple;
 use Digest::MD5;
-use Data::Dumper;
 
 use Ocsinventory::Agent::Modules::SnmpScan ();
 our @ISA = qw(Ocsinventory::Agent::Modules::SnmpScan);
@@ -124,13 +123,6 @@ sub localsnmpscan_inventory_handler {
     my $configurations = $self->readScanConf($etc);
     $self->{configurations} = $configurations;
 
-    # print 
-    print Dumper($self->{nets_to_scan});
-    print Dumper($self->{communities});
-    print Dumper($self->{types});
-    print Dumper($self->{configurations});
-    
-
 }
 
 sub localsnmpscan_end_handler {
@@ -147,11 +139,12 @@ sub localsnmpscan_end_handler {
 # Override the snmpscan handleXml method to write the xml to the path passed by --local, along with the xml of the agent
 sub handleXml() {
     my ($self, $clean_content) = @_;
-    print Dumper("handleXml SUBMODULE");
     # write XML in provided path
     my $file = $self->{context}->{config}->{local}."/snmp.xml";
     # Open the file in write mode and write the content to it
     open(my $fh, '>', $file) or die "Could not open file '$file' $!";
+    print $fh $clean_content;
+
     close $fh;
 }
 
