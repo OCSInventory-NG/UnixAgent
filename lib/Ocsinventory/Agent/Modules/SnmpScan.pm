@@ -79,10 +79,9 @@ sub snmpscan_prolog_reader {
     $logger->debug("Calling snmp_prolog_reader");
     
     $prolog = XML::Simple::XMLin( $prolog, ForceArray => ['OPTION', 'PARAM']);
-
     for $option (@{$prolog->{OPTION}}){
         if ($option->{NAME} =~/snmp/i){
-            $self->{doscans} = 1 ;
+            $self->{doscans} = 1;
             for ( @{ $option->{PARAM} } ) {
                 if ($_->{'TYPE'} eq 'DEVICE'){
                     # Adding the IP in the devices array
@@ -128,7 +127,18 @@ sub snmpscan_prolog_reader {
                         OID => $_->{OID}
                     };
                 }
+
+                if ($_->{'TYPE'} eq 'OPTION'){
+                    # get SCAN_TYPE_SNMP value and SCAN_ARP_BANDWIDTH value
+                    if ($_->{NAME} eq 'SCAN_TYPE_SNMP'){
+                        $self->{scan_type_snmp}=$_->{TVALUE};
+                    }
+                    if ($_->{NAME} eq 'SCAN_ARP_BANDWIDTH'){
+                        $self->{scan_arp_bandwidth}=$_->{TVALUE};
+                    }
+                }
             }
+
         }
     }
 }
@@ -359,7 +369,8 @@ sub snmpscan_end_handler {
     #Cleaning XML to delete unprintable characters
     my $clean_content = $common->cleanXml($content);
 
-    $network->sendXML({message => $clean_content});
+    $self->handleXml($clean_content);
+
     $logger->debug("End snmp_end_handler :)");
 }
 
@@ -373,18 +384,20 @@ sub snmp_ip_scan {
         my $size=$block->size()-2;
         my $index=1;
 
-        if ( $common->can_run('nmap') && $common->can_load('Nmap::Parser')  ) {
-            $logger->debug("Scannig $net_to_scan with nmap");
-            my $nmaparser = Nmap::Parser->new;
-
-            $nmaparser->parsescan("nmap","-sn",$net_to_scan);
-            for my $host ($nmaparser->all_hosts("up")) {
-               my $res=$host->addr;
-               $logger->debug("Found $res");
-               push( @{$self->{netdevices}},{ IPADDR=>$res }) unless $self->search_netdevice($res);
+        # here we check for scantype configured from server
+        my $snmp_scan_type = $self->{scan_type_snmp};
+        my $arp_bandwidth = 256;
+        # get arp bandwith if required
+        if ($snmp_scan_type eq 'ARPSCAN') {
+            $arp_bandwidth = $self->{scan_arp_bandwidth};
+            if ($arp_bandwidth) {
+                $size = $size / $arp_bandwidth;
             }
-        } elsif ($common->can_load('Net::Ping'))  {
-            $logger->debug("Scanning $net_to_scan with ping");
+        }
+
+        # check for scan type and if the required module is available
+        if ($snmp_scan_type eq 'ICMP' && $common->can_load('Net::Ping')) {
+                        $logger->debug("Scanning $net_to_scan with ping");
             my $ping=Net::Ping->new("icmp",1);
 
             while ($index <= $size) {
@@ -396,12 +409,64 @@ sub snmp_ip_scan {
                 $index++;
             }
             $ping->close();
+            
+        } elsif ($snmp_scan_type eq 'NMAP' && $common->can_load('Nmap::Parser')) {
+            $logger->debug("Scannig $net_to_scan with nmap");
+            my $nmaparser = Nmap::Parser->new;
+
+            $nmaparser->parsescan("nmap","-sn",$net_to_scan);
+            for my $host ($nmaparser->all_hosts("up")) {
+               my $res=$host->addr;
+               $logger->debug("Found $res");
+               push( @{$self->{netdevices}},{ IPADDR=>$res }) unless $self->search_netdevice($res);
+            }
+
+        # 3rd option is arp scan
+        } elsif ($snmp_scan_type eq 'ARPSCAN' && $common->can_run('arp-scan')) {
+            # let's try doing that with the arp-scan command
+            # but I do need to know the default interface being used
+            # lets check the routing table to see what the default gateway is
+            my $default_gateway = `ip route | grep default | awk '{print \$5}'`;
+            # get the first line of the output if multiple lines are returned
+            $default_gateway = (split /\n/, $default_gateway)[0];
+            chomp($default_gateway);
+
+            $logger->debug("Scanning $default_gateway with arp scan");
+
+            # bandwith is in packets per second but server gives us kbps
+            $arp_bandwidth = $arp_bandwidth * 1024;
+            my $cmd = "arp-scan --interface=$default_gateway --localnet --bandwidth=$arp_bandwidth";
+            my $res = `$cmd`;
+
+            # arp scan is successful, now handle the output : we check for the starting line and then for ip addresses
+            if ($res =~ /Starting arp-scan/) {
+                my @lines = split /\n/, $res;
+                foreach my $line (@lines) {
+                    if ($line =~ /([0-9]{1,3}\.){3}[0-9]{1,3}/) {
+                        my $ip = $&;
+                        $logger->debug("Found $ip");
+                        push( @{$self->{netdevices}},{ IPADDR=>$ip }) unless $self->search_netdevice($ip);
+                    }
+                }
+            } else {
+                $logger->debug("arp-scan failed");
+            }
+            
+        
         } else {
             $logger->debug("No scan possible");
         }
     } else {
         $logger->debug("Net::Netmask not present: no scan possible");
     }
+}
+
+
+# Defining a specific subroutine to handle the XML allows submodules (LocalSnmpScan) to override it
+sub handleXml() {
+    my ($self, $clean_content) = @_;
+    my $network = $self->{context}->{network};
+    $network->sendXML({message => $clean_content});
 }
 
 sub search_netdevice {
