@@ -78,7 +78,7 @@ sub localsnmpscan_start_handler {
     # iterate through the list of etcdir to check if one of them contains the mandatory files
     my $found = 0;
     foreach my $etcdir (@{$config->{etcdir}}) {
-        if (-e $etcdir."/snmp/localsnmp_types_conf.xml" && -e $etcdir."/snmp/subnets.txt" && -e $etcdir."/snmp/localsnmp_communities_conf.xml" && -e $etcdir."/snmp/localsnmp_scans_conf.xml") {
+        if (-e $etcdir."/snmp/localsnmp_communities_conf.xml" && -e $etcdir."/snmp/localsnmp_subnets_conf.xml" && -e $etcdir."/snmp/localsnmp_types_conf.xml" && -e $etcdir."/snmp/localsnmp_scans_conf.xml") {
             $found = 1;
             last;
         }
@@ -86,7 +86,7 @@ sub localsnmpscan_start_handler {
 
     if (!$found) {
         $self->{disabled} = 1;
-        $logger->error("communities.xml, subnets.xml or types.xml file is missing !!");
+        $logger->error("at least one of the localsnmp configuration files is missing, make sure the following are present : localsnmp_communities_conf.xml, localsnmp_subnets_conf.xml, localsnmp_types_conf.xml, localsnmp_scans_conf.xml");
         $logger->error("Humm my prerequisites are not OK...disabling module :( :(");
     }
 
@@ -105,7 +105,7 @@ sub localsnmpscan_inventory_handler {
     # iterate through the list of etcdir to check if one of them contains the mandatory files
     my $etc;
     foreach my $etcdir (@{$config->{etcdir}}) {
-        if (-e $etcdir."/snmp/localsnmp_communities_conf.xml" && -e $etcdir."/snmp/subnets.txt" && -e $etcdir."/snmp/localsnmp_types_conf.xml") {
+        if (-e $etcdir."/snmp/localsnmp_communities_conf.xml" && -e $etcdir."/snmp/localsnmp_subnets_conf.xml" && -e $etcdir."/snmp/localsnmp_types_conf.xml" && -e $etcdir."/snmp/localsnmp_scans_conf.xml") {
             $etc = $etcdir;
             last;
         }
@@ -126,7 +126,6 @@ sub localsnmpscan_inventory_handler {
 }
 
 sub localsnmpscan_end_handler {
-    # can i call the snmpscan end handler method from snmpscan module ?
     my $self = shift;
     my $logger = $self->{logger};
     my $common = $self->{context}->{common};
@@ -139,8 +138,10 @@ sub localsnmpscan_end_handler {
 # Override the snmpscan handleXml method to write the xml to the path passed by --local, along with the xml of the agent
 sub handleXml() {
     my ($self, $clean_content) = @_;
-    # write XML in provided path
-    my $file = $self->{context}->{config}->{local}."/snmp.xml";
+
+    my $deviceid = $self->{context}->{deviceid};
+
+    my $file = $self->{context}->{config}->{local}."/".$deviceid."_snmp.xml";
     # Open the file in write mode and write the content to it
     open(my $fh, '>', $file) or die "Could not open file '$file' $!";
     print $fh $clean_content;
