@@ -128,14 +128,9 @@ sub snmpscan_prolog_reader {
                     };
                 }
 
-                if ($_->{'TYPE'} eq 'OPTION'){
-                    # get SCAN_TYPE_SNMP value and SCAN_ARP_BANDWIDTH value
-                    if ($_->{NAME} eq 'SCAN_TYPE_SNMP'){
-                        $self->{scan_type_snmp}=$_->{TVALUE};
-                    }
-                    if ($_->{NAME} eq 'SCAN_ARP_BANDWIDTH'){
-                        $self->{scan_arp_bandwidth}=$_->{TVALUE};
-                    }
+                if ($_->{'SCAN_TYPE_SNMP'} && $_->{'SCAN_ARP_BANDWIDTH'}) {
+                    $self->{scan_type_snmp} = $_->{SCAN_TYPE_SNMP};
+                    $self->{scan_arp_bandwidth} = $_->{SCAN_ARP_BANDWIDTH};
                 }
             }
 
@@ -181,8 +176,15 @@ sub snmpscan_end_handler {
     $logger->debug("Snmp: Scanning network");
 
     my $nets_to_scan=$self->{nets_to_scan};
-    foreach my $net_to_scan ( @$nets_to_scan ){
+    # check if arp scan type
+    if ($self->{scan_type_snmp} eq 'ARPSCAN') {
+        # if arp, we can pass an empty array to the snmp_ip_scan function bc we only need to scan the local network
+        my $net_to_scan = [];
         $self->snmp_ip_scan($net_to_scan);
+    } else {
+        foreach my $net_to_scan ( @$nets_to_scan ){
+            $self->snmp_ip_scan($net_to_scan);
+        }
     }
     $logger->debug("Snmp: Ending Scanning network");
 
@@ -380,24 +382,15 @@ sub snmp_ip_scan {
     my $common=$self->{common};
 
     if ($common->can_load('Net::Netmask') ) {
-        my $block=Net::Netmask->new($net_to_scan);
-        my $size=$block->size()-2;
-        my $index=1;
-
-        # here we check for scantype configured from server
+        # get scantype configured from server
         my $snmp_scan_type = $self->{scan_type_snmp};
-        my $arp_bandwidth = 256;
-        # get arp bandwith if required
-        if ($snmp_scan_type eq 'ARPSCAN') {
-            $arp_bandwidth = $self->{scan_arp_bandwidth};
-            if ($arp_bandwidth) {
-                $size = $size / $arp_bandwidth;
-            }
-        }
 
         # check for scan type and if the required module is available
         if ($snmp_scan_type eq 'ICMP' && $common->can_load('Net::Ping')) {
-                        $logger->debug("Scanning $net_to_scan with ping");
+            my $block=Net::Netmask->new($net_to_scan);
+            my $size=$block->size()-2;
+            my $index=1;
+            $logger->debug("Scanning $net_to_scan with ping");
             my $ping=Net::Ping->new("icmp",1);
 
             while ($index <= $size) {
@@ -423,9 +416,7 @@ sub snmp_ip_scan {
 
         # 3rd option is arp scan
         } elsif ($snmp_scan_type eq 'ARPSCAN' && $common->can_run('arp-scan')) {
-            # let's try doing that with the arp-scan command
-            # but I do need to know the default interface being used
-            # lets check the routing table to see what the default gateway is
+            # check the routing table to see what the default gateway is
             my $default_gateway = `ip route | grep default | awk '{print \$5}'`;
             # get the first line of the output if multiple lines are returned
             $default_gateway = (split /\n/, $default_gateway)[0];
@@ -434,11 +425,12 @@ sub snmp_ip_scan {
             $logger->debug("Scanning $default_gateway with arp scan");
 
             # bandwith is in packets per second but server gives us kbps
+            my $arp_bandwidth = $self->{scan_arp_bandwidth};
             $arp_bandwidth = $arp_bandwidth * 1024;
             my $cmd = "arp-scan --interface=$default_gateway --localnet --bandwidth=$arp_bandwidth";
             my $res = `$cmd`;
 
-            # arp scan is successful, now handle the output : we check for the starting line and then for ip addresses
+            # arp scan is successful
             if ($res =~ /Starting arp-scan/) {
                 my @lines = split /\n/, $res;
                 foreach my $line (@lines) {
