@@ -45,7 +45,7 @@ sub run {
 
         $repo_name=$1 if ($line =~ /^Repo-name\s+:\s(.*)/i);
         $repo_baseurl=$1 if ($line =~ /^Repo-baseurl\s+:\s(.*)/i);
-        $repo_filename=$1 if ($line =~ /^Repo-filename:\s(.*)/i);
+        $repo_filename=$1 if ($line =~ /^Repo-filename\s+:\s(.*)/i);
         $repo_pkgs=$1 if ($line =~ /^Repo-pkgs\s+:\s(.*)/i);
         $repo_rev=$1 if ($line =~ /^Repo-revision\s+:\s(.*)/i);
         $repo_size=$1 if ($line =~ /^Repo-size\s+:\s(.*)/i);
