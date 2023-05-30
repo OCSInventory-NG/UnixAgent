@@ -8,21 +8,30 @@ use warnings;
 sub check {
     my $params = shift;
     my $common = $params->{common};
-  
+    my $prologresp = $params->{prologresp};
+    my $logger = $params->{logger};
+    
     return unless $common->can_run("nmap");
     return unless $common->can_load("Nmap::Parser");
   
-    # Do we have nmap 3.90 (or >) 
-    foreach (`nmap -v 2>&1`) {
-        if (/^Starting Nmap (\d+)\.(\d+)/) {
-            my $release = $1;
-            my $minor = $2;
-  
-            if ($release > 3 || ($release > 3 && $minor >= 90)) {
-                return 1;
+    my $scan_type = $prologresp->getOptionsInfoByName("IPDISCOVER");
+    # scan type check 
+    if ($scan_type->[0] && exists($scan_type->[0]->{SCAN_TYPE_IPDISCOVER}) && $scan_type->[0]->{SCAN_TYPE_IPDISCOVER} eq "NMAP") {
+        
+        # Do we have nmap 3.90 (or >) 
+        foreach (`nmap -v 2>&1`) {
+            if (/^Starting Nmap (\d+)\.(\d+)/) {
+                my $release = $1;
+                my $minor = $2;
+    
+                if ($release > 3 || ($release > 3 && $minor >= 90)) {
+                    $logger->debug("Will be using NMAP for IpDiscover scan based on SCAN_TYPE_IPDISCOVER config option");
+                    return 1;
+                }
             }
         }
     }
+
     0;
   }
   
@@ -33,7 +42,7 @@ sub run {
     my $common = $params->{common};
     my $prologresp = $params->{prologresp};
     my $logger = $params->{logger};
-  
+
     # Let's find network interfaces and call ipdiscover on it
     my $options = $prologresp->getOptionsInfoByName("IPDISCOVER");
   
