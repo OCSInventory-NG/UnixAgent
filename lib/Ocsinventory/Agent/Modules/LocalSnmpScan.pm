@@ -141,7 +141,7 @@ sub handleXml() {
 
     my $deviceid = $self->{context}->{deviceid};
 
-    my $file = $self->{context}->{config}->{local}."/".$deviceid."_snmp.xml";
+    my $file = $self->{context}->{config}->{local}."/".$deviceid."_snmp.ocs";
     # Open the file in write mode and write the content to it
     open(my $fh, '>', $file) or die "Could not open file '$file' $!";
     print $fh $clean_content;
