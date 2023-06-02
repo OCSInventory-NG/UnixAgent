@@ -17,21 +17,18 @@ sub new {
 
     my $logger = $self->{logger} = $params->{logger};
 
-
     if ($self->{config}->{accountinfofile}) {
-
         $logger->debug ('Accountinfo file: '. $self->{config}->{accountinfofile});
+
         if (! -f $self->{config}->{accountinfofile}) {
-            $logger->info ("Accountinfo file doesn't exist. I create an empty one.");
+            $logger->info("Accountinfo file doesn't exist. I create an empty one.");
             $self->writeAccountInfoFile();
         } else {
-
             my $xmladm;
 
             eval {
                 $xmladm = $self->{common}->readXml($self->{config}->{accountinfofile}, [ 'ACCOUNTINFO' ]);
             };
-
 
             if ($xmladm && exists($xmladm->{ACCOUNTINFO})) {
                 # Store the XML content in a local HASH
@@ -47,15 +44,14 @@ sub new {
       $logger->debug("No accountinfo file defined");
     }
 
-    if ($self->{config}->{tag}) {
-        if ($self->{accountinfo}->{TAG}) {
-            $logger->debug("A TAG seems to already exist in the ocsinv.adm file. ".
-                "The -t parameter will be ignored. Don't forget that the TAG value ".
-                "will be ignored by the server unless it has OCS_OPT_ACCEPT_TAG_UPDATE_FROM_CLIENT=1.");
-        } else {
-          $self->{accountinfo}->{TAG} = decode('UTF-8', $self->{config}->{tag});
-        }
+    if($self->{config}->{tag}) {
+        $logger->debug("A TAG seems to already exist in the ocsinv.adm file. ".
+            "The -t parameter will be ignored. Don't forget that the TAG value ".
+            "will be ignored by the server unless it has OCS_OPT_ACCEPT_TAG_UPDATE_FROM_CLIENT=1.");
+
+        $self->{accountinfo}->{TAG} = decode('UTF-8', $self->{config}->{tag});
     }
+
     $self; #Because we have already blessed the object 
 }
 
