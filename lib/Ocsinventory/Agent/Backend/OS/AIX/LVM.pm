@@ -68,16 +68,15 @@ sub run {
                 $total = $total_pps * $volume_size;
                 $free = $free_pps * $volume_size;
             }
-        
-            $common->addDrive({
-                FREE => $free,
-                FILESYSTEM => $format,
-                TOTAL => $total,
-                TYPE => "DISK",
-                VOLUMN => $status,
-                SERIAL => $volume_uuid
-            });
         }
+        $common->addDrive({
+            FREE => $free,
+            FILESYSTEM => $format,
+            TOTAL => $total,
+            TYPE => "DISK",
+            VOLUMN => $status,
+            SERIAL => $volume_uuid
+        });
     }
 
     foreach my $nom (@physvol) {
@@ -99,16 +98,15 @@ sub run {
             }
 
             $total = $lps * $volume_size;
-
-            $common->addDrive({
-                FREE => "",
-                FILESYSTEM => "",
-                TOTAL => $total,
-                TYPE => $type,
-                VOLUMN => $status,
-                SERIAL => $volume_uuid
-            });
         }
+        $common->addDrive({
+            FREE => "",
+            FILESYSTEM => "",
+            TOTAL => $total,
+            TYPE => $type,
+            VOLUMN => $status,
+            SERIAL => $volume_uuid
+        });
     }
      
     # We retrieve the disk list
@@ -132,15 +130,15 @@ sub run {
             if ($line =~ /FREE PPs:\s+(\d+)/) {
                 $free = $1;
             }
-            $common->addDrive({
-                FREE => $free,
-                FILESYSTEM => "",
-                TOTAL => $volume_size,
-                TYPE => "AIX VG",
-                VOLUMN => $status,
-                SERIAL => $volume_uuid
-            });
         }
+        $common->addDrive({
+            FREE => $free,
+            FILESYSTEM => "",
+            TOTAL => $volume_size,
+            TYPE => "AIX VG",
+            VOLUMN => $status,
+            SERIAL => $volume_uuid
+        });
     }
 }
 
