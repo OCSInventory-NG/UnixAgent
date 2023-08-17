@@ -43,6 +43,11 @@ sub run {
     } else {
         @infos=`dpkg-query --show --showformat='\${Package}---\${Architecture}---\${Version}---\${Installed-Size}---\${Status}---\${Homepage}---\${Description}\n'`;
     }
+
+    my @manual_IM = `apt-mark showmanual`;
+    my @auto_IM = `apt-mark showauto`;
+    my $installationMethod;
+
     foreach my $line (@infos) {
         next if $line =~ /^ /;
         chomp $line;
@@ -50,6 +55,22 @@ sub run {
         if ($deb[4] && $deb[4] !~ / installed/) {
             $logger->debug("Skipping $deb[0] package as not installed, status='$deb[4]'");
             next;
+        }
+        foreach my $package (@manual_IM)
+        {
+            chomp $package;
+            if ($package eq $deb[0])
+            {
+                $installationMethod = "Manual";
+            }
+        }
+        foreach my $package (@auto_IM)
+        {
+            chomp $package;
+            if ($package eq $deb[0])
+            {
+                $installationMethod = "Automatic";
+            }
         }
         $key=$deb[0];
         if (exists $statinfo{$key}) {
@@ -60,6 +81,7 @@ sub run {
                 'FILESIZE'      => ( $deb[3] || 0 ) * 1024,
                 'PUBLISHER'     => $deb[5],
                 'INSTALLDATE'   => $statinfo{$key},
+                'INSTALLMETHOD'  => $installationMethod,
                 'COMMENTS'      => $deb[6],
                 'FROM'          => 'deb'
             });
