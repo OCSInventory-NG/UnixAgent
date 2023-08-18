@@ -362,7 +362,7 @@ sub addSoftware {
 
     my $content = {};
 
-    foreach my $key (qw/STATUS ARCHITECTURE COMMENTS FILESIZE FOLDER FROM INSTALLDATE INSTALLMETHOD NAME PUBLISHER VERSION/) {
+    foreach my $key (qw/STATUS ARCHITECTURE COMMENTS FILESIZE FOLDER FROM INSTALLDATE INSTALLMETHOD NAME PUBLISHER VERSION LASTUPDATE UPDATETYPE/) {
         if (exists $args->{$key}) {
             $content->{$key}[0] = $args->{$key} if $args->{$key};
         }
