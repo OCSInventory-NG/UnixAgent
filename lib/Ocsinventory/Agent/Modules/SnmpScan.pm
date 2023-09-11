@@ -329,7 +329,6 @@ sub snmpscan_end_handler {
                     $data_value = $data->{$datas->{OID}};
                     if(defined $data_value && $data_value =~ m/([\x{0}-\x{9}]|[\x{B}-\x{C}]|[\x{E}-\x{1F}]|[\x{7F}-\x{FF}])/) {
                         $data_value = unpack "H*", $data_value;
-                        $data_value = substr $data_value, 2;
                         my @split = unpack '(A2)*', $data_value;
                         $data_value = uc(join ':', @split);
                     }
@@ -339,7 +338,6 @@ sub snmpscan_end_handler {
                         foreach my $key (keys %{$data}) {
                             if(defined $data->{$key} && $data->{$key} =~ m/([\x{0}-\x{9}]|[\x{B}-\x{C}]|[\x{E}-\x{1F}]|[\x{7F}-\x{FF}])/) {
                                 $data->{$key} = unpack "H*", $data->{$key};
-                                $data->{$key} = substr $data->{$key}, 2;
                                 my @split = unpack '(A2)*', $data->{$key};
                                 $data->{$key} = uc(join ':', @split);
                             }
