@@ -27,6 +27,13 @@ sub run {
        $datawidth = 32;
     }
 
+    my $arm64 = `sysctl -n hw.optional.arm64`;
+    if ($arm64 == 1){
+       $arch = "arm64";
+       $datawidth = 64;
+    }
+
+
     # How much processor socket ?
     my $ncpu=`sysctl -n hw.packages`;
 
