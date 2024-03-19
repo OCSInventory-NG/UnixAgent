@@ -31,6 +31,11 @@ sub new {
                     SuppressEmpty => undef
                 );
             };
+            # if XML parsing fails
+            if ($@) {
+                $logger->debug("XML parsing failed, attempting to read from ocsinv.txt");
+                $self->read_txt_config();
+            }
         }
     }
 
@@ -77,6 +82,51 @@ sub write {
         $logger->debug ("ocsinv.conf updated successfully");
     } else {
         $logger->error ("Can't save setting change in `".$self->{config}->{accountconfig}."'");
+        $logger->debug ("Attempting to write to ocsinv.txt");
+        $self->write_txt_config();
+    }
+}
+
+sub write_txt_config {
+    my ($self) = @_;
+    my $txt_config_path = $self->{config}->{accountconfig};
+    # replace .conf with .txt
+    $txt_config_path =~ s/\.conf$/.txt/; 
+
+    if (open my $fh, '>', $txt_config_path) {
+        foreach my $key (keys %{$self->{xml}}) {
+            my $value = $self->{xml}->{$key};
+            print $fh "$key=$value\n";
+        }
+        close $fh;
+        $self->{logger}->debug("ocsinv.txt updated successfully");
+    } else {
+        $self->{logger}->error("Can't save setting change in `$txt_config_path`");
+    }
+}
+
+sub read_txt_config {
+    my ($self) = @_;
+    my $txt_config_path = $self->{config}->{accountconfig};
+    # replace .conf with .txt
+    $txt_config_path =~ s/\.conf$/.txt/; 
+
+    if (-f $txt_config_path) {
+        open my $fh, '<', $txt_config_path or do {
+            $self->{logger}->error("Cannot open $txt_config_path for reading");
+            return;
+        };
+
+        while (my $line = <$fh>) {
+            chomp $line;
+            my ($key, $value) = split /=/, $line, 2;
+            $self->{xml}->{$key} = $value;
+        }
+
+        close $fh;
+    } else {
+        $self->{logger}->debug("ocsinv.txt does not exist. Creating an empty one");
+        $self->write_txt_config();
     }
 }
 
