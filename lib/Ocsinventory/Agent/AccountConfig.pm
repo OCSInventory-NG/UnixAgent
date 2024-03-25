@@ -164,13 +164,11 @@ sub read_txt_config {
 sub create_txt_file {
     my ($self) = @_;
     my $logger = $self->{logger};
-    my $file = $self->{config}->{accountconfig};
-    $file =~ s/\.conf$/.txt/; 
-    $logger->debug ('accountconfig file: `'.$file.
-    " doesn't exist. I create an empty one");
     my $txt_config_path = $self->{config}->{accountconfig};
     # replace .conf with .txt
     $txt_config_path =~ s/\.conf$/.txt/; 
+    $logger->debug ('accountconfig file: `'.$txt_config_path.
+    " doesn't exist. I create an empty one");
 
     if (open my $fh, '>', $txt_config_path) {
         close $fh;
