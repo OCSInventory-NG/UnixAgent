@@ -21,19 +21,12 @@ sub new {
 
     if ($self->{config}->{accountconfig}) {
         if (! -f $self->{config}->{accountconfig}) {
-            $logger->debug ('accountconfig file: `'. $self->{config}->{accountconfig}.
-                " doesn't exist. I create an empty one");
-            $self->write();
+            $self->create_xml_file();
+            $self->create_txt_file();
         } else {
-            eval {
-                $self->{xml} = XML::Simple::XMLin(
-                    $self->{config}->{accountconfig},
-                    SuppressEmpty => undef
-                );
-            };
-            # if XML parsing fails
-            if ($@) {
-                $logger->debug("XML parsing failed, attempting to read from ocsinv.txt");
+            # either read as xml or txt
+            if ($self->read() == 0) {
+                $logger->debug("XML parsing of ocsinv.conf failed, will attempt to read from ocsinv.txt");
                 $self->read_txt_config();
             }
         }
@@ -57,7 +50,10 @@ sub set {
     my $logger = $self->{logger};
 
     $self->{xml}->{$name} = $value;
-    $self->write(); # save the change
+
+    $self->write();
+    $self->write_txt_config();
+
 }
 
 
@@ -78,12 +74,52 @@ sub write {
         $fault = 1 if (!close CONF);
     }
 
-    if (!$fault) {
-        $logger->debug ("ocsinv.conf updated successfully");
-    } else {
+    if ($fault) {
         $logger->error ("Can't save setting change in `".$self->{config}->{accountconfig}."'");
-        $logger->debug ("Attempting to write to ocsinv.txt");
-        $self->write_txt_config();
+    }
+}
+
+sub read {
+    my ($self) = @_;
+
+    my $logger = $self->{logger};
+
+    eval {
+        $self->{xml} = XML::Simple::XMLin(
+            $self->{config}->{accountconfig},
+            SuppressEmpty => undef
+        );
+
+    };
+
+    if ($@) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+sub create_xml_file {
+    my ($self) = @_;
+
+    my $logger = $self->{logger};
+
+    $logger->debug ('accountconfig file: `'. $self->{config}->{accountconfig}.
+    " doesn't exist. I create an empty one");
+    return unless $self->{config}->{accountconfig};
+
+    my $xml = XML::Simple::XMLout( $self->{xml} , RootName => 'CONF',
+        NoAttr => 1 );
+    my $fault;
+    if (!open CONF, ">".$self->{config}->{accountconfig}) {
+        $fault = 1;
+    } else {
+        print CONF $xml;
+        $fault = 1 if (!close CONF);
+    }
+
+    if ($fault) {
+        $logger->error ("Can't create file `".$self->{config}->{accountconfig}."'");
     }
 }
 
@@ -99,7 +135,6 @@ sub write_txt_config {
             print $fh "$key=$value\n";
         }
         close $fh;
-        $self->{logger}->debug("ocsinv.txt updated successfully");
     } else {
         $self->{logger}->error("Can't save setting change in `$txt_config_path`");
     }
@@ -110,7 +145,6 @@ sub read_txt_config {
     my $txt_config_path = $self->{config}->{accountconfig};
     # replace .conf with .txt
     $txt_config_path =~ s/\.conf$/.txt/; 
-
     if (-f $txt_config_path) {
         open my $fh, '<', $txt_config_path or do {
             $self->{logger}->error("Cannot open $txt_config_path for reading");
@@ -124,10 +158,26 @@ sub read_txt_config {
         }
 
         close $fh;
-    } else {
-        $self->{logger}->debug("ocsinv.txt does not exist. Creating an empty one");
-        $self->write_txt_config();
     }
 }
+
+sub create_txt_file {
+    my ($self) = @_;
+    my $logger = $self->{logger};
+    my $file = $self->{config}->{accountconfig};
+    $file =~ s/\.conf$/.txt/; 
+    $logger->debug ('accountconfig file: `'.$file.
+    " doesn't exist. I create an empty one");
+    my $txt_config_path = $self->{config}->{accountconfig};
+    # replace .conf with .txt
+    $txt_config_path =~ s/\.conf$/.txt/; 
+
+    if (open my $fh, '>', $txt_config_path) {
+        close $fh;
+    } else {
+        $self->{logger}->error("Can't create `$txt_config_path`");
+    }
+}
+
 
 1;
