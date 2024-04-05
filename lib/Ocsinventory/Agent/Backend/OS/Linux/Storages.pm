@@ -190,7 +190,7 @@ sub getFromDev {
     my $dir = "/dev";
 
     opendir (my $dh, $dir) or die $!;
-    @disks = grep{/^sd[a-z][a-z]?$|^sg[a-z][a-z]?$|^vd[a-z][a-z]?$|^sr\d+$/} readdir($dh);
+    @disks = grep{/^sd[a-z][a-z]?$|^sg[a-z][a-z]?$|^vd[a-z][a-z]?$|^sr\d+$|^nvme\d+n\d+$/} readdir($dh);
     foreach (@disks) {
         push (@devs, {NAME => $_});
     }
@@ -513,26 +513,6 @@ sub run {
         }
     }
 
-    foreach my $device (getFromSmartctl($params,$devices)) {
-        my $name = $device->{NAME};
-        foreach my $f ("NAME", "MANUFACTURER", "TYPE", "MODEL", "DISKSIZE", "FIRMWARE", "SERIALNUMBER", "DESCRIPTION") {
-            if ($devices->{$name}->{$f} eq "") {
-                #debug print "getFromSmartctl $name $f device->{\$f} $device->{$f}\n";
-                $devices->{$name}->{$f} = $device->{$f};
-            }
-        }
-    }
-
-    foreach my $device (getFromuDev2($params,$devices)) {
-        my $name = $device->{NAME};
-        foreach my $f ("NAME", "MANUFACTURER", "TYPE", "MODEL", "FIRMWARE", "SERIALNUMBER") {
-            if  ($devices->{$name}->{$f} eq "") {
-                #debug print "getFromuDev2 $name $f device->{\$f} $device->{$f}\n";
-                $devices->{$name}->{$f} = $device->{$f};
-            }
-        }
-    }
-
     foreach my $device (getFromLshw($params)) {
         my $name = $device->{NAME};
         foreach my $f ("NAME", "MANUFACTURER", "MODEL", "DESCRIPTION", "TYPE", "DISKSIZE", "SERIALNUMBER", "FIRMWARE") {
@@ -568,6 +548,26 @@ sub run {
         foreach my $f ("NAME", "MANUFACTURER", "TYPE", "MODEL") {
             if ($devices->{$name}->{$f} eq "") {
                 #debug print "getFromLsscsi $name $f device->{\$f} $device->{$f}\n";
+                $devices->{$name}->{$f} = $device->{$f};
+            }
+        }
+    }
+
+    foreach my $device (getFromSmartctl($params,$devices)) {
+        my $name = $device->{NAME};
+        foreach my $f ("NAME", "MANUFACTURER", "TYPE", "MODEL", "DISKSIZE", "FIRMWARE", "SERIALNUMBER", "DESCRIPTION") {
+            if ($devices->{$name}->{$f} eq "") {
+                #debug print "getFromSmartctl $name $f device->{\$f} $device->{$f}\n";
+                $devices->{$name}->{$f} = $device->{$f};
+            }
+        }
+    }
+
+    foreach my $device (getFromuDev2($params,$devices)) {
+        my $name = $device->{NAME};
+        foreach my $f ("NAME", "MANUFACTURER", "TYPE", "MODEL", "FIRMWARE", "SERIALNUMBER") {
+            if  ($devices->{$name}->{$f} eq "") {
+                #debug print "getFromuDev2 $name $f device->{\$f} $device->{$f}\n";
                 $devices->{$name}->{$f} = $device->{$f};
             }
         }
