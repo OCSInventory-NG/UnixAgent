@@ -1,0 +1,8 @@
+--- ocsinventory-agent.orig	2024-05-14 17:10:08
++++ ocsinventory-agent	2024-05-14 17:09:16
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/bin/perl5.30
+ 
+ eval 'exec /usr/bin/perl  -S $0 ${1+"$@"}'
+     if 0; # not running under some shell
