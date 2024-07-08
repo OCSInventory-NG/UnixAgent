@@ -3,7 +3,7 @@ package Ocsinventory::Agent::Config;
 use strict;
 use Getopt::Long;
 
-our $VERSION = '2.10.0';
+our $VERSION = '2.10.2';
 
 my $basedir = '';
 my $default = {

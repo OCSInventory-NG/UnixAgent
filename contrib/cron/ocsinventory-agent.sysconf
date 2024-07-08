@@ -12,9 +12,12 @@ OCSMODE[0]=none
 ## can be used to override the ocsinventory-agent.cfg setup.
 # OCSSERVER[0]=your.ocsserver.name
 #
+## can be used to disable HTTPS cert check.
+# OCSSSL[0]=0
+#
 ## If you need an HTTP/HTTPS proxy, fill this out
 # OCSPROXYSERVER[0]='http://user:pass@proxy:port'
-## 
+#
 ## corresponds with --local=/var/lib/ocsinventory-agent
 OCSSERVER[0]=local
 
