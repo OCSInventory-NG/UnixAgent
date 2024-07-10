@@ -654,7 +654,7 @@ sub addBatteries {
 
     my $content = {};
 
-    foreach my $key (qw/CHEMISTRY DESIGNCAPACITY DESIGNVOLTAGE LOCATION MANUFACTURER MANUFACTUREDATE MAXERROR NAME OEMSPECIFIC SBDSVERSION SERIALNUMBER /) {
+    foreach my $key (qw/CHEMISTRY DESCRIPTION DESIGNCAPACITY DESIGNVOLTAGE ESTIMATECHARGEREMAINING MANUFACTURER NAME SERIAL STATUS/) {
         if (exists $args->{$key}) {
             $content->{$key}[0] = $args->{$key} if $args->{$key};
         }
