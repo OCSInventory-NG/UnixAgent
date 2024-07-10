@@ -27,6 +27,8 @@ sub run {
     }
     close V;
     chomp($name);
+    chomp($version);
+    chomp($description);
 
     # Debian version number is set in/etc/debian_version file
     if (-r "/etc/debian_version") {
