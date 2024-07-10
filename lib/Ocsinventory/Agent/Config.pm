@@ -174,13 +174,13 @@ sub help {
     print STDERR "\t--lazy              do not contact the server more than one time during the PROLOG_FREQ (".$self->{config}{lazy}.")\n";
     print STDERR "\t-l --local=DIR      do not contact server but write inventory in DIR directory in XML (".$self->{config}{local}.")\n";
     print STDERR "\t   --logfile=FILE   log message in FILE (".$self->{config}{logfile}.")\n";
-    print STDERR "\t-p --password=PWD   password for server auth\n";
+    print STDERR "\t-p --password=PWD   password for server auth. Password must be encoded in base64.\n";
     print STDERR "\t-P --proxy=PROXY    proxy address. e.g: http://user:pass\@proxy:port (".$self->{config}{proxy}.")\n";
     print STDERR "\t-r --realm=REALM    realm for server auth. e.g: 'Restricted Area' (".$self->{config}{realm}.")\n";
     print STDERR "\t-s --server=uri     server uri (".$self->{config}{server}.")\n";
     print STDERR "\t   --stdout         do not write or post the inventory but print it on STDOUT\n";
     print STDERR "\t-t --tag=TAG        use TAG as tag (".$self->{config}{tag}."). Will be ignored by server if a value already exists.\n";
-    print STDERR "\t-u --user=USER      user for server auth (".$self->{config}{user}.")\n";
+    print STDERR "\t-u --user=USER      user for server auth (".$self->{config}{user}."). USER must be encoded in base64\n";
     print STDERR "\t   --version        print the version\n";
     print STDERR "\t-w --wait=seconds   wait a random period before contacting server like --daemon does (".$self->{config}{wait}.")\n";
 #   print STDERR "\t-x --xml            write output in a xml file ($self->{config}{xml})\n";
