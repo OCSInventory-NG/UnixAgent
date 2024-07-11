@@ -4,7 +4,6 @@ package Module::Install::Makefile;
 use strict 'vars';
 use ExtUtils::MakeMaker   ();
 use Module::Install::Base ();
-use Fcntl qw/:flock :seek/;
 
 use vars qw{$VERSION @ISA $ISCORE};
 BEGIN {
@@ -369,7 +368,6 @@ sub fix_up_makefile {
 
     local *MAKEFILE;
     open MAKEFILE, "+< $makefile_name" or die "fix_up_makefile: Couldn't open $makefile_name: $!";
-    eval { flock MAKEFILE, LOCK_EX };
     my $makefile = do { local $/; <MAKEFILE> };
 
     $makefile =~ s/\b(test_harness\(\$\(TEST_VERBOSE\), )/$1'inc', /;
