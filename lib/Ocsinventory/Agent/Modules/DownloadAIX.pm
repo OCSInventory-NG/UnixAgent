@@ -771,7 +771,7 @@ sub build_package{
         return 1;
     }
 
-    if ( system( $common->get_path("tar")." -xvzf $tmp/build.tar.gz -C $tmp") ){
+    if ( system( $common->get_path("gunzip")." -c $tmp/build.tar.gz > $tmp/build.tar && ".$common->get_path("tar")." -xvf $tmp/build.tar -C $tmp") ){
         $logger->error("Cannot extract $id with tar, trying with unzip.");
         if ( system( $common->get_path("unzip")." $tmp/build.tar.gz -d $tmp") ){
             $logger->error("Cannot extract $id with unzip.");
