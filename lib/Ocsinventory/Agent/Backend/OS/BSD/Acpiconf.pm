@@ -48,6 +48,7 @@ sub run {
     my $real_capacity = $data->{'Last full capacity'};
     $battery->{REAL_CAPACITY} = $real_capacity if defined($real_capacity) && length($real_capacity);
 
+    $common->addBatteries($battery);
 
 }
 
