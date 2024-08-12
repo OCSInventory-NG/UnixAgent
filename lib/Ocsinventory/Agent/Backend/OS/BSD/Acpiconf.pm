@@ -24,7 +24,7 @@ sub run {
 
     my $data = {};
     foreach my $line (@bat) {
-	if ($line =~ /^\s*(\S+):\s*(\S+(?:\s+\S+)*)$/) {
+	if ($line =~ /^\s(.*):\s*(\S+(?:\s+\S+)*)$/) {
 	    $data->{$1}=$2;
         }
     }	
