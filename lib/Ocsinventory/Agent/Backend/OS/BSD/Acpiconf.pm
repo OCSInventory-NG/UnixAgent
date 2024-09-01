@@ -1,5 +1,6 @@
 package Ocsinventory::Agent::Backend::OS::BSD::Acpiconf;
 
+use POSIX;
 use strict;
 use warnings;
 use Data::Dumper;
@@ -37,16 +38,27 @@ sub run {
 
     if ($battery->{CHEMISTRY} eq "LION") { 
         $battery->{CHEMISTRY} = "Lithium-Ion";
+    } elsif (($battery->{CHEMISTRY} eq "LiP") || ($battery->{CHEMISTRY} eq "LiPo")) { 
+         $battery->{CHEMISTRY} = "Lithium-ion-Polymer";
     }
 
+    my $cycles = $data->{'Cycle Count'};
+    $battery->{CYCLES} = $cycles if $cycles;
+
     my $voltage  = $data->{'Design voltage'};
-    $battery->{VOLTAGE} = $voltage if $voltage;
+    $battery->{VOLTAGE} = ceil($voltage/1000)." V" if $voltage;
 
     my $capacity = $data->{'Design capacity'};
     $battery->{CAPACITY} = $capacity if $capacity;
 
     my $real_capacity = $data->{'Last full capacity'};
     $battery->{REAL_CAPACITY} = $real_capacity if defined($real_capacity) && length($real_capacity);
+
+    my $state = $data->{'State'};
+    $battery->{STATUS} = $state if $state;
+
+    my $estimate = $data->{'Remaining capacity'};
+    $battery->{ESTIMATECHARGEREMAINING} = $estimate if $estimate;
 
     $common->addBatteries($battery);
 
