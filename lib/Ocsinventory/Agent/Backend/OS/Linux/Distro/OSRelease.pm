@@ -37,7 +37,7 @@ sub run {
 
     # Debian version number is set in/etc/debian_version file
     if ( -r "/etc/debian_version" ) {
-        if ( `uname -v` =~ /debian/i ) {
+        if ( (`uname -v` =~ /debian/i) || (`uname -v` =~ /pmx/i) ) {
             open my $v, '<', "/etc/debian_version" or warn;
             foreach (<$v>) {
                 $version = $1 if ( $_ =~ /^(\d+.*)/ );
