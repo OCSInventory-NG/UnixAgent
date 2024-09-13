@@ -9,6 +9,7 @@
 ################################################################################
 
 package Ocsinventory::Agent::Modules::SnmpScan;
+use Ocsinventory::Agent::Modules::SnmpFork ();
 
 use strict;
 no strict 'refs';
@@ -54,6 +55,12 @@ sub snmpscan_start_handler {
     my $config = $self->{context}->{config};
     
     $logger->debug("Calling snmp_start_handler");
+
+    if ($config->{forking_enabled}) {
+        $logger->debug("SNMP Forking is enabled");
+    } else {
+        $logger->debug("SNMP Forking is disabled");
+    }
 
     # Disabling module if local mode
     if ($config->{stdout} || $config->{local}) {
@@ -154,23 +161,7 @@ sub snmpscan_end_handler {
 
     # We get the config
     my $config = $self->{context}->{config};
-    # Load setting from the config file
-    my $configagent = new Ocsinventory::Agent::Config;
-    $configagent->loadUserParams();
-    
-    my $communities=$self->{communities};
 
-    if ( ! defined ($communities ) ) {
-        $logger->debug("We have no Community from server, we use default public community");
-        $communities=[{VERSION=>"2c",NAME=>"public"}];
-    }
-
-    my ($name,$comm,$error,$system_oid);
-
-    # Initalising the XML properties 
-    my $snmp_inventory = $self->{inventory};
-    $snmp_inventory->{xmlroot}->{QUERY} = ['SNMP'];
-    $snmp_inventory->{xmlroot}->{DEVICEID} = [$self->{context}->{config}->{deviceid}];
 
     # Scanning network
     $logger->debug("Snmp: Scanning network");
@@ -182,14 +173,64 @@ sub snmpscan_end_handler {
         my $net_to_scan = [];
         $self->snmp_ip_scan($net_to_scan);
     } else {
-        foreach my $net_to_scan ( @$nets_to_scan ){
+        foreach my $net_to_scan (@$nets_to_scan) {
             $self->snmp_ip_scan($net_to_scan);
         }
     }
     $logger->debug("Snmp: Ending Scanning network");
 
+    my $xml_inventory;
+    if ($config->{forking_enabled}) {
+        $xml_inventory = Ocsinventory::Agent::Modules::SnmpFork::fork_snmpscan(\&perform_snmp_scan, $self->{netdevices}, $config->{fork_count}, $self);
+    } else {
+        $xml_inventory = $self->perform_snmp_scan();
+    }
+
+    $self->handleXml($xml_inventory);
+
+    $logger->debug("End snmp_end_handler :)");
+}
+
+sub perform_snmp_scan {
+    my $self = shift;
+    my $logger = $self->{logger};
+    my $common = $self->{context}->{common};
+    my $network = $self->{context}->{network};
+
     # Begin scanning ip tables 
     my $ip=$self->{netdevices};
+
+    # identify the process
+    my $forked = 0;
+    if ($self->{context}->{config}->{forking_enabled}) {
+        $forked = 1;
+        $ip = shift;
+    }
+    
+    my $communities=$self->{communities};
+
+    if ( ! defined ($communities ) ) {
+        $logger->debug("We have no Community from server, we use default public community");
+        $communities=[{VERSION=>"2c",NAME=>"public"}];
+    }
+    my ($name,$comm,$error,$system_oid);
+
+    # Load setting from the config file
+    my $configagent = new Ocsinventory::Agent::Config;
+    $configagent->loadUserParams();
+
+    # Initalising the XML properties 
+    my $snmp_inventory = $self->{inventory};
+    $snmp_inventory->{xmlroot}->{QUERY} = ['SNMP'];
+    $snmp_inventory->{xmlroot}->{DEVICEID} = [$self->{context}->{config}->{deviceid}];
+
+
+    my $pidlog;
+    if ($forked) {
+        $pidlog = "[$$]";
+    } else {
+        $pidlog = "";
+    }
 
     foreach my $device ( @$ip ) {
         my $session = undef;
@@ -200,7 +241,7 @@ sub snmpscan_end_handler {
         my $snmp_condition_value = undef;
         my $regex = undef;
 
-        $logger->debug("Scanning $device->{IPADDR} device");
+        $logger->debug("$pidlog Scanning device $device->{IPADDR} device");
         # Search for the good snmp community in the table community
         LIST_SNMP: foreach $comm ( @$communities ) {
             # Test if we use SNMP v3
@@ -272,7 +313,7 @@ sub snmpscan_end_handler {
                 );
             };
             unless (defined($session)) {
-                $logger->error("Snmp INFO: $error");
+                $logger->error("$pidlog Snmp INFO: $error");
             } else {
                 $self->{snmp_session}=$session;
 
@@ -361,17 +402,31 @@ sub snmpscan_end_handler {
         }
     }
 
-    $logger->info("No more SNMP device to scan"); 
-
-    # Formatting the XML and sendig it to the server
-    my $content = XMLout( $snmp_inventory->{xmlroot},  RootName => 'REQUEST' , XMLDecl => '<?xml version="1.0" encoding="UTF-8"?>', SuppressEmpty => undef );
+    $logger->info("$pidlog No more SNMP device to scan"); 
+    my $clean_content;
+    my $content;
+    if ($forked) {
+        $content = XMLout($snmp_inventory->{xmlroot}, RootName => 'REQUEST', XMLDecl => '<?xml version="1.0" encoding="UTF-8"?>', SuppressEmpty => undef);
+        $content = extract_content_tag($content);
+        $logger->debug("$pidlog Sending XML content to parent process");
+    } else {
+        # Formatting the XML and sendig it to the server
+        $content = XMLout( $snmp_inventory->{xmlroot},  RootName => 'REQUEST' , XMLDecl => '<?xml version="1.0" encoding="UTF-8"?>', SuppressEmpty => undef );
+    }
 
     #Cleaning XML to delete unprintable characters
-    my $clean_content = $common->cleanXml($content);
+    $clean_content = $common->cleanXml($content);
+    
+    return $clean_content;
+}
 
-    $self->handleXml($clean_content);
-
-    $logger->debug("End snmp_end_handler :)");
+# extract CONTENT tag (used in perform_snmp_scan for forking)
+sub extract_content_tag {
+    my ($xml_string) = @_;
+    if ($xml_string =~ m|<CONTENT>(.*?)</CONTENT>|s) {
+        return $1;
+    }
+    return '';
 }
 
 sub snmp_ip_scan {
@@ -402,7 +457,7 @@ sub snmp_ip_scan {
             $ping->close();
             
         } elsif ($snmp_scan_type eq 'NMAP' && $common->can_load('Nmap::Parser')) {
-            $logger->debug("Scannig $net_to_scan with nmap");
+            $logger->debug("Scanning $net_to_scan with nmap");
             my $nmaparser = Nmap::Parser->new;
 
             $nmaparser->parsescan("nmap","-sn",$net_to_scan);
