@@ -55,7 +55,7 @@ sub run {
     $battery->{STATUS} = $state if $state;
 
     my $estimate = $data->{'Remaining capacity'};
-    $battery->{ESTIMATECHARGEREMAINING} = $estimate if $estimate;
+    $battery->{ESTIMATEDCHARGEREMAINING} = $estimate if $estimate;
 
     $common->addBatteries($battery);
 
