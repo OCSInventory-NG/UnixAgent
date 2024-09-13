@@ -33,7 +33,7 @@ sub run {
     $battery = {
         NAME            => $data->{'Model number'},
         CHEMISTRY       => $data->{'Type'},
-        SERIAL          => $data->{'Serial number'},
+        SERIALNUMBER    => $data->{'Serial number'},
     };
 
     if ($battery->{CHEMISTRY} eq "LION") { 
@@ -46,13 +46,10 @@ sub run {
     $battery->{CYCLES} = $cycles if $cycles;
 
     my $voltage  = $data->{'Design voltage'};
-    $battery->{VOLTAGE} = ceil($voltage/1000)." V" if $voltage;
+    $battery->{DESIGNVOLTAGE} = ceil($voltage/1000)." V" if $voltage;
 
     my $capacity = $data->{'Design capacity'};
-    $battery->{CAPACITY} = $capacity if $capacity;
-
-    my $real_capacity = $data->{'Last full capacity'};
-    $battery->{REAL_CAPACITY} = $real_capacity if defined($real_capacity) && length($real_capacity);
+    $battery->{DESIGNCAPACITY} = $capacity if $capacity;
 
     my $state = $data->{'State'};
     $battery->{STATUS} = $state if $state;
