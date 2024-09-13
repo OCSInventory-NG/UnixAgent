@@ -458,6 +458,8 @@ print MODULE "use Ocsinventory::Agent::Modules::SnmpScan;\n";
 print MODULE "\n";
 print MODULE "#use Ocsinventory::Agent::Modules::LocalSnmpScan;\n";
 print MODULE "\n";
+print MODULE "use Ocsinventory::Agent::Modules::SnmpFork;\n";
+print MODULE "\n";
 print MODULE "# DO NOT REMOVE THE 1;\n";
 print MODULE "1;\n";
 close MODULE;
