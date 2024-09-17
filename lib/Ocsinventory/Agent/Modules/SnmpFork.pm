@@ -20,7 +20,6 @@ use warnings;
 
 use XML::Simple;
 use Digest::MD5;
-use Net::Netmask;
 
 
 # launch the SNMP scan in a forked process
