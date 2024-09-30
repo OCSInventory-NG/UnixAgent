@@ -266,7 +266,19 @@ sub run {
             } else {
                 $serverdelay = $config->{config}{wait};
             }
-            $wait = int rand($serverdelay?$serverdelay:$config->{config}{delaytime});
+            if(!$serverdelay) {
+                $serverdelay = $config->{config}{delaytime};
+            }
+            my $percent;
+            # If planned between 1 and 4 hours, get 20%
+            if($serverdelay <= 14400) {
+                $percent = $serverdelay*0.20;
+            # Else get 10%
+            } else {
+                $percent = $serverdelay*0.10;
+            }
+            my $randomWait = int rand($percent);
+            $wait = $serverdelay-$randomWait;
             $logger->info("Going to sleep for $wait second(s)");
             sleep ($wait);
         }
