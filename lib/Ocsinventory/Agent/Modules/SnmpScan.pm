@@ -439,23 +439,18 @@ sub snmp_ip_scan {
         my $snmp_scan_type = $self->{scan_type_snmp};
 
         # check for scan type and if the required module is available
-        if ($snmp_scan_type eq 'ICMP' && $common->can_load('Net::Ping')) {
-            my $block=Net::Netmask->new($net_to_scan);
-            my $size=$block->size()-2;
-            my $index=1;
-            $logger->debug("Scanning $net_to_scan with ping");
-            my $ping=Net::Ping->new("icmp",1);
+        if ($snmp_scan_type eq 'ICMP' && $common->can_run('fping')) {
+            my $block = Net::Netmask->new($net_to_scan);
+            my $network = $block->base() . "/" . $block->bits();
+            $logger->debug("Scanning $network with fping");
 
-            while ($index <= $size) {
-                my $res=$block->nth($index);
-                if ($ping->ping($res)) {
-                    $logger->debug("Found $res");
-                    push( @{$self->{netdevices}},{ IPADDR=>$res }) unless $self->search_netdevice($res);
-                }
+            my $fping_output = `fping -aq -g $network 2>/dev/null`;
+            my $index = 1;
+            foreach my $ip (split /\n/, $fping_output) {
+                $logger->debug("Found $ip");
+                push(@{$self->{netdevices}}, { IPADDR => $ip }) unless $self->search_netdevice($ip);
                 $index++;
             }
-            $ping->close();
-            
         } elsif ($snmp_scan_type eq 'NMAP' && $common->can_load('Nmap::Parser')) {
             $logger->debug("Scanning $net_to_scan with nmap");
             my $nmaparser = Nmap::Parser->new;
