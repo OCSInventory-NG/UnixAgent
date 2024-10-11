@@ -503,7 +503,7 @@
 				<key>USE_HFS+_COMPRESSION</key>
 				<false/>
 				<key>VERSION</key>
-				<string>2.10.2</string>
+				<string>2.10.3</string>
 			</dict>
 			<key>TYPE</key>
 			<integer>0</integer>
@@ -911,7 +911,7 @@
 			<key>NAME</key>
 			<string>OCS Inventory Pkg Setup</string>
 			<key>PAYLOAD_ONLY</key>
-			<false/>
+			<true/>
 			<key>TREAT_MISSING_PRESENTATION_DOCUMENTS_AS_WARNING</key>
 			<false/>
 		</dict>
