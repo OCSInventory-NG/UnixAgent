@@ -251,7 +251,7 @@ sub download_prolog_reader{      #Read prolog response
             l_len => 0,  # Lock the entire file
             l_pid => $$,  # Lock is owned by the current process
         );
-	    $lock->lock( $HISTORY, F_SETLK );
+        $lock->lock( $HISTORY, F_SETLK );
         unlink("$opt_dir/suspend");
         $logger->error("Cannot read history file: $!");
         return 1;
@@ -771,7 +771,7 @@ sub build_package{
         return 1;
     }
 
-    if ( system( $common->get_path("gunzip")." -c $tmp/build.tar.gz > $tmp/build.tar && ".$common->get_path("tar")." -xvf $tmp/build.tar -C $tmp") ){
+    if ( system( $common->get_path("gzip")." -d $tmp/build.tar.gz && ".$common->get_path("tar")." -xvf $tmp/build.tar -C $tmp") ){
         $logger->error("Cannot extract $id with tar, trying with unzip.");
         if ( system( $common->get_path("unzip")." $tmp/build.tar.gz -d $tmp") ){
             $logger->error("Cannot extract $id with unzip.");
@@ -780,7 +780,7 @@ sub build_package{
         }
     }
     $logger->debug("Building of $id... Success.");
-    unlink("$tmp/build.tar.gz") or die ("Cannot remove build file: $!\n");
+    unlink("$tmp/build.tar") or die ("Cannot remove build file: $!\n");
     return 0;
 }
 
