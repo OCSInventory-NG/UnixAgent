@@ -1,7 +1,7 @@
 package Ocsinventory::Agent::Config;
 
 use strict;
-use Getopt::Long;
+use Getopt::Long qw(:config no_ignore_case);
 
 our $VERSION = '2.10.4';
 
