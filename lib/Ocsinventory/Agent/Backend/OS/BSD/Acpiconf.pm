@@ -57,6 +57,9 @@ sub run {
     my $estimate = $data->{'Remaining capacity'};
     $battery->{ESTIMATEDCHARGEREMAINING} = $estimate if $estimate;
 
+    my $manufacturer = $data->{'OEM info'};
+    $battery->{MANUFACTURER} = $manufacturer if $manufacturer;
+
     $common->addBatteries($battery);
 
 }
