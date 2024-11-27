@@ -51,12 +51,14 @@ sub run {
     $logger->debug("Scanning the $network network");
   
     my $legacymode;
-    if ( `ipdiscover` =~ /binary ver. (\d+)/ ){
-        if (!($1>3)) {
-            $legacymode = 1;
-            $logger->debug("ipdiscover ver.$1: legacymode");
+    if ($common->can_run("ipdiscover")) {
+        if ( `ipdiscover` =~ /binary ver. (\d+)/ ){
+            if (!($1>3)) {
+                $legacymode = 1;
+                $logger->debug("ipdiscover ver.$1: legacymode");
+            }
         }
-    }
+    } 
 
     my $ifname;
     if ($common->can_run("ip")) {
@@ -81,17 +83,19 @@ sub run {
         }
     }
   
-    if ($ifname) {
-        my $cmd = "ipdiscover $ifname ";
-        $cmd .= $ipdisc_lat if ($ipdisc_lat && !$legacymode);
+    if ($common->can_run("ipdiscover")){
+        if ($ifname) {
+            my $cmd = "ipdiscover $ifname ";
+            $cmd .= $ipdisc_lat if ($ipdisc_lat && !$legacymode);
     
-        foreach (`$cmd`) {
-            if (/<H><I>([\d\.]*)<\/I><M>([\w\:]*)<\/M><N>(\S*)<\/N><\/H>/) {
-                $common->addIpDiscoverEntry({
-                    IPADDRESS => $1,
-                    MACADDR => $2,
-                    NAME => $3
-                });
+            foreach (`$cmd`) {
+                if (/<H><I>([\d\.]*)<\/I><M>([\w\:]*)<\/M><N>(\S*)<\/N><\/H>/) {
+                    $common->addIpDiscoverEntry({
+                        IPADDRESS => $1,
+                        MACADDR => $2,
+                        NAME => $3
+                    });
+                }
             }
         }
     }
