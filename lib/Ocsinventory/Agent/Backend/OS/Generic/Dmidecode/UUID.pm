@@ -14,10 +14,11 @@ sub run {
 
     my $uuid;
 
-    $uuid = `dmidecode -s system-uuid`;
+    $uuid = `dmidecode | grep UUID`;
     chomp($uuid);
-    $uuid =~ s/^#+\s+$//g;
-    $uuid =~ s/Invalid.*$//g;
+    $uuid =~ s/UUID//;
+    $uuid =~ s/://;
+    $uuid =~ s/^\s+|\s+$//g;
 
     $common->setHardware({
         UUID => $uuid,
