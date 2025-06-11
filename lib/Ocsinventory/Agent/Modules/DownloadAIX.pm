@@ -25,6 +25,7 @@ use Compress::Zlib;
 use Digest::MD5;
 use File::Path;
 use Socket;
+use XML::Parser;
 
 # Can be missing. By default, we use MD5
 # You have to install it if you want to use SHA1 digest
@@ -434,7 +435,45 @@ sub download_end_handler{        # Get global structure
                 clean( $entry, $logger, $context, $messages, $packages );
                 next;
             }
-            my $info = XML::Simple::XMLin( "$entry/info" ) or next;
+
+            my $info;
+            eval {
+                use XML::Parser;
+                my $parser = XML::Parser->new(
+                    Style => 'Tree',
+                    ParseParamEnt => 1,
+                    Handlers => {
+                        Start => sub {
+                            my ($expat, $element, %attrs) = @_;
+                            if ($element eq 'DOWNLOAD') {
+                                $info = \%attrs;
+                            }
+                        }
+                    }
+                );
+
+                open(my $fh, '<:encoding(UTF-8)', "$entry/info") or die "Cannot open $entry/info: $!";
+                local $/;
+                my $content = <$fh>;
+                close($fh);
+
+                $content =~ s/&amp;/&/g;
+                $content =~ s/&/&amp;/g;
+
+                $parser->parse($content);
+            };
+
+            if ($@) {
+                $logger->error("XML parsing error for $entry/info: $@");
+                clean( $entry, $logger, $context, $messages, $packages );
+                next;
+            }
+
+            unless ($info) {
+                $logger->error("Failed to parse XML for $entry/info");
+                clean( $entry, $logger, $context, $messages, $packages );
+                next;
+            }
 
             # Check that fileid == directory name
             if ($info->{'ID'} ne $entry){
