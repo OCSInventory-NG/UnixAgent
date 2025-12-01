@@ -503,7 +503,7 @@
 				<key>USE_HFS+_COMPRESSION</key>
 				<false/>
 				<key>VERSION</key>
-				<string>2.10.3</string>
+				<string>2.10.4</string>
 			</dict>
 			<key>TYPE</key>
 			<integer>0</integer>
@@ -732,7 +732,7 @@
 		<key>PROJECT_SETTINGS</key>
 		<dict>
 			<key>BUILD_FORMAT</key>
-			<integer>1</integer>
+			<integer>0</integer>
 			<key>BUILD_PATH</key>
 			<dict>
 				<key>PATH</key>
