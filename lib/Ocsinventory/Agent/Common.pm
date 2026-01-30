@@ -725,6 +725,23 @@ sub addPSU {
 
 }
 
+sub addTimezone {
+    my ($self, $args) = @_;
+    my $xmltags = $self->{xmltags};
+
+    my $content = {};
+
+    foreach my $key (qw/NAME OFFSET/){
+        if (exists $args->{$key}) {
+            $content->{$key}[0] = $args->{$key} if $args->{$key};
+        }
+    }
+
+    push @{$xmltags->{TIMEZONE}}, $content;
+
+}
+
+
 sub addIpDiscoverEntry {
     my ($self, $args) = @_;
     my $xmltags = $self->{xmltags};
