@@ -7,11 +7,7 @@ sub check {
     my $params = shift;
     my $common = $params->{common};
 
-    # Useless check for a posix system i guess
-    my @who = `who 2>/dev/null`;
-    my @last = `last -n 1 2>/dev/null`;
-
-    if (($common->can_read("/etc/passwd") && $common->can_read("/etc/group")) || @who || @last ) {
+    if (($common->can_read("/etc/passwd") && $common->can_read("/etc/group"))) {
         return 1;
     } else {
         return 0;
@@ -22,13 +18,18 @@ sub check {
 sub run {
     my $params = shift;
     my $common = $params->{common};
+    my $logger = $params->{logger};
 
     my %users;
 
     # Logged on users
-    for (`who`){
-        my $user = $1 if /^(\S+)./;
-        $common->addUser ({ LOGIN => $user });
+    if ($common->can_run("who")) {
+        for (`who`){
+            my $user = $1 if /^(\S+)./;
+            $common->addUser ({ LOGIN => $user });
+        }
+    } else { 
+        $logger->debug("who command not found");
     }
 
     # Local users
@@ -57,9 +58,6 @@ sub run {
             MEMBER      => $group_member
         });
     }
-
-    # last logged user
-    $common->setHardware(_getLast());
 }
 
 sub _getLocalUsers{
@@ -114,35 +112,6 @@ sub _getLocalGroups {
 
      return @groups;
 
-}
-
-sub _getLast {
-    
-    my ($lastuser,$lastlogged);
-
-    my @info=`last -n 50`;
-
-    foreach my $last (@info) {
-        chomp $last;
-        next if $last =~ /^(reboot|shutdown)/;
-
-        my @last = split(/\s+/, $last);
-        next unless (@last);
-
-        $lastuser = shift @last or next;
-
-        # Found time on column starting as week day
-        shift @last while ( @last > 3 && $last[0] !~ /^mon|tue|wed|thu|fri|sat|sun/i );
-        $lastlogged = @last > 3 ? "@last[0..3]" : undef;
-        last;
-    }
-
-    return unless $lastuser;
-
-    return {
-        LASTLOGGEDUSER     => $lastuser,
-        DATELASTLOGGEDUSER => $lastlogged
-    };
 }
 
 1;
