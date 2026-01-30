@@ -9,18 +9,23 @@ sub check { $^O =~ /^linux$/ }
 sub run {
     my $params = shift;
     my $common = $params->{common};
+    my $logger = $params->{logger};
 
     chomp (my $osversion = `uname -r`);
 
     my $lastloggeduser;
     my $datelastlog;
-    my @query = $common->runcmd("last -R -n 1");
 
-    foreach ($query[0]) {
-        if ( s/^(\S+)\s+\S+\s+(\S+\s+\S+\s+\S+\s+\S+)\s+.*// ) {
-            $lastloggeduser = $1;
-            $datelastlog = $2;
+    if ($common->can_run("last")) {
+        my @query = $common->runcmd("last -R -n 1");
+        foreach ($query[0]) {
+            if ( s/^(\S+)\s+\S+\s+(\S+\s+\S+\s+\S+\s+\S+)\s+.*// ) {
+                $lastloggeduser = $1;
+                $datelastlog = $2;
+            }
         }
+    } else { 
+       $logger->debug("last command not installed\n");
     }
     
     # This will probably be overwritten by a Linux::Distro module.
