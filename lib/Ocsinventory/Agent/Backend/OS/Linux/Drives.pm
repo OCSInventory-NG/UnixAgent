@@ -79,7 +79,7 @@ sub run {
             $volumn = $1;
 
             # no virtual FS
-            next if ($filesystem =~ /^(tmpfs|devtmpfs|usbfs|proc|devpts|devshm|udev)$/);
+            next if ($filesystem =~ /^(tmpfs|devtmpfs|usbfs|proc|devpts|devshm|udev|overlay)$/);
             next if ($type =~ /^(tmpfs|devtmpfs)$/);
 
             if ($filesystem =~ /^ext(2|3|4|4dev)/ && $common->can_run('dumpe2fs')) {
