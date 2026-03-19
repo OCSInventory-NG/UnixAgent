@@ -27,6 +27,7 @@ sub run {
         $speed = $1 if /Speed:\s([\w\d]+)/i;
         $type = $1 if /Type:\s([\s\w]+)\n/i;
         $description = $1 if /Type\sDetail:\s([\s\w]+)\n/i;
+        chomp($description);
         $manufacturer = $1 if /Manufacturer:\s([\w\d\-\_\s]+)\n/i;
         $serialnumber = $1 if /Serial\sNumber:\s([\w\d\-\_\s]+)\n/i;
         if (/Size:\s(\d+)\s(MB|GB|TB|MByte|GByte|TByte)/i) {
