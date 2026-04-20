@@ -1,7 +1,10 @@
 package Ocsinventory::Agent::Backend::OS::Linux::Distro::LSB;
 
-use vars qw($runMeIfTheseChecksFailed);
-$runMeIfTheseChecksFailed = ["Ocsinventory::Agent::Backend::OS::Linux::Distro::NonLSB"];
+use warnings;
+use strict;
+
+#use vars qw($runMeIfTheseChecksFailed);
+#$runMeIfTheseChecksFailed = ["Ocsinventory::Agent::Backend::OS::Linux::Distro::NonLSB"];
 
 sub check {
     my $params = shift;
@@ -19,15 +22,15 @@ sub run {
     my $OSversion;
     chomp($OSversion =`lsb_release -rs`);
  
-    my $OSComment;
-    chomp($OSComment =`uname -v`);
+    my $OScomments;
+    chomp($OScomments =`uname -v`);
 
-    my $release = "$OSname $OSVersion";
+    my $release = "$OSname $OSversion";
 
     $common->setHardware({ 
         OSNAME => $release,
         OSVERSION => $OSversion,
-        OSCOMMENTS => "$OSComment"
+        OSCOMMENTS => "$OScomments"
     });
 }
 
