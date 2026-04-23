@@ -3,7 +3,7 @@ package Ocsinventory::Agent::Config;
 use strict;
 use Getopt::Long qw(:config no_ignore_case);
 
-our $VERSION = '2.10.4';
+our $VERSION = '2.10.5';
 
 my $basedir = '';
 my $default = {
