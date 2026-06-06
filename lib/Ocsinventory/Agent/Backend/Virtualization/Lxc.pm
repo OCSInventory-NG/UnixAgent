@@ -2,83 +2,67 @@ package Ocsinventory::Agent::Backend::Virtualization::Lxc;
 
 use strict;
 
-sub check { 
+sub check {
     my $params = shift;
     my $common = $params->{common};
-    $common->can_run('lxc-ls') && $common->can_run('lxc-info') 
+    $common->can_run('lxc-ls') && $common->can_run('lxc-info')
 }
-
-my $memory;
-my $status;
-my $name;
-my $vmtype;
-my $vmid;
-my $vcpu=0;
-my $lstatus="";
-my $cpu;
-my @lxc_vm;
 
 sub run {
 
     my $params = shift;
     my $common = $params->{common};
 
-    # Retrieve name and state of the vm
     foreach (`lxc-ls -1`) {
-        my $vm = $1 if (/^(\S+)$/);
-        #push (@lxc_vm, $vm);
-        foreach (`lxc-info -n $vm`){
-            $name = $1 if (/^Name:\s*(\S+)$/);
-            $vmid = $1 if (/^PID:\s*(\S+)$/); 
-            $lstatus = $1 if (/^State:\s*(\S+)$/);
+        chomp;
+        my $vm = $_;
+        next unless $vm =~ /^\S+$/;
 
-            if ($lstatus eq "RUNNING") {
-                $status = "Running";
-                $memory = $1 if (`lxc-cgroup -n $name memory.limit_in_bytes` =~ /(\S+)/);
-                if (`lxc-cgroup -n $name cpuset.cpus` =~ /(\S+)/) {
-                    $cpu = $1;
-                    if ($cpu =~ /^(\d+)-(\d+)/){
-                        my @tmp = ($1..$2);
-                        $vcpu += $#tmp + 1;
+        my ($name, $vmid, $status, $memory);
+        my $vcpu = 0;
+
+        foreach (`lxc-info -n '$vm'`) {
+            $name  = $1 if /^Name:\s*(\S+)$/;
+            $vmid  = $1 if /^PID:\s*(\S+)$/;
+            if (/^State:\s*(\S+)$/) {
+                $status = $1 eq 'RUNNING' ? 'Running' :
+                          $1 eq 'FROZEN'  ? 'Paused'  : 'Off';
+            }
+        }
+
+        # Use lxc-info -c to read config keys for both cgroup v1 and v2.
+        # Avoids lxc-cgroup, which fails on cgroup v2 hosts (Debian 13+, RHEL 9+).
+        # Works for both running and stopped containers.
+        foreach (`lxc-info -n '$vm' -c lxc.cgroup.memory.limit_in_bytes -c lxc.cgroup2.memory.max -c lxc.cgroup.cpuset.cpus -c lxc.cgroup2.cpuset.cpus 2>/dev/null`) {
+            next unless /^\s*(\S[^=]*?)\s*=\s*(\S+)\s*$/;
+            my ($key, $val) = ($1, $2);
+
+            if (!defined($memory) && ($key eq 'lxc.cgroup.memory.limit_in_bytes' || $key eq 'lxc.cgroup2.memory.max')) {
+                # 'max' is the cgroup v2 sentinel for unlimited; skip it
+                $memory = $val unless $val eq 'max';
+            }
+
+            if ($key eq 'lxc.cgroup.cpuset.cpus' || $key eq 'lxc.cgroup2.cpuset.cpus') {
+                $vcpu = 0;
+                foreach my $cpu_range (split(/,/, $val)) {
+                    if ($cpu_range =~ /(\d+)-(\d+)/) {
+                        $vcpu += $2 - $1 + 1;
                     } else {
                         $vcpu += 1;
                     }
                 }
-            } elsif ($lstatus eq "FROZEN") {
-                $status = "Paused";
-            } elsif ($lstatus eq "STOPPED") {
-                $status = "Off";
-                open LXC, "</var/lib/lxc/$name/config" or warn;
-                foreach (<LXC>) {
-                    next if (/^#.*/);
-                    if (/^lxc.cgroup.memory.limit_in_bytes\s+=\s*(\S+)\s*$/){
-                        $memory = $1;
-                    }
-                    if (/^lxc.cgroup.cpuset.cpus\s+=\s*(\S+)\s*$/){
-                        foreach $cpu (split(/,/,$1)){
-                            $cpu = $1;
-                            if ($cpu =~ /(\d+)-(\d+)/){
-                                my @tmp = ($1..$2);
-                                $vcpu += $#tmp + 1;
-                            } else {
-                                $vcpu += 1;
-                            }
-                        }
-                    } 
-                }
             }
         }
-        
-        my $machine = {
-            MEMORY => $memory,
-            NAME => $name,
-            STATUS => $status,
-            SUBSYSTEM => "LXC Container",
-            VCPU   => $vcpu,
-            VMID => $vmid,
-            VMTYPE => "LXC",
-        };
-        $common->addVirtualMachine($machine);    
+
+        $common->addVirtualMachine({
+            MEMORY    => $memory,
+            NAME      => $name,
+            STATUS    => $status,
+            SUBSYSTEM => 'LXC Container',
+            VCPU      => $vcpu,
+            VMID      => $vmid,
+            VMTYPE    => 'LXC',
+        });
     }
 }
 
