@@ -9,7 +9,7 @@ use Time::Local;
 sub check {
     my $params = shift;
     my $common = $params->{common};
-    if ($common->can_run("ip") && $common->can_load("Net::IP qw(:PROC)") || ($common->can_run("ifconfig") && $common->can_run("route")) && $common->can_load("Net::IP qw(:PROC)")){
+    if ($common->can_run("ip") && $common->can_load("Net::IP qw(:PROC)") || ($common->can_run("ifconfig") && $common->can_run("route")) && $common->can_run("nmcli")){
         return 1;
     } else {
         return 0;
@@ -55,6 +55,9 @@ sub _ipdhcp {
     my $dhcp;
     my $ipdhcp;
     my $leasepath;
+    my $nmclidev = `nmcli dev show $if `;
+    my $nmclicon = $1 if ($nmclidev =~ /GENERAL.CONNECTION:\s*(.*)/);
+    my $nmcli = `nmcli con show "$nmclicon"`;
 
     $leasepath = getLeaseFile($if);
 
@@ -91,6 +94,11 @@ sub _ipdhcp {
             warn "Can't open $leasepath\n";
         }
     }
+
+    if ( $nmcli ) {
+       $ipdhcp = $1 if ($nmcli =~ /dhcp_server_identifier\s=\s(.*)/);
+    }
+
     return $ipdhcp;
 }
 
