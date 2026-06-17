@@ -144,6 +144,10 @@ Clear the content of $common->{xmltags} (to use after adding it in XML)
 
 Add a memory module in the inventory.
 
+=item addBluetoothDevice()
+
+Add bluetooth devices in the inventory
+
 =back
 =cut
 
@@ -661,6 +665,22 @@ sub addBatteries {
     }
 
     push @{$xmltags->{BATTERIES}}, $content;
+}
+
+sub addBluetoothDevice {
+    my ($self, $args) = @_;
+    my $xmltags = $self->{xmltags};
+
+    my $content = {};
+
+    foreach my $key (qw/ADDRESS BLOCKED CLASS CONNECTED FIRMWARE MANUFACTURER NAME PAIRED RSSI SERVICES TRUSTED TYPE/){
+        if (exists $args->{$key}) {
+            $content->{$key}[0] = $args->{$key} if $args->{$key};
+        }
+    } 
+
+    push @{$xmltags->{BLUETOOTH}}, $content;
+
 }
 
 sub addVirtualMachine {
