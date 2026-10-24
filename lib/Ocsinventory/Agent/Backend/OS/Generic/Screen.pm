@@ -429,9 +429,12 @@ sub run {
 	$caption =~ s/[^ -~].*$//;
         my $description = $edid->{week}."/".$edid->{year};
         my $manufacturer = _getManufacturerFromCode($edid->{manufacturer_name});
-        my $serial = $edid->{serial_number};
-        if (!exists $found{$serial}) {
-            $found{$serial} = 1;
+        # the numeric serial is often a placeholder shared by a whole model
+        # (e.g. 0x01010101): prefer the ASCII serial when present, and
+        # deduplicate on the whole EDID
+        my $serial = $edid->{serial_number2} ? $edid->{serial_number2}[0] : $edid->{serial_number};
+        if (!exists $found{$raw_edid}) {
+            $found{$raw_edid} = 1;
  
             eval "use MIME::Base64;";
             $base64 = encode_base64($raw_edid) if !$@;
